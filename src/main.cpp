@@ -4,13 +4,15 @@
 
 int main(int argc, char* argv[])
 {
-    std::cout << "Welcome to Dungeon Crawler!" << std::endl;
+    SDL_Log("Initializing SDL...\n");
 
-    if (SDL_Init(SDL_INIT_VIDEO) < 0)
-	{
+    if (!SDL_Init(SDL_INIT_VIDEO))
+    {
         std::cerr << "Failed to initialize SDL: " << SDL_GetError() << std::endl;
         return 1;
     }
+
+    SDL_Log("Creating window...\n");
 
     SDL_Window* window = SDL_CreateWindow("Dungeon Crawler", 800, 600, SDL_WINDOW_RESIZABLE);
     if (!window)
@@ -20,12 +22,13 @@ int main(int argc, char* argv[])
         return 1;
     }
 
+    SDL_Log("Starting Dungeon Crawler...\n");
+
     SDL_Event event;
     bool running = true;
-    Uint64 start = SDL_GetTicks();
 
     while (running)
-	{
+    {
         while (SDL_PollEvent(&event))
 		{
             if (event.type == SDL_EVENT_QUIT)
@@ -35,6 +38,8 @@ int main(int argc, char* argv[])
         }
         SDL_Delay(16);
     }
+
+    SDL_Log("Quitting SDL...\n");
 
     SDL_DestroyWindow(window);
     SDL_Quit();
