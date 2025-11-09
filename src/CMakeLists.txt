@@ -1,4 +1,4 @@
-﻿cmake_minimum_required(VERSION 4.2)
+﻿cmake_minimum_required(VERSION 3.10)
 
 # set the output directory for built objects.
 # This makes sure that the dynamic library goes into the build directory automatically.
@@ -9,6 +9,10 @@ add_executable(${PROJECT_NAME})
 
 target_sources(${PROJECT_NAME} PRIVATE
     main.cpp
+    engine/Game.cpp
+    engine/Input.cpp
+    engine/Renderer.cpp
+    engine/Window.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE vendor)
