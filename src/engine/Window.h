@@ -1,4 +1,5 @@
-#pragma once
+#ifndef WINDOW_H
+#define WINDOW_H
 
 #include <SDL3/SDL.h>
 
@@ -14,3 +15,5 @@ public:
 private:
     SDL_Window* sdlWindow_ = nullptr;
 };
+
+#endif // WINDOW_H

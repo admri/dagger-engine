@@ -1,4 +1,5 @@
-#pragma once
+#ifndef GAME_H
+#define GAME_H
 
 #include "Input.h"
 #include "Renderer.h"
@@ -26,3 +27,5 @@ private:
     void update(float dt);
     void render();
 };
+
+#endif // GAME_H

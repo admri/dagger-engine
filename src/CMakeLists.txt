@@ -12,6 +12,7 @@ target_sources(${PROJECT_NAME} PRIVATE
     engine/Game.cpp
     engine/Input.cpp
     engine/Renderer.cpp
+    engine/Texture.cpp
     engine/Window.cpp
 )
 

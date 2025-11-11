@@ -1,4 +1,5 @@
-#pragma once
+#ifndef RENDERER_H
+#define RENDERER_H
 
 #include "Window.h"
 
@@ -13,3 +14,5 @@ public:
 private:
     SDL_Renderer* sdlRenderer_ = nullptr;
 };
+
+#endif // RENDERER_H

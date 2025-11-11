@@ -1,4 +1,5 @@
-#pragma once
+#ifndef INPUT_H
+#define INPUT_H
 
 #include <SDL3/SDL.h>
 
@@ -11,3 +12,5 @@ public:
 private:
     const Uint8* keyboardState_ = nullptr;
 };
+
+#endif // INPUT_H
