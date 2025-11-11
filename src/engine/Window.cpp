@@ -1,16 +1,25 @@
 #include "Window.h"
 
+#include <SDL3/SDL_error.h>
+#include <SDL3/SDL_log.h>
+
 bool Window::create(const std::string& title, int width, int height, SDL_WindowFlags flags)
 {
-    sdlWindow_ = SDL_CreateWindow(title.c_str(), width, height, flags);
-    return sdlWindow_ != nullptr;
+    SDL_Window* window = SDL_CreateWindow(title.c_str(), width, height, flags);
+    if (!window)
+    {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to create SDL_Window: %s", SDL_GetError());
+        return false;
+    }
+
+    sdlWindow_.reset(window);
+    return true;
 }
 
 void Window::destroy()
 {
     if (sdlWindow_)
     {
-        SDL_DestroyWindow(sdlWindow_);
-        sdlWindow_ = nullptr;
+        sdlWindow_.reset();
     }
 }

@@ -1,0 +1,24 @@
+#include "Renderer.h"
+
+#include <SDL3/SDL_error.h>
+#include <SDL3/SDL_log.h>
+
+bool Renderer::create(const Window &window)
+{
+    SDL_Window* sdlWindow = window.getSDLWindow();
+    if (!sdlWindow)
+    {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Window not created yet.");
+        return false;
+    }
+
+    SDL_Renderer* renderer = SDL_CreateRenderer(sdlWindow, NULL);
+    if (!renderer)
+    {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to create SDL_Renderer: %s", SDL_GetError());
+        return false;
+    }
+
+    sdlRenderer_.reset(renderer);
+    return true;
+}

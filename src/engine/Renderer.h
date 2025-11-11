@@ -3,16 +3,32 @@
 
 #include "Window.h"
 
-#include <SDL3/SDL.h>
+#include <SDL3/SDL_render.h>
+
+#include <memory>
+
+struct SDLRendererDeleter
+{
+    void operator()(SDL_Renderer* renderer) const
+    {
+        if (renderer) SDL_DestroyRenderer(renderer);
+    }
+};
 
 class Renderer
 {
 public:
-    bool create(Window& window);
+    bool create(const Window& window);
+    void destroy() { sdlRenderer_.reset(); }
+
     void clear();
+    void present();
+
+    SDL_Renderer* getSDLRenderer() const { return sdlRenderer_.get(); }
+
 
 private:
-    SDL_Renderer* sdlRenderer_ = nullptr;
+    std::unique_ptr<SDL_Renderer, SDLRendererDeleter> sdlRenderer_;
 };
 
 #endif // RENDERER_H

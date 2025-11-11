@@ -27,13 +27,11 @@ bool Game::init(const std::string& title, int width, int height, SDL_WindowFlags
         return false;
     }
 
-    /*
     if (!renderer_.create(window_))
     {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to create renderer.\n");
         return false;
     }
-    */
 
     SDL_Log("Game initialized successfully.\n");
     return true;
