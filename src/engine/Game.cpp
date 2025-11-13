@@ -52,7 +52,9 @@ void Game::run()
         float deltaTime = (currentTicks - lastTicks) / 1000.0f;
         lastTicks = currentTicks;
 
-        handleEvents();
+        pollEvents();
+        processEvents();
+
         update(deltaTime);
         render();
     }
@@ -68,20 +70,37 @@ void Game::quit()
     SDL_Quit();
 }
 
-void Game::handleEvents()
+void Game::pollEvents()
 {
     SDL_Event event;
     while (SDL_PollEvent(&event))
     {
         if (event.type == SDL_EVENT_QUIT)
         {
-            quit();
+            eventQueue_.push({GameEventType::Quit});
         }
     }
 
     if (input_.isKeyPressed(SDL_SCANCODE_ESCAPE))
     {
-        quit();
+        eventQueue_.push({GameEventType::Quit});
+    }
+}
+
+void Game::processEvents()
+{
+    while (!eventQueue_.empty())
+    {
+        const GameEvent& event = eventQueue_.front();
+
+        switch (event.type)
+        {
+            case GameEventType::Quit:
+                quit();
+                break;
+        }
+
+        eventQueue_.pop();
     }
 }
 
