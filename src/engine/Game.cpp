@@ -15,12 +15,14 @@ Game::Game()
 
 bool Game::init(const std::string& title, int width, int height, SDL_WindowFlags flags)
 {
+    SDL_Log("Initializing game...");
+
     if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS))
     {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to initialize SDL: %s\n", SDL_GetError());
         return false;
     }
-
+    
     if (!window_.create(title, width, height, flags))
     {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to create window.\n");
@@ -61,6 +63,7 @@ void Game::run()
 void Game::quit()
 {
     isRunning_ = false;
+    renderer_.destroy();
     window_.destroy();
     SDL_Quit();
 }
@@ -84,4 +87,6 @@ void Game::update(float dt)
 
 void Game::render()
 {
+    renderer_.clear();
+    renderer_.present();
 }

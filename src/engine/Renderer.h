@@ -3,6 +3,7 @@
 
 #include "Window.h"
 
+#include <SDL3/SDL_pixels.h>
 #include <SDL3/SDL_render.h>
 
 #include <memory>
@@ -15,17 +16,27 @@ struct SDLRendererDeleter
     }
 };
 
+struct Color : SDL_Color
+{
+    Color(Uint8 r, Uint8 g, Uint8 b, Uint8 a = 255)
+    {
+        this->r = r;
+        this->g = g;
+        this->b = b;
+        this->a = a;
+    }
+};
+
 class Renderer
 {
 public:
     bool create(const Window& window);
-    void destroy() { sdlRenderer_.reset(); }
+    void destroy();
 
-    void clear();
+    void clear(const Color& clearColor = {0, 0, 0, 255});
     void present();
 
-    SDL_Renderer* getSDLRenderer() const { return sdlRenderer_.get(); }
-
+    inline SDL_Renderer* getSDLRenderer() const { return sdlRenderer_.get(); }
 
 private:
     std::unique_ptr<SDL_Renderer, SDLRendererDeleter> sdlRenderer_;

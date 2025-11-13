@@ -22,3 +22,32 @@ bool Renderer::create(const Window &window)
     sdlRenderer_.reset(renderer);
     return true;
 }
+
+void Renderer::destroy()
+{
+    if (sdlRenderer_)
+    {
+        sdlRenderer_.reset();
+    }
+}
+
+void Renderer::clear(const Color& clearColor)
+{
+    if (!sdlRenderer_)
+    {
+        return;
+    }
+
+    SDL_SetRenderDrawColor(sdlRenderer_.get(), clearColor.r, clearColor.g, clearColor.b, clearColor.a);
+    SDL_RenderClear(sdlRenderer_.get());
+}
+
+void Renderer::present()
+{
+    if (!sdlRenderer_)
+    {
+        return;
+    }
+
+    SDL_RenderPresent(sdlRenderer_.get());
+}
