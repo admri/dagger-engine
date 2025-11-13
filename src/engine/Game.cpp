@@ -87,6 +87,6 @@ void Game::update(float dt)
 
 void Game::render()
 {
-    renderer_.clear();
+    renderer_.clear(Colors::White);
     renderer_.present();
 }
