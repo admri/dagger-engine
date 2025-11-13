@@ -23,6 +23,12 @@ private:
     bool isRunning_;
     std::queue<GameEvent> eventQueue_;
 
+    Uint64 lastTime_ = 0;
+    double deltaTime_ = 0.0;
+    int frameCount_ = 0;
+    int currentFPS_ = 0;
+    Uint64 fpsTimer_ = 0;
+
     Window window_;
     Renderer renderer_;
     Input input_;

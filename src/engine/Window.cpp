@@ -18,8 +18,20 @@ bool Window::create(const std::string& title, int width, int height, SDL_WindowF
 
 void Window::destroy()
 {
-    if (sdlWindow_)
+    if (!sdlWindow_)
     {
-        sdlWindow_.reset();
+        return;
     }
+
+    sdlWindow_.reset();
+}
+
+void Window::setTitle(const std::string &title)
+{
+    if (!sdlWindow_)
+    {
+        return;
+    }
+
+    SDL_SetWindowTitle(sdlWindow_.get(), title.c_str());
 }

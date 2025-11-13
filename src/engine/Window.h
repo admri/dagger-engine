@@ -19,6 +19,8 @@ class Window
 public:
     bool create(const std::string& title, int width, int height, SDL_WindowFlags flags);
     void destroy();
+
+    void setTitle(const std::string& title);
     
     inline SDL_Window* getSDLWindow() const { return sdlWindow_.get(); };
 

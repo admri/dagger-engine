@@ -25,10 +25,12 @@ bool Renderer::create(const Window &window)
 
 void Renderer::destroy()
 {
-    if (sdlRenderer_)
+    if (!sdlRenderer_)
     {
-        sdlRenderer_.reset();
+        return;
     }
+
+    sdlRenderer_.reset();
 }
 
 void Renderer::clear(const Color& clearColor)
@@ -50,4 +52,17 @@ void Renderer::present()
     }
 
     SDL_RenderPresent(sdlRenderer_.get());
+}
+
+void Renderer::toggleVSync()
+{
+    if (!sdlRenderer_)
+    {
+        return;
+    }
+
+    int vsync = 0;
+    SDL_GetRenderVSync(sdlRenderer_.get(), &vsync);
+    
+    SDL_SetRenderVSync(sdlRenderer_.get(), vsync ? SDL_RENDERER_VSYNC_DISABLED : 1);
 }

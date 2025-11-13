@@ -27,6 +27,8 @@ public:
     void clear(const Color& clearColor = Colors::Black);
     void present();
 
+    void toggleVSync();
+
     inline SDL_Renderer* getSDLRenderer() const { return sdlRenderer_.get(); }
 
 private:

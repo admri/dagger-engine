@@ -44,19 +44,29 @@ void Game::run()
     isRunning_ = true;
     SDL_Log("Game running.\n");
 
-    Uint64 lastTicks = SDL_GetTicks();
+    lastTime_ = SDL_GetPerformanceCounter();
+    fpsTimer_ = lastTime_;
 
     while (isRunning_)
     {
-        Uint64 currentTicks = SDL_GetTicks();
-        float deltaTime = (currentTicks - lastTicks) / 1000.0f;
-        lastTicks = currentTicks;
+        Uint64 currentTime = SDL_GetPerformanceCounter();
+        deltaTime_ = (double)(currentTime - lastTime_) / SDL_GetPerformanceFrequency();
+        lastTime_ = currentTime;
 
         pollEvents();
         processEvents();
-
-        update(deltaTime);
+        update(deltaTime_);
         render();
+
+        frameCount_++;
+        if ((currentTime - fpsTimer_) >= SDL_GetPerformanceFrequency())
+        {
+            currentFPS_ = frameCount_;
+            frameCount_ = 0;
+            fpsTimer_ = currentTime;
+
+            window_.setTitle("Dungeon Crawler | FPS: " + std::to_string(currentFPS_));
+        }
     }
 
     SDL_Log("Game stopped.\n");
@@ -75,15 +85,21 @@ void Game::pollEvents()
     SDL_Event event;
     while (SDL_PollEvent(&event))
     {
-        if (event.type == SDL_EVENT_QUIT)
+        switch (event.type)
         {
-            eventQueue_.push({GameEventType::Quit});
+            case SDL_EVENT_QUIT:
+                eventQueue_.push({GameEventType::Quit});
+                break;
         }
     }
 
     if (input_.isKeyPressed(SDL_SCANCODE_ESCAPE))
     {
         eventQueue_.push({GameEventType::Quit});
+    }
+    if (input_.isKeyPressed(SDL_SCANCODE_V))
+    {
+        eventQueue_.push({GameEventType::ToggleVSync});
     }
 }
 
@@ -95,6 +111,10 @@ void Game::processEvents()
 
         switch (event.type)
         {
+            case GameEventType::ToggleVSync:
+                renderer_.toggleVSync();
+                break;
+
             case GameEventType::Quit:
                 quit();
                 break;

@@ -3,7 +3,8 @@
 
 enum class GameEventType
 {
-    Quit,
+    ToggleVSync,
+    Quit
 };
 
 struct GameEvent
