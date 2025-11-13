@@ -78,11 +78,16 @@ void Game::handleEvents()
             quit();
         }
     }
+
+    if (input_.isKeyPressed(SDL_SCANCODE_ESCAPE))
+    {
+        quit();
+    }
 }
 
 void Game::update(float dt)
 {
-    // input_.update();
+    input_.update();
 }
 
 void Game::render()
