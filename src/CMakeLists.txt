@@ -1,4 +1,4 @@
-﻿cmake_minimum_required(VERSION 3.10)
+﻿cmake_minimum_required(VERSION 3.16)
 
 # set the output directory for built objects.
 # This makes sure that the dynamic library goes into the build directory automatically.
