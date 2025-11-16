@@ -1,9 +1,9 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
-#include "Window.h"
-
 #include "Color.h"
+#include "Texture.h"
+#include "Window.h"
 
 #include <SDL3/SDL_pixels.h>
 #include <SDL3/SDL_render.h>
@@ -26,6 +26,7 @@ public:
 
     void clear(const Color& clearColor = Colors::Black);
     void present();
+    void renderTexture(const Texture& texture, float x, float y, const SDL_FRect* srcRect = nullptr, const SDL_FRect* dstRect = nullptr);
 
     void toggleVSync();
 

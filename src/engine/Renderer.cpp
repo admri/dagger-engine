@@ -54,6 +54,11 @@ void Renderer::present()
     SDL_RenderPresent(sdlRenderer_.get());
 }
 
+void Renderer::renderTexture(const Texture &texture, float x, float y, const SDL_FRect *srcRect, const SDL_FRect *dstRect)
+{
+    texture.render(*this, x, y, srcRect, dstRect);
+}
+
 void Renderer::toggleVSync()
 {
     if (!sdlRenderer_)
