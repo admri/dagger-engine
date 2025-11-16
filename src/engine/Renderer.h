@@ -10,6 +10,8 @@
 
 #include <memory>
 
+class Texture;
+
 struct SDLRendererDeleter
 {
     void operator()(SDL_Renderer* renderer) const
@@ -26,7 +28,8 @@ public:
 
     void clear(const Color& clearColor = Colors::Black);
     void present();
-    void renderTexture(const Texture& texture, float x, float y, const SDL_FRect* srcRect = nullptr, const SDL_FRect* dstRect = nullptr);
+
+    void drawTexture(const Texture& texture, const SDL_FRect* srcRect, const SDL_FRect* dstRect);
 
     void toggleVSync();
 

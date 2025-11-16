@@ -1,6 +1,7 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include "AssetManager.h"
 #include "GameEvent.h"
 #include "Input.h"
 #include "Renderer.h"
@@ -8,6 +9,7 @@
 
 #include <SDL3/SDL_video.h>
 
+#include <memory>
 #include <queue>
 
 class Game
@@ -32,6 +34,7 @@ private:
     Window window_;
     Renderer renderer_;
     Input input_;
+    std::unique_ptr<AssetManager> assets_;
 
     void pollEvents();
     void processEvents();

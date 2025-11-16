@@ -1,5 +1,4 @@
 #include "engine/Game.h"
-
 #include <iostream>
 
 int main()

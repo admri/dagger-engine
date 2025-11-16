@@ -6,7 +6,7 @@
 #include <SDL3/SDL_surface.h>
 #include <SDL3_image/SDL_image.h>
 
-bool Texture::loadFromFile(Renderer &renderer, const std::string& path)
+bool Texture::loadFromFile(Renderer& renderer, const std::string& path)
 {
     sdlTexture_.reset();
 
@@ -42,13 +42,8 @@ void Texture::destroy()
     sdlTexture_.reset();
 }
 
-void Texture::render(Renderer &renderer, float x, float y, const SDL_FRect* srcRect, const SDL_FRect* dstRect) const
+void Texture::render(Renderer& renderer, float x, float y, const SDL_FRect* srcRect, const SDL_FRect* dstRect) const
 {
-    if (!sdlTexture_ || !renderer.getSDLRenderer())
-    {
-        return;
-    }
-
     SDL_FRect dst;
     if (dstRect)
     {
@@ -62,8 +57,5 @@ void Texture::render(Renderer &renderer, float x, float y, const SDL_FRect* srcR
         dst.h = height_;
     }
 
-    if (!SDL_RenderTexture(renderer.getSDLRenderer(), sdlTexture_.get(), srcRect, &dst))
-    {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to render texture: %s\n", SDL_GetError());
-    }
+    renderer.drawTexture(*this, srcRect, &dst);
 }

@@ -3,7 +3,7 @@
 #include <SDL3/SDL_error.h>
 #include <SDL3/SDL_log.h>
 
-bool Renderer::create(const Window &window)
+bool Renderer::create(const Window& window)
 {
     SDL_Window* sdlWindow = window.getSDLWindow();
     if (!sdlWindow)
@@ -54,9 +54,17 @@ void Renderer::present()
     SDL_RenderPresent(sdlRenderer_.get());
 }
 
-void Renderer::renderTexture(const Texture &texture, float x, float y, const SDL_FRect *srcRect, const SDL_FRect *dstRect)
+void Renderer::drawTexture(const Texture& texture, const SDL_FRect* srcRect, const SDL_FRect* dstRect)
 {
-    texture.render(*this, x, y, srcRect, dstRect);
+    if (!sdlRenderer_ || !texture.getSDLTexture())
+    {
+        return;
+    }
+
+    if (!SDL_RenderTexture(sdlRenderer_.get(), texture.getSDLTexture(), srcRect, dstRect))
+    {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to render texture: %s", SDL_GetError());
+    }
 }
 
 void Renderer::toggleVSync()

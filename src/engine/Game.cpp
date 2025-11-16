@@ -6,6 +6,8 @@
 #include <SDL3/SDL_log.h>
 #include <SDL3/SDL_timer.h>
 
+#include <SDL3_mixer/SDL_mixer.h>
+
 #include <iostream>
 
 Game::Game()
@@ -22,6 +24,12 @@ bool Game::init(const std::string& title, int width, int height, SDL_WindowFlags
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to initialize SDL: %s\n", SDL_GetError());
         return false;
     }
+
+    if (!MIX_Init())
+    {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to initialize SDL_mixer: %s\n", SDL_GetError());
+        return false;
+    }
     
     if (!window_.create(title, width, height, flags))
     {
@@ -34,6 +42,9 @@ bool Game::init(const std::string& title, int width, int height, SDL_WindowFlags
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to create renderer.\n");
         return false;
     }
+
+    assets_ = std::make_unique<AssetManager>(renderer_);
+    assets_->unloadFont("default");
 
     SDL_Log("Game initialized successfully.\n");
     return true;
