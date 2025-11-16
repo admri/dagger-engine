@@ -4,15 +4,16 @@
 #include <SDL3/SDL_log.h>
 #include <SDL3/SDL_rect.h>
 #include <SDL3/SDL_surface.h>
+#include <SDL3_image/SDL_image.h>
 
 bool Texture::loadFromFile(Renderer &renderer, const std::string& path)
 {
     sdlTexture_.reset();
 
-    SDL_Surface* surface = SDL_LoadBMP(path.c_str());
+    SDL_Surface* surface = IMG_Load(path.c_str());
     if (!surface)
     {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to load BMP image %s: %s\n", path.c_str(), SDL_GetError());
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to load image %s: %s\n", path.c_str(), SDL_GetError());
         return false;
     }
 

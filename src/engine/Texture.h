@@ -24,6 +24,8 @@ public:
     void render(Renderer &renderer, float x, float y, const SDL_FRect* srcRect = nullptr, const SDL_FRect* dstRect = nullptr) const;
     
     SDL_Texture* getSDLTexture() const { return sdlTexture_.get(); }
+    float getWidth() const { return width_; }
+    float getHeight() const { return height_; }
 
 private:
     std::unique_ptr<SDL_Texture, SDLTextureDeleter> sdlTexture_;
