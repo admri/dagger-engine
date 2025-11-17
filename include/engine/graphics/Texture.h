@@ -1,8 +1,9 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
-#include "Renderer.h"
+#include <graphics/Renderer.h>
 
+#include <SDL3/SDL_rect.h>
 #include <SDL3/SDL_render.h>
 
 #include <memory>

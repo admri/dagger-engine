@@ -1,10 +1,10 @@
 #ifndef ASSET_MANAGER_H
 #define ASSET_MANAGER_H
 
-#include "FontManager.h"
-#include "Renderer.h"
-#include "SoundManager.h"
-#include "TextureManager.h"
+#include <assets/FontManager.h>
+#include <audio/SoundManager.h>
+#include <graphics/Renderer.h>
+#include <graphics/TextureManager.h>
 
 #include <memory>
 #include <string>

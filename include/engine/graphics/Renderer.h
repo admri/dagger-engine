@@ -1,9 +1,9 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
-#include "Color.h"
-#include "Texture.h"
-#include "Window.h"
+#include <core/Window.h>
+#include <graphics/Color.h>
+#include <graphics/Texture.h>
 
 #include <SDL3/SDL_pixels.h>
 #include <SDL3/SDL_render.h>

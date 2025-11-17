@@ -1,7 +1,7 @@
 #ifndef SOUND_MANAGER_H
 #define SOUND_MANAGER_H
 
-#include "Sound.h"
+#include <audio/Sound.h>
 
 #include <SDL3_mixer/SDL_mixer.h>
 

@@ -1,7 +1,7 @@
 #ifndef SPRITE_H
 #define SPRITE_H
 
-#include "Texture.h"
+#include <graphics/Texture.h>
 
 class Sprite
 {

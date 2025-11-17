@@ -1,4 +1,4 @@
-#include "Sprite.h"
+#include <graphics/Sprite.h>
 
 Sprite::Sprite(Texture* texture)
     : texture_(texture)

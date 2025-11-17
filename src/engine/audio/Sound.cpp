@@ -1,4 +1,4 @@
-#include "Sound.h"
+#include <audio/Sound.h>
 
 #include <SDL3/SDL_error.h>
 #include <SDL3/SDL_log.h>

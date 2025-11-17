@@ -1,4 +1,4 @@
-#include "Texture.h"
+#include <graphics/Texture.h>
 
 #include <SDL3/SDL_error.h>
 #include <SDL3/SDL_log.h>

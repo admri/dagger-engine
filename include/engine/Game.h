@@ -1,11 +1,11 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "AssetManager.h"
-#include "GameEvent.h"
-#include "Input.h"
-#include "Renderer.h"
-#include "Window.h"
+#include <assets/AssetManager.h>
+#include <core/GameEvent.h>
+#include <core/Window.h>
+#include <graphics/Renderer.h>
+#include <input/Input.h>
 
 #include <SDL3/SDL_video.h>
 
