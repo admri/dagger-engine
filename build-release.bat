@@ -11,6 +11,6 @@ cmake --build build --config Release || (
     exit /b 1
 )
 
-echo Build succeeded^^! You can find the release build in '.\build\Release'.
+echo Build succeeded! You can find the release build in '.\build\Release'.
 
 pause
