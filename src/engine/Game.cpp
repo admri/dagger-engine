@@ -50,6 +50,8 @@ bool Game::init(const std::string& title, int width, int height, SDL_WindowFlags
         return false;
     }
 
+    assets_.loadFont("fpsCounter", "assets/fonts/RobotoMono-Regular.ttf", 16);
+
     SDL_Log("Game initialized successfully.\n");
     return true;
 }
@@ -79,8 +81,6 @@ void Game::run()
             currentFPS_ = frameCount_;
             frameCount_ = 0;
             fpsTimer_ = currentTime;
-
-            window_.setTitle("Dungeon Crawler | FPS: " + std::to_string(currentFPS_));
         }
     }
 
@@ -153,5 +153,8 @@ void Game::update(float dt)
 void Game::render()
 {
     renderer_.clear(Colors::White);
+
+    renderer_.drawText(*assets_.getFont("fpsCounter"), "FPS: " + std::to_string(currentFPS_), 10.0f, 10.0f, Colors::Black);
+
     renderer_.present();
 }
