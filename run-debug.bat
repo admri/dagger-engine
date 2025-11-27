@@ -1,5 +1,4 @@
 @echo off
-setlocal enabledelayedexpansion
 
 git submodule update --init --recursive
 
@@ -14,6 +13,7 @@ cmake --build build --config Debug || (
 
 echo Build succeeded! Running the program...
 echo.
-.\build\Debug\DungeonCrawler.exe
+cd .\build\Debug
+.\DungeonCrawler.exe
 
 pause
