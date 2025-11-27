@@ -1,5 +1,6 @@
 #include <Game.h>
 
+#include <SDL3/SDL.h>
 #include <SDL3/SDL_error.h>
 #include <SDL3/SDL_events.h>
 #include <SDL3/SDL_init.h>
@@ -12,7 +13,13 @@
 
 Game::Game()
     : isRunning_(false)
+    , assets_(renderer_)
 {
+}
+
+Game::~Game()
+{
+    quit();
 }
 
 bool Game::init(const std::string& title, int width, int height, SDL_WindowFlags flags)
@@ -42,9 +49,6 @@ bool Game::init(const std::string& title, int width, int height, SDL_WindowFlags
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to create renderer.\n");
         return false;
     }
-
-    assets_ = std::make_unique<AssetManager>(renderer_);
-    assets_->unloadFont("default");
 
     SDL_Log("Game initialized successfully.\n");
     return true;
@@ -81,11 +85,13 @@ void Game::run()
     }
 
     SDL_Log("Game stopped.\n");
+    quit();
 }
 
 void Game::quit()
 {
     isRunning_ = false;
+    assets_.clear();
     renderer_.destroy();
     window_.destroy();
     SDL_Quit();
@@ -116,7 +122,7 @@ void Game::pollEvents()
 
 void Game::processEvents()
 {
-    while (!eventQueue_.empty())
+    while (!eventQueue_.empty() && isRunning_)
     {
         const GameEvent& event = eventQueue_.front();
 
@@ -127,7 +133,7 @@ void Game::processEvents()
                 break;
 
             case GameEventType::Quit:
-                quit();
+                isRunning_ = false;
                 break;
         }
 

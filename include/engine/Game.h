@@ -16,6 +16,7 @@ class Game
 {
 public:
     Game();
+    ~Game();
 
     bool init(const std::string& title, int width, int height, SDL_WindowFlags flags = SDL_WINDOW_RESIZABLE);
     void run();
@@ -34,7 +35,7 @@ private:
     Window window_;
     Renderer renderer_;
     Input input_;
-    std::unique_ptr<AssetManager> assets_;
+    AssetManager assets_;
 
     void pollEvents();
     void processEvents();
