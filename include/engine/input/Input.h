@@ -3,14 +3,18 @@
 
 #include <SDL3/SDL_scancode.h>
 
+#include <array>
+
 class Input
 {
 public:
     void update();
     bool isKeyPressed(SDL_Scancode key) const;
+    bool isKeyDown(SDL_Scancode key) const;
 
 private:
     const bool* keyboardState_ = nullptr;
+    std::array<bool, SDL_SCANCODE_COUNT> previousKeyboardState_ = {};
 };
 
 #endif // INPUT_H
