@@ -23,3 +23,7 @@ add_custom_command(TARGET DungeonCrawler POST_BUILD
         ${CMAKE_SOURCE_DIR}/assets
         $<TARGET_FILE_DIR:DungeonCrawler>/assets
 )
+
+set_target_properties(${PROJECT_NAME} PROPERTIES
+    WIN32_EXECUTABLE $<$<CONFIG:Release>:YES>
+)

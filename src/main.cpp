@@ -1,8 +1,10 @@
 #include <engine/Game.h>
 
+#include <SDL3/SDL_main.h>
+
 #include <iostream>
 
-int main()
+int main(int argc, char** argv)
 {
     Game game;
 
