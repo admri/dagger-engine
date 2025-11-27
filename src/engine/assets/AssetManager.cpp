@@ -3,6 +3,11 @@
 #include <SDL3/SDL_error.h>
 #include <SDL3/SDL_log.h>
 
+bool AssetManager::initAudio()
+{
+    return sounds_.init();
+}
+
 Texture* AssetManager::loadTexture(const std::string& id, const std::string& path)
 {
     textures_.loadTexture(id, path);

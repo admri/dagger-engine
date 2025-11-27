@@ -1,26 +1,14 @@
 #include <Game.h>
 
-#include <SDL3/SDL.h>
 #include <SDL3/SDL_error.h>
 #include <SDL3/SDL_events.h>
 #include <SDL3/SDL_init.h>
 #include <SDL3/SDL_log.h>
 #include <SDL3/SDL_timer.h>
 
+#include <SDL3_ttf/SDL_ttf.h>
+
 #include <SDL3_mixer/SDL_mixer.h>
-
-#include <iostream>
-
-Game::Game()
-    : isRunning_(false)
-    , assets_(renderer_)
-{
-}
-
-Game::~Game()
-{
-    quit();
-}
 
 bool Game::init(const std::string& title, int width, int height, SDL_WindowFlags flags)
 {
@@ -32,9 +20,21 @@ bool Game::init(const std::string& title, int width, int height, SDL_WindowFlags
         return false;
     }
 
+    if (!TTF_Init())
+    {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to initialize SDL_ttf: %s\n", SDL_GetError());
+        return false;
+    }
+
     if (!MIX_Init())
     {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to initialize SDL_mixer: %s\n", SDL_GetError());
+        return false;
+    }
+
+    if (!assets_.initAudio())
+    {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to initialize audio manager.\n");
         return false;
     }
     
@@ -85,15 +85,19 @@ void Game::run()
     }
 
     SDL_Log("Game stopped.\n");
-    quit();
 }
 
 void Game::quit()
 {
+    SDL_Log("Quitting game...\n");
     isRunning_ = false;
+
     assets_.clear();
     renderer_.destroy();
     window_.destroy();
+
+    TTF_Quit();
+    MIX_Quit();
     SDL_Quit();
 }
 

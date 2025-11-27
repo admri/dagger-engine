@@ -15,8 +15,10 @@
 class Game
 {
 public:
-    Game();
-    ~Game();
+    Game() :
+        isRunning_(false),
+        assets_(renderer_) {}
+    ~Game() { quit(); }
 
     bool init(const std::string& title, int width, int height, SDL_WindowFlags flags = SDL_WINDOW_RESIZABLE);
     void run();

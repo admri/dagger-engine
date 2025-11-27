@@ -3,15 +3,6 @@
 #include <SDL3/SDL_error.h>
 #include <SDL3/SDL_log.h>
 
-SoundManager::SoundManager()
-{
-    mixer_ = MIX_CreateMixerDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, NULL);
-    if (!mixer_)
-    {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to open audio mixer: %s\n", SDL_GetError());
-    }
-}
-
 SoundManager::~SoundManager()
 {
     clear();
@@ -21,6 +12,23 @@ SoundManager::~SoundManager()
         MIX_DestroyMixer(mixer_);
         mixer_ = nullptr;
     }
+}
+
+bool SoundManager::init()
+{
+    if (mixer_)
+    {
+        return true;
+    }
+    
+    mixer_ = MIX_CreateMixerDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, NULL);
+    if (!mixer_)
+    {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to open audio mixer: %s\n", SDL_GetError());
+        return false;
+    }
+
+    return true;
 }
 
 Sound* SoundManager::loadSound(const std::string& id, const std::string& path, bool predecode)

@@ -17,6 +17,8 @@ public:
     AssetManager(const AssetManager&) = delete;
     ~AssetManager() { clear(); }
 
+    bool initAudio();
+
     Texture* loadTexture(const std::string& id, const std::string& path);
     Texture* getTexture(const std::string& id) const;
     void unloadTexture(const std::string& id);

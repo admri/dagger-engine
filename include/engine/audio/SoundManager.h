@@ -12,9 +12,11 @@
 class SoundManager
 {
 public:
-    SoundManager();
+    SoundManager() = default;
     SoundManager(const SoundManager&) = delete;
     ~SoundManager();
+
+    bool init();
 
     Sound* loadSound(const std::string& id, const std::string& path, bool predecode = true);
     Sound* getSound(const std::string& id) const;
