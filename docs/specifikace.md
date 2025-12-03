@@ -86,7 +86,7 @@ Pro zajištění čistoty kódu a správné správy závislostí je zavedena adr
 
 # 4. Technologická specifikace
 
-# 4.1 Jazyk a knihovny
+## 4.1 Jazyk a knihovny
 
 **C++**
 + **Standard jazyka**: Projekt využívá standard C++17 (nebo novější), aby bylo možné implementovat moderní programovací techniky, jako je efektivní správa paměti a využití *Standard Template Library* (STL).
@@ -104,7 +104,7 @@ Pro zajištění čistoty kódu a správné správy závislostí je zavedena adr
 
 ---
 
-**Rozšíření SDL3**:
+### Rozšíření SDL3:
 
 **SDL_ttf**
 + **Účel**: Knihovna je nezbytná pro podporu a zpracování textu v uživatelském rozhraní (UI) a menu.
@@ -127,8 +127,69 @@ Pro zajištění čistoty kódu a správné správy závislostí je zavedena adr
 
 + *Integrace do*: `Audio`, `AudioManager`
 
-# 4.2 Správa sestavení
+## 4.2 Správa sestavení
 
 + **Nástroj**: Pro správu kompilace a generování nativních sestavovacích souborů je použit především systém **CMake**.
 
-+ **Zodpovědnost**: *CMake* zajišťuje správu všech externích závislostí (knihovny *SDL3* a jeho rozšíření), konfiguraci cesty k hlavičkovým souborům (`include/`) a definování cílů pro sestavení spustitelného souboru Enginu a Game.
++ **Zodpovědnost**: *CMake* zajišťuje správu všech externích závislostí (knihovny *SDL3* a její rozšíření), konfiguraci cesty k hlavičkovým souborům (`include/`) a definování cílů pro sestavení spustitelného souboru Enginu a Game.
+
+# 5. Uživatelské rozhraní a interakce (UX/UI)
+
+## 5.1 Herní stavy a menu
+
+Aplikace bude řízena **správou stavů** (`GameState`). Při spuštění uvidí uživatel hlavní menu.
+
+### Stavy aplikace a přechody
+
+| Stav  | Popis | Uživatelské akce |
+|:------|-------|------------------:|
+| Menu  | Hlavní úvodní obrazovka s možností spuštění hry, změny nastavení a ukončení programu | Výběr a potvrzení volby |
+| Play  | Aktivní herní smyčka, hráč ovládá entitu | Pohyb, útok, pauza |
+| Pause | Hra je pozastavena, ale vykreslování zůstává aktivní s překryvnou vrstvou | Pokračovat, Konec hry (zpět do menu) |
+| Game Over | Hráčovo zdraví kleslo na nulu. Zobrazení skóre | Potvrzení (zpět do menu) |
+
+### Hlavní menu (*Menu*)
+
++ **Vzhled**: Vykreslený text s jednoduchým pozadím.
++ **Možnosti**:
+  + **Nová hra**: Spustí generování nového levelu a přepne stav na *Play*.
+  + **Pokračovat**: Načte hru z uložené pozice.
+  + **Konec**: Ukončí aplikaci.
+
+### Pauza menu (*Pause*)
++ **Vzhled**: Překryná vrstva nad aktivní hrou.
++ **Možnosti**:
+  + **Pokračovat**: Přepne stav zpět na *Play*.
+  + **Konec hry**: Přepne stav zpět na *Menu*.
+
+## 5.2 Interakce s hrou a ovládání
+
+Ovládání je navrženo hlavně pro **desktopové prostředí** (klávesnice a myš).
+
+### Ovládání hráče a pohyb
+
+| Akce | Vstup | Důsledek ve hře |
+|:-----|-------|----------------:|
+| **Pohyb** | **W, A, S, D** (nebo šipky) | Pohyb entity hráče v 8 směrech. Pohyb je omezen kolizním systémem a zdmi. |
+| **Útok** | **Levé tlačítko myši** | Provedení útoku směrem k pozici kurzoru. |
+| **Interakce** | **E** | Možná interakce s předměty/dveřmi. |
+| **Pauza** | **Escape** | Přepne stav hry na *Pause*. |
+
+### Interakce s herním světem
+
++ **Bojový systém**: Hráč může zaútočit na ostatní entity. Zásahy jsou registrovány kolizemi a po zásahu nepřátelské entity způsobí poškození (sníží HP).
++ **Viditelnost**: Hráč interaguje s herním světem prostřednictvím **Zorného pole (FOV)**. Vše za zdmi je **neviditelné** nebo zatmavené, což nutí hráče k průzkumu.
++ **HP a zdravá**: Při zasažení hráčem nebo nepřátelským útokem klesá HP. Nula HP u hráče vede ke stavu *Game Over*.
+
+## 5.3 Ukládání a načítání hry
+
+Hra bude navržena jako *jednorázová* **rogue-lite** zkušenost. Tedy nebude možné ukládat si více pozic, ale hra si při odchodu do menu **uloží poslední pozici**, kterou následně bude moct načíst.
+
+## 5.4 Uživatelské rozhraní během hry (HUD)
+
+Během stavu *Play* bude v rohu obrazovky vykreslen **HUD**, tedy informace o stavu hry.
+
+| Prvek HUD | Zdroj dat | Vykreslení |
+|:----------|-----------|-----------:|
+| **Zdraví (HP)** | Proměnná `Player.HP` | Textem a/nebo jednoduchým grafickým barem. |
+| **Skóre** | Počet poražených nepřátel | Číslem, aktualizovaným po zničení entity nepřítele. |
