@@ -179,7 +179,7 @@ Ovládání je navrženo hlavně pro **desktopové prostředí** (klávesnice a 
 
 + **Bojový systém**: Hráč může zaútočit na ostatní entity. Zásahy jsou registrovány kolizemi a po zásahu nepřátelské entity způsobí poškození (sníží HP).
 + **Viditelnost**: Hráč interaguje s herním světem prostřednictvím **Zorného pole (FOV)**. Vše za zdmi je **neviditelné** nebo zatmavené, což nutí hráče k průzkumu.
-+ **HP a zdravá**: Při zasažení hráčem nebo nepřátelským útokem klesá HP. Nula HP u hráče vede ke stavu *Game Over*.
++ **HP a zdraví**: Při zasažení hráčem nebo nepřátelským útokem klesá HP. Nula HP u hráče vede ke stavu *Game Over*.
 
 ## 5.3 Ukládání a načítání hry
 
