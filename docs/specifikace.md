@@ -143,10 +143,10 @@ Aplikace bude řízena **správou stavů** (`GameState`). Při spuštění uvid�
 
 | Stav  | Popis | Uživatelské akce |
 |:------|-------|------------------:|
-| Menu  | Hlavní úvodní obrazovka s možností spuštění hry, změny nastavení a ukončení programu | Výběr a potvrzení volby |
-| Play  | Aktivní herní smyčka, hráč ovládá entitu | Pohyb, útok, pauza |
-| Pause | Hra je pozastavena, ale vykreslování zůstává aktivní s překryvnou vrstvou | Pokračovat, Konec hry (zpět do menu) |
-| Game Over | Hráčovo zdraví kleslo na nulu. Zobrazení skóre | Potvrzení (zpět do menu) |
+| *Menu*  | Hlavní úvodní obrazovka s možností spuštění hry, změny nastavení a ukončení programu | Výběr a potvrzení volby |
+| *Play*  | Aktivní herní smyčka, hráč ovládá entitu | Pohyb, útok, pauza |
+| *Pause* | Hra je pozastavena, ale vykreslování zůstává aktivní s překryvnou vrstvou | Pokračovat, Konec hry (zpět do menu) |
+| *Game Over* | Hráčovo zdraví kleslo na nulu. Zobrazení skóre | Potvrzení (zpět do menu) |
 
 ### Hlavní menu (*Menu*)
 
