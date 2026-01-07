@@ -13,7 +13,7 @@ add_executable(${PROJECT_NAME} ${PROJECT_SOURCES} ${PROJECT_HEADERS})
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
     engine
-    vendor
+    external
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE
@@ -29,7 +29,7 @@ add_custom_command(TARGET DungeonCrawler POST_BUILD
 if (USE_PREBUILT_VENDOR)
     add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
-            "${VENDOR_ROOT}/bin"
+            "${EXTERNAL_ROOT}/bin"
             "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
     )
 endif()

@@ -9,7 +9,7 @@ file(GLOB_RECURSE ENGINE_HEADERS
 
 add_library(engine STATIC ${ENGINE_SOURCES} ${ENGINE_HEADERS})
 
-target_link_libraries(engine PUBLIC vendor)
+target_link_libraries(engine PUBLIC external)
 
 target_include_directories(engine PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}

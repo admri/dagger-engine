@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 project(DungeonCrawler)
 
-option(USE_PREBUILT_VENDOR "Use prebuilt vendor libraries" OFF)
+option(USE_PREBUILT_EXTERNAL "Use prebuilt external libraries" OFF)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -15,6 +15,6 @@ if (POLICY CMP0141)
     set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<IF:$<AND:$<C_COMPILER_ID:MSVC>,$<CXX_COMPILER_ID:MSVC>>,$<$<CONFIG:Debug,RelWithDebInfo>:EditAndContinue>,$<$<CONFIG:Debug,RelWithDebInfo>:ProgramDatabase>>")
 endif()
 
-add_subdirectory(vendor)
+add_subdirectory(external)
 add_subdirectory(src/engine)
 add_subdirectory(src)
