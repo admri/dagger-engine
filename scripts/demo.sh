@@ -10,7 +10,7 @@ if [ ! -d build ]; then
 fi
 
 echo "Configuring CMake for Demo build..."
-cmake -S . -B build -DUSE_PREBUILT_VENDOR=ON -DCMAKE_BUILD_TYPE=Release || { echo "ERROR: CMake configuration failed!"; exit 1; }
+cmake -S . -B build -DUSE_PREBUILT_EXTERNAL=ON -DCMAKE_BUILD_TYPE=Release || { echo "ERROR: CMake configuration failed!"; exit 1; }
 
 CPU_CORES=$(nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 1)
 echo "Building project using $CPU_CORES cores..."
