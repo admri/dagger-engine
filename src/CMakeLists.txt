@@ -26,12 +26,22 @@ add_custom_command(TARGET DungeonCrawler POST_BUILD
         $<TARGET_FILE_DIR:DungeonCrawler>/assets
 )
 
-if (USE_PREBUILT_VENDOR)
-    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-            "${EXTERNAL_ROOT}/bin"
-            "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
-    )
+if (USE_PREBUILT_EXTERNAL)
+    if(WIN32)
+        file(GLOB PREBUILT_LIBS "${EXTERNAL_ROOT}/bin/*.dll")
+    elseif(APPLE)
+        file(GLOB PREBUILT_LIBS "${EXTERNAL_ROOT}/lib/*.dylib")
+    else() # Linux
+        file(GLOB PREBUILT_LIBS "${EXTERNAL_ROOT}/lib/lib*.so*")
+    endif()
+
+    foreach(lib ${PREBUILT_LIBS})
+        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy
+                "${lib}"
+                "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
+        )
+    endforeach()
 endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES

@@ -6,20 +6,6 @@ if (USE_PREBUILT_EXTERNAL)
 
     message(STATUS "Using prebuilt external libraries")
 
-    if (WIN32)
-        set(EXTERNAL_PLATFORM windows)
-        set(SHARED_EXT dll)
-        set(IMPLIB_EXT lib)
-    elseif(APPLE)
-        set(EXTERNAL_PLATFORM macos)
-        set(SHARED_EXT dylib)
-    else()
-        set(EXTERNAL_PLATFORM linux)
-        set(SHARED_EXT so)
-    endif()
-
-    set(EXTERNAL_ROOT "${CMAKE_SOURCE_DIR}/external/prebuilt/${EXTERNAL_PLATFORM}")
-
     function(import_shared name)
         add_library(${name} SHARED IMPORTED)
 
