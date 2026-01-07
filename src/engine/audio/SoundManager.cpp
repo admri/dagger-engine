@@ -5,7 +5,7 @@
 
 SoundManager::~SoundManager()
 {
-    clear();
+    sounds_.clear();
 
     if (mixer_)
     {

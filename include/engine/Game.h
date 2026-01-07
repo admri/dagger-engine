@@ -10,21 +10,22 @@
 #include <SDL3/SDL_video.h>
 
 #include <memory>
+#include <optional>
 #include <queue>
 
 class Game
 {
 public:
     Game() :
-        isRunning_(false),
-        assets_(renderer_) {}
-    ~Game() { quit(); }
+        isRunning_(false) {}
+    ~Game();
 
     bool init(const std::string& title, int width, int height, SDL_WindowFlags flags = SDL_WINDOW_RESIZABLE);
     void run();
     void quit();
 
 private:
+    bool initialized_ = false;
     bool isRunning_;
     std::queue<GameEvent> eventQueue_;
 
@@ -34,10 +35,10 @@ private:
     int currentFPS_ = 0;
     Uint64 fpsTimer_ = 0;
 
-    Window window_;
-    Renderer renderer_;
-    Input input_;
-    AssetManager assets_;
+    std::optional<Window> window_;
+    std::optional<Renderer> renderer_;
+    std::optional<Input> input_;
+    std::optional<AssetManager> assets_;
 
     void pollEvents();
     void processEvents();

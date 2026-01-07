@@ -5,61 +5,73 @@
 #include <SDL3/SDL_init.h>
 #include <SDL3/SDL_log.h>
 #include <SDL3/SDL_timer.h>
-
+#include <SDL3_mixer/SDL_mixer.h>
 #include <SDL3_ttf/SDL_ttf.h>
 
-#include <SDL3_mixer/SDL_mixer.h>
-
-bool Game::init(const std::string& title, int width, int height, SDL_WindowFlags flags)
+Game::~Game()
 {
-    SDL_Log("Initializing game...");
+    quit();
+}
+
+bool Game::init(const std::string &title, int width, int height, SDL_WindowFlags flags)
+{
+    SDL_Log("Game initializing...");
 
     if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS))
     {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to initialize SDL: %s\n", SDL_GetError());
         return false;
     }
+    SDL_Log("SDL initialized.");
 
     if (!TTF_Init())
     {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to initialize SDL_ttf: %s\n", SDL_GetError());
         return false;
     }
+    SDL_Log("SDL_TTF initialized.");
 
     if (!MIX_Init())
     {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to initialize SDL_mixer: %s\n", SDL_GetError());
         return false;
     }
+    SDL_Log("SDL_Mixer initialized.");
 
-    if (!assets_.initAudio())
+    window_.emplace();
+    renderer_.emplace();
+    input_.emplace();
+    assets_.emplace(*renderer_);
+
+    if (!assets_->initAudio())
     {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to initialize audio manager.\n");
         return false;
     }
     
-    if (!window_.create(title, width, height, flags))
+    if (!window_->create(title, width, height, flags))
     {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to create window.\n");
         return false;
     }
 
-    if (!renderer_.create(window_))
+    if (!renderer_->create(*window_))
     {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to create renderer.\n");
         return false;
     }
 
-    assets_.loadFont("fpsCounter", "assets/fonts/RobotoMono-Regular.ttf", 16);
+    assets_->loadFont("fpsCounter", "assets/fonts/RobotoMono-Regular.ttf", 16);
 
-    SDL_Log("Game initialized successfully.\n");
+    initialized_ = true;
+    SDL_Log("Game initialized successfully.\n\n");
     return true;
 }
 
 void Game::run()
 {
     isRunning_ = true;
-    SDL_Log("Game running.\n");
+    SDL_Log("Game running...\n");
 
     lastTime_ = SDL_GetPerformanceCounter();
     fpsTimer_ = lastTime_;
@@ -84,21 +96,33 @@ void Game::run()
         }
     }
 
-    SDL_Log("Game stopped.\n");
+    SDL_Log("Game stopped.\n\n");
 }
 
 void Game::quit()
 {
+    if (!initialized_) return;
+
     SDL_Log("Quitting game...\n");
     isRunning_ = false;
 
-    assets_.clear();
-    renderer_.destroy();
-    window_.destroy();
+    if (assets_) assets_->clear();
+    if (renderer_) renderer_->destroy();
+    if (window_) window_->destroy();
+    
+    assets_.reset();
+    input_.reset();
+    renderer_.reset();
+    window_.reset();
+
+    SDL_Log("Resources cleaned up.\n");
 
     TTF_Quit();
     MIX_Quit();
+    SDL_Log("Quitting SDL...");
     SDL_Quit();
+    
+    initialized_ = false;
 }
 
 void Game::pollEvents()
@@ -114,11 +138,11 @@ void Game::pollEvents()
         }
     }
 
-    if (input_.isKeyPressed(SDL_SCANCODE_ESCAPE))
+    if (input_->isKeyPressed(SDL_SCANCODE_ESCAPE))
     {
         eventQueue_.push({GameEventType::Quit});
     }
-    if (input_.isKeyPressed(SDL_SCANCODE_V))
+    if (input_->isKeyPressed(SDL_SCANCODE_V))
     {
         eventQueue_.push({GameEventType::ToggleVSync});
     }
@@ -133,7 +157,7 @@ void Game::processEvents()
         switch (event.type)
         {
             case GameEventType::ToggleVSync:
-                renderer_.toggleVSync();
+                renderer_->toggleVSync();
                 break;
 
             case GameEventType::Quit:
@@ -147,14 +171,14 @@ void Game::processEvents()
 
 void Game::update(float dt)
 {
-    input_.update();
+    input_->update();
 }
 
 void Game::render()
 {
-    renderer_.clear(Colors::White);
+    renderer_->clear(Colors::White);
 
-    renderer_.drawText(*assets_.getFont("fpsCounter"), "FPS: " + std::to_string(currentFPS_), 10.0f, 10.0f, Colors::Black);
+    renderer_->drawText(*assets_->getFont("fpsCounter"), "FPS: " + std::to_string(currentFPS_), 10.0f, 10.0f, Colors::Black);
 
-    renderer_.present();
+    renderer_->present();
 }

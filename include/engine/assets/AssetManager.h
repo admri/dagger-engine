@@ -15,7 +15,6 @@ class AssetManager
 public:
     AssetManager(Renderer& renderer) : textures_(renderer), fonts_(), sounds_() {}
     AssetManager(const AssetManager&) = delete;
-    ~AssetManager() { clear(); }
 
     bool initAudio();
 

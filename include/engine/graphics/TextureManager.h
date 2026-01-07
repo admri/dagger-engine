@@ -14,7 +14,6 @@ class TextureManager
 {
 public:
     TextureManager(Renderer& renderer) : renderer_(renderer) {};
-    ~TextureManager() { clear(); }
 
     Texture* loadTexture(const std::string& id, const std::string& path, bool predecode = true);
     Texture* getTexture(const std::string& id) const;

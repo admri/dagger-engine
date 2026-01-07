@@ -13,7 +13,6 @@ class FontManager
 {
 public:
     FontManager() = default;
-    ~FontManager() { clear(); }
 
     Font* loadFont(const std::string& id, const std::string& path, int fontSize);
     Font* getFont(const std::string& id) const;
