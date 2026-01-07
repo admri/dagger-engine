@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 3.16)
+
 file(GLOB PROJECT_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp
 )
@@ -23,6 +25,14 @@ add_custom_command(TARGET DungeonCrawler POST_BUILD
         ${CMAKE_SOURCE_DIR}/assets
         $<TARGET_FILE_DIR:DungeonCrawler>/assets
 )
+
+if (USE_PREBUILT_VENDOR)
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+            "${VENDOR_ROOT}/bin"
+            "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
+    )
+endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
     WIN32_EXECUTABLE $<$<CONFIG:Release>:YES>
