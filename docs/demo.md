@@ -33,7 +33,7 @@ Nejdříve si projekt naklonujte:
 
 ```bash
 git clone https://gitlab.mff.cuni.cz/teaching/nprg041/2025-26/skoda/rihaada1.git
-cd rihaada1\\project
+cd rihaada1/project
 ```
 
 Poté vyberte jeden ze dvou možných způsobů spuštění.
@@ -42,7 +42,7 @@ Poté vyberte jeden ze dvou možných způsobů spuštění.
 
 Pro účely technologického dema byl vedle způsobu standardního spuštění přidán způsob rychlého spuštění, který využívá předem zkompilovaných knihoven SDL, a není je tedy potřeba zdlouhavě stahovat z GitHubu a následně samostatně kompilovat.
 
-Demo skript sestaví projekt s nastaveným parametrem použití předem zkompilovaných binárních souborů, které pak CMake překopíruje do složky `build\Release` vedle spustitelného souboru `DungeonCrawler`.
+Demo skript sestaví projekt s nastaveným parametrem použití předem zkompilovaných binárních souborů. Ty pak CMake překopíruje do složky `build/Release` vedle spustitelného souboru `DungeonCrawler`.
 
 Skript následně sám program spustí.
 
@@ -86,7 +86,7 @@ K sestavení SDL na Linuxu jsou ve většině případů zapotřebí další zá
 Na Ubuntu, co jsem sám osobně zkoušel, stačilo nainstalovat tyto balíčky:
 
 ```bash
-sudo apt install lix11-dev libxext-dev libxrandr-dev libxcursor-dev \
+sudo apt install libx11-dev libxext-dev libxrandr-dev libxcursor-dev \
 libxi-dev libxss-dev libxtst-dev libaudio-dev libasound2-dev
 ```
 
@@ -105,8 +105,8 @@ nebo
 
 ## Demo
 
-Po spuštění programu by se mělo zobrazit bílé okno vykreslující text s aktuálními snímky za sekundu.
+- Po spuštění programu by se mělo zobrazit bílé okno vykreslující text s aktuálními snímky za sekundu.
 
-V konzoli (pouze pro Debug build a program spuštěný přes konzoli) by se měly objevit informace o inicializaci jednotlivých knihoven (*SDL_image* inicializaci nevyžaduje).
+- V konzoli (pouze pro Debug build a program spuštěný přes konzoli) by se měly objevit informace o inicializaci jednotlivých knihoven (*SDL_image* inicializaci nevyžaduje).
 
-Při neúspěšné inicializaci jakékoliv z knihoven by se okno vytvořit nemělo a program se ukončí.
+- Při neúspěšné inicializaci jakékoliv z knihoven by se okno vytvořit nemělo a program se ukončí.
