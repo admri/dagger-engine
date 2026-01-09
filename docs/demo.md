@@ -1,5 +1,7 @@
 # Technologické demo
 
+Tento dokument poskytuje základní informace o tom, jak nainstalovat a spustit technologické demo zápočtového programu *Dungeon Crawler* pro předmět *Programování v C++*.
+
 ## Požadavky
 
 ### **Windows:**
@@ -10,7 +12,7 @@
 
 - [**Visual Studio**](https://visualstudio.microsoft.com/) (nebo jiný kompilátor)
 
-### **Ubuntu (Linux):**
+### **Linux:**
 
 - **git**
 
@@ -18,12 +20,23 @@
 
 - **Build tools**
 
+Instalace:
+
 ```bash
 sudo apt update
 sudo apt install git cmake build-essential
 ```
 
 ## Instalace a spuštění
+
+Nejdříve si projekt naklonujte:
+
+```bash
+git clone https://gitlab.mff.cuni.cz/teaching/nprg041/2025-26/skoda/rihaada1.git
+cd rihaada1\\project
+```
+
+Poté vyberte jeden ze dvou možných způsobů spuštění.
 
 ### Prebuilt libraries (rychlé spuštění)
 
@@ -36,7 +49,6 @@ Skript následně sám program spustí.
 #### Windows:
 
 ```bat
-cd project
 .\scripts\demo.bat
 ```
 
@@ -45,7 +57,6 @@ cd project
 Binární soubory byly sestaveny na *Ubuntu 25.04 x86_64*.
 
 ```bash
-cd project
 ./scripts/demo.sh
 ```
 
@@ -58,15 +69,13 @@ Oba skripty nejdříve stáhnou z GitHubu všechny submoduly (tedy zdrojový kó
 #### Windows:
 
 ```bat
-cd project
 .\scripts\build-release.bat
-.\build\Release\DungeonCrawler
+.\build\Release\DungeonCrawler.exe
 ```
 
 nebo
 
 ```bat
-cd project
 .\scripts\run-debug.bat
 ```
 
@@ -74,7 +83,7 @@ cd project
 
 K sestavení SDL na Linuxu jsou ve většině případů zapotřebí další závislosti (viz [zde](https://github.com/libsdl-org/SDL/blob/main/docs/README-linux.md#build-dependencies)).
 
-Na Ubuntu, co jsem zkoušel, stačilo nainstalovat tyto balíčky:
+Na Ubuntu, co jsem sám osobně zkoušel, stačilo nainstalovat tyto balíčky:
 
 ```bash
 sudo apt install lix11-dev libxext-dev libxrandr-dev libxcursor-dev \
@@ -84,7 +93,6 @@ libxi-dev libxss-dev libxtst-dev libaudio-dev libasound2-dev
 Poté spusťte skript:
 
 ```bash
-cd project
 ./scripts/build-release.sh
 ./build/Release/DungeonCrawler
 ```
@@ -92,6 +100,13 @@ cd project
 nebo
 
 ```bash
-cd project
 ./scripts/run-debug.sh
 ```
+
+## Demo
+
+Po spuštění programu by se mělo zobrazit bílé okno vykreslující text s aktuálními snímky za sekundu.
+
+V konzoli (pouze pro Debug build a program spuštěný přes konzoli) by se měly objevit informace o inicializaci jednotlivých knihoven (*SDL_image* inicializaci nevyžaduje).
+
+Při neúspěšné inicializaci jakékoliv z knihoven by se okno vytvořit nemělo a program se ukončí.
