@@ -23,7 +23,7 @@ if not exist build (
 )
 
 echo Configuring CMake for Release build...
-cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+cmake -S . -B build
 if errorlevel 1 (
     echo ERROR: CMake configuration failed!
     pause

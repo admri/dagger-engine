@@ -15,7 +15,7 @@ if not exist build (
 )
 
 echo Configuring CMake for Demo build...
-cmake -S . -B build -DUSE_PREBUILT_EXTERNAL=ON -DCMAKE_BUILD_TYPE=Release
+cmake -S . -B build -DUSE_PREBUILT_EXTERNAL=ON
 if errorlevel 1 (
     echo ERROR: CMake configuration failed!
     pause
@@ -34,7 +34,7 @@ echo.
 echo Build succeeded! Running the program...
 echo.
 
-cd .\build\Debug
+cd .\build\Release
 .\DungeonCrawler.exe
 
 pause
