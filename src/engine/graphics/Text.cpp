@@ -54,7 +54,7 @@ bool Text::rebuild(Renderer &renderer)
     }
     if (!dirty_)
     {
-        return false;
+        return true;
     }
 
     SDL_Surface* surface = TTF_RenderText_Blended(
