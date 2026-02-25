@@ -6,11 +6,16 @@
 struct Color : SDL_Color
 {
     Color(Uint8 r, Uint8 g, Uint8 b, Uint8 a = 255)
+        : SDL_Color{ r, g, b, a }
     {
-        this->r = r;
-        this->g = g;
-        this->b = b;
-        this->a = a;
+    }
+
+    bool operator==(Color other) const
+    {
+        return this->r == other.r
+            && this->g == other.g
+            && this->b == other.b
+            && this->a == other.a;
     }
 };
 

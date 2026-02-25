@@ -6,30 +6,43 @@
 #include <SDL3/SDL_surface.h>
 #include <SDL3_image/SDL_image.h>
 
-bool Texture::loadFromFile(Renderer& renderer, const std::string& path)
+bool Texture::createFromSurface(const Renderer& renderer, SDL_Surface& surface)
+{
+    sdlTexture_.reset();
+
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer.getSDLRenderer(), &surface);
+    if (!texture)
+    {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,
+                     "Failed to create texture from surface: %s\n",
+                     SDL_GetError());
+        return false;
+    }
+
+    sdlTexture_.reset(texture);
+    SDL_GetTextureSize(sdlTexture_.get(), &width_, &height_);
+
+    return true;
+}
+
+bool Texture::loadFromFile(const Renderer& renderer, const std::string& path)
 {
     sdlTexture_.reset();
 
     SDL_Surface* surface = IMG_Load(path.c_str());
     if (!surface)
     {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to load image %s: %s\n", path.c_str(), SDL_GetError());
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,
+                     "Failed to load image %s: %s\n",
+                     path.c_str(),
+                     SDL_GetError());
         return false;
     }
-
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer.getSDLRenderer(), surface);
+    
+    bool result = createFromSurface(renderer, *surface);
     SDL_DestroySurface(surface);
 
-    if (!texture)
-    {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to create texture from surface for %s: %s\n", path.c_str(), SDL_GetError());
-        return false;
-    }
-
-    sdlTexture_.reset(texture);
-    SDL_GetTextureSize(sdlTexture_.get(), &width_, &height_);
-    
-    return true;
+    return result;
 }
 
 void Texture::destroy()

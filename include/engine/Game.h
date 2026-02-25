@@ -5,6 +5,7 @@
 #include <core/GameEvent.h>
 #include <core/Window.h>
 #include <graphics/Renderer.h>
+#include <graphics/Text.h>
 #include <input/Input.h>
 
 #include <SDL3/SDL_video.h>
@@ -34,6 +35,7 @@ private:
     int frameCount_ = 0;
     int currentFPS_ = 0;
     Uint64 fpsTimer_ = 0;
+    Text fpsDisplay_;
 
     std::optional<Window> window_;
     std::optional<Renderer> renderer_;

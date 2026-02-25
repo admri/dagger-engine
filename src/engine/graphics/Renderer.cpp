@@ -67,37 +67,6 @@ void Renderer::drawTexture(const Texture& texture, const SDL_FRect* srcRect, con
     }
 }
 
-void Renderer::drawText(const Font& font, const std::string& text, float x, float y, const Color& color)
-{
-    SDL_Surface* textSurface = TTF_RenderText_Blended(font.get(), text.c_str(), text.length(), color);
-
-    if (!textSurface)
-    {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to create text surface: %s", SDL_GetError());
-        return;
-    }
-
-    float textWidth = static_cast<float>(textSurface->w);
-    float textHeight = static_cast<float>(textSurface->h);
-
-    SDL_Texture* textTexture = SDL_CreateTextureFromSurface(sdlRenderer_.get(), textSurface);
-    SDL_DestroySurface(textSurface);
-
-    if (!textTexture)
-    {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to create text texture: %s", SDL_GetError());
-        return;
-    }
-
-    SDL_FRect dstRect = { x, y, textWidth, textHeight };
-    if (!SDL_RenderTexture(sdlRenderer_.get(), textTexture, nullptr, &dstRect))
-    {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to render text texture: %s", SDL_GetError());
-    }
-
-    SDL_DestroyTexture(textTexture);
-}
-
 void Renderer::toggleVSync()
 {
     if (!sdlRenderer_)

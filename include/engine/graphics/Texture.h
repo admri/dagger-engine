@@ -22,7 +22,8 @@ struct SDLTextureDeleter
 class Texture
 {
 public:
-    bool loadFromFile(Renderer& renderer, const std::string& path);
+    bool createFromSurface(const Renderer& renderer, SDL_Surface& surface);
+    bool loadFromFile(const Renderer& renderer, const std::string& path);
     void destroy();
 
     void render(Renderer& renderer, float x, float y, const SDL_FRect* srcRect = nullptr, const SDL_FRect* dstRect = nullptr) const;
