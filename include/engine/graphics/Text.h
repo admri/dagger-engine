@@ -6,9 +6,6 @@
 #include <graphics/Renderer.h>
 #include <graphics/Texture.h>
 
-#include <SDL3/SDL_rect.h>
-#include <SDL3/SDL_render.h>
-
 class Text
 {
 public:

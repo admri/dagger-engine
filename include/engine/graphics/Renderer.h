@@ -1,7 +1,6 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
-#include <assets/Font.h>
 #include <core/Window.h>
 #include <graphics/Color.h>
 #include <graphics/Texture.h>
@@ -31,7 +30,6 @@ public:
     void present();
 
     void drawTexture(const Texture& texture, const SDL_FRect* srcRect, const SDL_FRect* dstRect);
-    void drawText(const Font& font, const std::string& text, float x, float y, const Color& color);
 
     void toggleVSync();
 
