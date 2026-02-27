@@ -1,17 +1,14 @@
 #ifndef FONT_H
 #define FONT_H
 
-#include <SDL3_ttf/SDL_ttf.h>
-
 #include <memory>
 #include <string>
 
+struct TTF_Font;
+
 struct TTFFontDeleter
 {
-    void operator()(TTF_Font* font) const
-    {
-        if (font) TTF_CloseFont(font);
-    }
+    void operator()(TTF_Font* font) const;
 };
 
 class Font

@@ -1,7 +1,7 @@
 #ifndef FONT_MANAGER_H
 #define FONT_MANAGER_H
 
-#include "Font.h"
+#include <assets/Font.h>
 
 #include <SDL3_ttf/SDL_ttf.h>
 

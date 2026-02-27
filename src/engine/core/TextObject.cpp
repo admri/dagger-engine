@@ -3,6 +3,9 @@
 #include <assets/Font.h>
 #include <graphics/Renderer.h>
 
+#include <SDL3/SDL_error.h>
+#include <SDL3_ttf/SDL_ttf.h>
+
 TextObject::TextObject()
     : font_(nullptr)
     , color_(Colors::Black)

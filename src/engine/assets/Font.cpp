@@ -2,6 +2,12 @@
 
 #include <SDL3/SDL_error.h>
 #include <SDL3/SDL_log.h>
+#include <SDL3_ttf/SDL_ttf.h>
+
+void TTFFontDeleter::operator()(TTF_Font* font) const
+{
+    if (font) TTF_CloseFont(font);
+}
 
 bool Font::loadFromFile(const std::string &path, int fontSize)
 {

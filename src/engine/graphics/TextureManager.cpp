@@ -1,5 +1,7 @@
 #include <graphics/TextureManager.h>
 
+#include <graphics/Renderer.h>
+
 #include <SDL3/SDL_error.h>
 #include <SDL3/SDL_log.h>
 
