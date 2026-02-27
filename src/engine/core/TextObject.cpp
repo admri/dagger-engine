@@ -1,30 +1,28 @@
-#include <graphics/Text.h>
+#include <core/TextObject.h>
 
-Text::Text()
+#include <assets/Font.h>
+#include <graphics/Renderer.h>
+
+TextObject::TextObject()
     : font_(nullptr)
-    , text_()
     , color_(Colors::Black)
-    , dirty_(true)
 {
 }
 
-Text::Text(Font& font,
-           const std::string& text,
-           Color color)
+TextObject::TextObject(Font& font, const std::string& text, Color color)
     : font_(&font)
     , text_(text)
     , color_(color)
-    , dirty_(true)
 {
 }
 
-void Text::setFont(Font &font)
+void TextObject::setFont(Font& font)
 {
     font_ = &font;
     dirty_ = true;
 }
 
-void Text::setContent(const std::string &text)
+void TextObject::setText(const std::string& text)
 {
     if (text_ == text)
     {
@@ -35,7 +33,7 @@ void Text::setContent(const std::string &text)
     dirty_ = true;
 }
 
-void Text::setColor(Color color)
+void TextObject::setColor(Color color)
 {
     if (color_ == color)
     {
@@ -46,16 +44,20 @@ void Text::setColor(Color color)
     dirty_ = true;
 }
 
-bool Text::rebuild(Renderer &renderer)
+void TextObject::render(Renderer& renderer)
 {
-    if (!font_)
+    if (dirty_ && !rebuildTexture(renderer))
     {
-        return false;
+        return;
     }
-    if (!dirty_)
-    {
-        return true;
-    }
+
+    renderer.drawTexture(cachedTexture_, x_, y_);
+}
+
+bool TextObject::rebuildTexture(Renderer& renderer)
+{
+    if (!font_) return false;
+    if (!dirty_) return true;
 
     SDL_Surface* surface = TTF_RenderText_Blended(
         font_->get(),
@@ -69,7 +71,7 @@ bool Text::rebuild(Renderer &renderer)
         return false;
     }
 
-    bool result = texture_.createFromSurface(renderer, *surface);
+    bool result = cachedTexture_.createFromSurface(renderer, *surface);
     SDL_DestroySurface(surface);
 
     if (result)
@@ -78,24 +80,4 @@ bool Text::rebuild(Renderer &renderer)
     }
 
     return result;
-}
-
-void Text::render(Renderer &renderer, int x, int y)
-{
-    if (dirty_)
-    {
-        rebuild(renderer);
-    }
-
-    texture_.render(renderer, x, y);
-}
-
-float Text::getWidth() const
-{
-    return texture_.getWidth();
-}
-
-float Text::getHeight() const
-{
-    return texture_.getHeight();
 }

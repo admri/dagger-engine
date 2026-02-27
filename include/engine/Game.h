@@ -3,9 +3,9 @@
 
 #include <assets/AssetManager.h>
 #include <core/GameEvent.h>
+#include <core/TextObject.h>
 #include <core/Window.h>
 #include <graphics/Renderer.h>
-#include <graphics/Text.h>
 #include <input/Input.h>
 
 #include <SDL3/SDL_video.h>
@@ -17,8 +17,8 @@
 class Game
 {
 public:
-    Game() :
-        isRunning_(false) {}
+    Game()
+        : isRunning_(false) {}
     ~Game();
 
     bool init(const std::string& title, int width, int height, SDL_WindowFlags flags = SDL_WINDOW_RESIZABLE);
@@ -35,7 +35,7 @@ private:
     int frameCount_ = 0;
     int currentFPS_ = 0;
     Uint64 fpsTimer_ = 0;
-    Text fpsDisplay_;
+    TextObject fpsDisplay_;
 
     std::optional<Window> window_;
     std::optional<Renderer> renderer_;

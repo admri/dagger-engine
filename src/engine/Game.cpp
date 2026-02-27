@@ -63,7 +63,8 @@ bool Game::init(const std::string &title, int width, int height, SDL_WindowFlags
 
     assets_->loadFont("fpsCounter", "assets/fonts/RobotoMono-Regular.ttf", 16);
     fpsDisplay_.setFont(*assets_->getFont("fpsCounter"));
-    fpsDisplay_.setColor(Colors::Blue);
+    fpsDisplay_.setColor(Colors::Black);
+    fpsDisplay_.setPosition(10.0f, 10.0f);
 
     initialized_ = true;
     SDL_Log("Game initialized successfully.\n\n");
@@ -180,8 +181,8 @@ void Game::render()
 {
     renderer_->clear(Colors::White);
 
-    fpsDisplay_.setContent("FPS: " + std::to_string(currentFPS_));
-    fpsDisplay_.render(*renderer_, 10.0f, 10.0f);
+    fpsDisplay_.setText("FPS: " + std::to_string(currentFPS_));
+    fpsDisplay_.render(*renderer_);
 
     renderer_->present();
 }

@@ -1,10 +1,17 @@
 #include <graphics/Texture.h>
 
+#include <graphics/Renderer.h>
+
 #include <SDL3/SDL_error.h>
 #include <SDL3/SDL_log.h>
 #include <SDL3/SDL_rect.h>
 #include <SDL3/SDL_surface.h>
 #include <SDL3_image/SDL_image.h>
+
+void SDLTextureDeleter::operator()(SDL_Texture *texture) const
+{
+    if (texture) SDL_DestroyTexture(texture);
+}
 
 bool Texture::createFromSurface(const Renderer& renderer, SDL_Surface& surface)
 {
@@ -53,22 +60,4 @@ void Texture::destroy()
     }
 
     sdlTexture_.reset();
-}
-
-void Texture::render(Renderer& renderer, float x, float y, const SDL_FRect* srcRect, const SDL_FRect* dstRect) const
-{
-    SDL_FRect dst;
-    if (dstRect)
-    {
-        dst = *dstRect;
-    }
-    else
-    {
-        dst.x = x;
-        dst.y = y;
-        dst.w = width_;
-        dst.h = height_;
-    }
-
-    renderer.drawTexture(*this, srcRect, &dst);
 }

@@ -1,7 +1,17 @@
 #include <graphics/Renderer.h>
 
+#include <core/Window.h>
+#include <graphics/Texture.h>
+
 #include <SDL3/SDL_error.h>
 #include <SDL3/SDL_log.h>
+#include <SDL3/SDL_pixels.h>
+#include <SDL3/SDL_render.h>
+
+void SDLRendererDeleter::operator()(SDL_Renderer *renderer) const
+{
+    if (renderer) SDL_DestroyRenderer(renderer);
+}
 
 bool Renderer::create(const Window& window)
 {
@@ -33,7 +43,7 @@ void Renderer::destroy()
     sdlRenderer_.reset();
 }
 
-void Renderer::clear(const Color& clearColor)
+void Renderer::clear(Color clearColor)
 {
     if (!sdlRenderer_)
     {
@@ -54,14 +64,21 @@ void Renderer::present()
     SDL_RenderPresent(sdlRenderer_.get());
 }
 
-void Renderer::drawTexture(const Texture& texture, const SDL_FRect* srcRect, const SDL_FRect* dstRect)
+void Renderer::drawTexture(const Texture& texture, float x, float y, const SDL_FRect* srcRect)
 {
     if (!sdlRenderer_ || !texture.getSDLTexture())
     {
         return;
     }
 
-    if (!SDL_RenderTexture(sdlRenderer_.get(), texture.getSDLTexture(), srcRect, dstRect))
+    SDL_FRect dstRect = {
+        x, 
+        y, 
+        (srcRect ? srcRect->w : texture.getWidth()),
+        (srcRect ? srcRect->h : texture.getHeight())
+    };
+
+    if (!SDL_RenderTexture(sdlRenderer_.get(), texture.getSDLTexture(), srcRect, &dstRect))
     {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to render texture: %s", SDL_GetError());
     }
