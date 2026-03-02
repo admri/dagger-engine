@@ -61,6 +61,13 @@ bool TextObject::rebuildTexture(Renderer& renderer, AssetManager& assets)
 {
     if (!dirty_) return true;
 
+    if (text_.empty()) 
+    {
+        cachedTexture_.destroy();
+        dirty_ = false;
+        return true;
+    }
+
     Font* font = assets.resolveFont(fontHandle_);
     if (!font) return false;
 

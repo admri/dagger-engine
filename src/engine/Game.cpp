@@ -8,6 +8,8 @@
 #include <SDL3_mixer/SDL_mixer.h>
 #include <SDL3_ttf/SDL_ttf.h>
 
+#include <algorithm>
+
 Game::~Game()
 {
     quit();
@@ -61,13 +63,19 @@ bool Game::init(const std::string &title, int width, int height, SDL_WindowFlags
         return false;
     }
 
-    assets_->loadFont("fpsCounter", "assets/fonts/RobotoMono-Regular.ttf", 16);
+    // Create FPS display
+    auto fpsDisplay = std::make_unique<TextObject>();
+    fpsDisplay_ = fpsDisplay.get();
 
-    FontHandle fpsCounterFontHandle = assets_->getFontHandle("fpsCounter");
+    assets_->loadFont("fpsDisplay", "assets/fonts/RobotoMono-Regular.ttf", 16);
+    FontHandle fpsFontHandle = assets_->getFontHandle("fpsDisplay");
 
-    fpsDisplay_.setFont(fpsCounterFontHandle);
-    fpsDisplay_.setColor(Colors::Black);
-    fpsDisplay_.setPosition(10.0f, 10.0f);
+    fpsDisplay_->setFont(fpsFontHandle);
+    fpsDisplay_->setColor(Colors::Black);
+    fpsDisplay_->setPosition(10.0f, 10.0f);
+    fpsDisplay_->setText("FPS: 0");
+
+    gameObjects_.push_back(std::move(fpsDisplay));
 
     initialized_ = true;
     SDL_Log("Game initialized successfully.\n\n");
@@ -99,6 +107,11 @@ void Game::run()
             currentFPS_ = frameCount_;
             frameCount_ = 0;
             fpsTimer_ = currentTime;
+
+            if (fpsDisplay_)
+            {
+                fpsDisplay_->setText("FPS: " + std::to_string(currentFPS_));
+            }
         }
     }
 
@@ -178,14 +191,36 @@ void Game::processEvents()
 void Game::update(float dt)
 {
     input_->update();
+
+    for (auto& obj : gameObjects_)
+    {
+        if (obj->isActive())
+        {
+            obj->update(dt);
+        }
+    }
+
+    // Erase inactive game objects
+    gameObjects_.erase(
+        std::remove_if(
+            gameObjects_.begin(),
+            gameObjects_.end(),
+            [](auto& obj) { return !obj->isActive(); }),
+        gameObjects_.end()
+    );
 }
 
 void Game::render()
 {
     renderer_->clear(Colors::White);
 
-    fpsDisplay_.setText("FPS: " + std::to_string(currentFPS_));
-    fpsDisplay_.render(*renderer_, *assets_);
+    for (auto& obj : gameObjects_)
+    {
+        if (obj->isActive())
+        {
+            obj->render(*renderer_, *assets_);
+        }
+    }
 
     renderer_->present();
 }
