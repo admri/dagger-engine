@@ -1,27 +1,27 @@
 #include <core/TextObject.h>
 
-#include <assets/Font.h>
+#include <assets/AssetManager.h>
 #include <graphics/Renderer.h>
 
 #include <SDL3/SDL_error.h>
 #include <SDL3_ttf/SDL_ttf.h>
 
 TextObject::TextObject()
-    : font_(nullptr)
+    : fontHandle_()
     , color_(Colors::Black)
 {
 }
 
-TextObject::TextObject(Font& font, const std::string& text, Color color)
-    : font_(&font)
+TextObject::TextObject(FontHandle handle, const std::string& text, Color color)
+    : fontHandle_(handle)
     , text_(text)
     , color_(color)
 {
 }
 
-void TextObject::setFont(Font& font)
+void TextObject::setFont(FontHandle handle)
 {
-    font_ = &font;
+    fontHandle_ = handle;
     dirty_ = true;
 }
 
@@ -47,9 +47,9 @@ void TextObject::setColor(Color color)
     dirty_ = true;
 }
 
-void TextObject::render(Renderer& renderer)
+void TextObject::render(Renderer& renderer, AssetManager& assets)
 {
-    if (dirty_ && !rebuildTexture(renderer))
+    if (dirty_ && !rebuildTexture(renderer, assets))
     {
         return;
     }
@@ -57,13 +57,15 @@ void TextObject::render(Renderer& renderer)
     renderer.drawTexture(cachedTexture_, x_, y_);
 }
 
-bool TextObject::rebuildTexture(Renderer& renderer)
+bool TextObject::rebuildTexture(Renderer& renderer, AssetManager& assets)
 {
-    if (!font_) return false;
     if (!dirty_) return true;
 
+    Font* font = assets.resolveFont(fontHandle_);
+    if (!font) return false;
+
     SDL_Surface* surface = TTF_RenderText_Blended(
-        font_->get(),
+        font->get(),
         text_.c_str(),
         text_.length(),
         color_

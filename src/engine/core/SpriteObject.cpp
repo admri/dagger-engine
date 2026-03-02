@@ -1,16 +1,17 @@
 #include <core/SpriteObject.h>
 
+#include <assets/AssetManager.h>
 #include <graphics/Renderer.h>
 #include <graphics/Texture.h>
 
-SpriteObject::SpriteObject(Texture* texture)
-    : texture_(texture)
+SpriteObject::SpriteObject(TextureHandle handle)
+    : textureHandle_(handle)
 {
 }
 
-void SpriteObject::setTexture(Texture* texture)
+void SpriteObject::setTexture(TextureHandle handle)
 {
-    texture_ = texture;
+    textureHandle_ = handle;
 }
 
 void SpriteObject::setSourceRect(const SDL_FRect& srcRect)
@@ -24,14 +25,12 @@ void SpriteObject::clearSourceRect()
     hasSourceRect_ = false;
 }
 
-void SpriteObject::render(Renderer& renderer)
+void SpriteObject::render(Renderer& renderer, AssetManager& assets)
 {
-    if (!texture_)
-    {
-        return;
-    }
+    Texture* texture = assets.resolveTexture(textureHandle_);
+    if (!texture) return;
 
     const SDL_FRect* srcPtr = hasSourceRect_ ? &sourceRect_ : nullptr;
 
-    renderer.drawTexture(*texture_, x_, y_, srcPtr);
+    renderer.drawTexture(*texture, x_, y_, srcPtr);
 }

@@ -1,26 +1,28 @@
 #ifndef SPRITE_OBJECT_H
 #define SPRITE_OBJECT_H
 
+#include <assets/ResourceHandle.h>
 #include <core/GameObject.h>
 
 #include <SDL3/SDL_rect.h>
 
 class Texture;
 class Renderer;
+class AssetManager;
 
 class SpriteObject : public GameObject
 {
 public:
-    explicit SpriteObject(Texture* texture);
+    explicit SpriteObject(TextureHandle handle);
 
-    void setTexture(Texture* texture);
+    void setTexture(TextureHandle handle);
     void setSourceRect(const SDL_FRect& srcRect);
     void clearSourceRect();
 
-    void render(Renderer& renderer) override;
+    void render(Renderer& renderer, AssetManager& assets) override;
 
 protected:
-    Texture* texture_ = nullptr;
+    TextureHandle textureHandle_;
     SDL_FRect sourceRect_{};
     bool hasSourceRect_ = false;
 };

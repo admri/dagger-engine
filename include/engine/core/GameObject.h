@@ -2,6 +2,7 @@
 #define GAME_OBJECT_H
 
 class Renderer;
+class AssetManager;
 
 class GameObject
 {
@@ -9,7 +10,7 @@ public:
     virtual ~GameObject() = default;
 
     virtual void update(float dt) { }
-    virtual void render(Renderer& renderer) = 0;
+    virtual void render(Renderer& renderer, AssetManager& assets) = 0;
 
     void setPosition(float x, float y) { x_ = x; y_ = y; }
     float getX() const { return x_; }

@@ -8,15 +8,14 @@ bool AssetManager::initAudio()
     return sounds_.init();
 }
 
-Texture* AssetManager::loadTexture(const std::string& id, const std::string& path)
+TextureHandle AssetManager::loadTexture(const std::string& id, const std::string& path)
 {
-    textures_.loadTexture(id, path);
-    return getTexture(id);
+    return textures_.loadTexture(id, path);
 }
 
-Texture* AssetManager::getTexture(const std::string& id) const
+TextureHandle AssetManager::getTextureHandle(const std::string& id) const
 {
-    return textures_.getTexture(id);
+    return textures_.getHandle(id);
 }
 
 void AssetManager::unloadTexture(const std::string& id)
@@ -24,15 +23,19 @@ void AssetManager::unloadTexture(const std::string& id)
     textures_.unloadTexture(id);
 }
 
-Font* AssetManager::loadFont(const std::string& id, const std::string& path, int fontSize)
+Texture* AssetManager::resolveTexture(TextureHandle handle)
 {
-    fonts_.loadFont(id, path, fontSize);
-    return getFont(id);
+    return textures_.resolve(handle);
 }
 
-Font* AssetManager::getFont(const std::string& id) const
+FontHandle AssetManager::loadFont(const std::string& id, const std::string& path, int fontSize)
 {
-    return fonts_.getFont(id);
+    return fonts_.loadFont(id, path, fontSize);
+}
+
+FontHandle AssetManager::getFontHandle(const std::string& id) const
+{
+    return fonts_.getHandle(id);
 }
 
 void AssetManager::unloadFont(const std::string& id)
@@ -40,20 +43,29 @@ void AssetManager::unloadFont(const std::string& id)
     fonts_.unloadFont(id);
 }
 
-Sound* AssetManager::loadSound(const std::string& id, const std::string& path)
+Font* AssetManager::resolveFont(FontHandle handle)
 {
-    sounds_.loadSound(id, path);
-    return getSound(id);
+    return fonts_.resolve(handle);
 }
 
-Sound* AssetManager::getSound(const std::string& id) const
+SoundHandle AssetManager::loadSound(const std::string& id, const std::string& path)
 {
-    return sounds_.getSound(id);
+    return sounds_.loadSound(id, path);
+}
+
+SoundHandle AssetManager::getSoundHandle(const std::string& id) const
+{
+    return sounds_.getHandle(id);
 }
 
 void AssetManager::unloadSound(const std::string& id)
 {
     sounds_.unloadSound(id);
+}
+
+Sound* AssetManager::resolveSound(FontHandle handle)
+{
+    return sounds_.resolve(handle);
 }
 
 void AssetManager::clear()

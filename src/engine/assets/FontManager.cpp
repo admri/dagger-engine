@@ -3,43 +3,106 @@
 #include <SDL3/SDL_error.h>
 #include <SDL3/SDL_log.h>
 
-Font* FontManager::loadFont(const std::string& id, const std::string& path, int fontSize)
+FontHandle FontManager::loadFont(const std::string& id, const std::string& path, int fontSize)
 {
-    auto it = fonts_.find(id);
-    if (it != fonts_.end())
+    auto it = nameToHandle_.find(id);
+    if (it != nameToHandle_.end())
     {
-        return it->second.get();
+        return it->second;
     }
 
-    auto font = std::make_unique<Font>();
-    if (!font->loadFromFile(path, fontSize))
+    for (size_t i = 0; i < slots_.size(); ++i)
     {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to load font %s from %s\n", id.c_str(), path.c_str());
-        return nullptr;
+        if (!slots_[i].active)
+        {
+            if (!slots_[i].font.loadFromFile(path, fontSize))
+            {
+                SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,
+                            "Failed to load font %s from %s\n",
+                            id.c_str(),
+                            path.c_str());
+                return FontHandle{};
+            }
+
+            slots_[i].active = true;
+            slots_[i].generation++;
+
+            FontHandle handle = { static_cast<uint32_t>(i), slots_[i].generation };
+            nameToHandle_[id] = handle;
+            return handle;
+        }
     }
 
-    Font* fontPtr = font.get();
-    fonts_[id] = std::move(font);
+    Slot newSlot;
+    if (!newSlot.font.loadFromFile(path, fontSize))
+    {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,
+                    "Failed to load font %s from %s\n",
+                    id.c_str(),
+                    path.c_str());
+        return FontHandle{};
+    }
 
-    return fontPtr;
+    newSlot.active = true;
+    newSlot.generation = 1;
+
+    slots_.push_back(std::move(newSlot));
+
+    uint32_t newIndex = static_cast<uint32_t>(slots_.size() - 1);
+    FontHandle handle = { newIndex, 1 };
+
+    nameToHandle_[id] = handle;
+    return handle;
 }
 
-Font* FontManager::getFont(const std::string& id) const
+FontHandle FontManager::getHandle(const std::string& id) const
 {
-    auto it = fonts_.find(id);
-    if (it != fonts_.end())
+    auto it = nameToHandle_.find(id);
+    if (it != nameToHandle_.end())
     {
-        return it->second.get();
+        return it->second;
     }
-    return nullptr;
+    return FontHandle{};
 }
 
 void FontManager::unloadFont(const std::string& id)
 {
-    fonts_.erase(id);
+    auto it = nameToHandle_.find(id);
+    if (it == nameToHandle_.end()) return;
+
+    FontHandle handle = it->second;
+
+    if (handle.isValid() && handle.index < slots_.size())
+    {
+        Slot& slot = slots_[handle.index];
+
+        if (slot.active && slot.generation == handle.generation)
+        {
+            slot.active = false;
+        }
+    }
+
+    nameToHandle_.erase(id);
 }
 
 void FontManager::clear()
 {
-    fonts_.clear();
+    slots_.clear();
+}
+
+Font* FontManager::resolve(FontHandle handle)
+{
+    if (!handle.isValid() || handle.index >= slots_.size())
+    {
+        return nullptr;
+    }
+
+    Slot& slot = slots_[handle.index];
+
+    if (slot.active && slot.generation == handle.generation)
+    {
+        return &slot.font;
+    }
+
+    return nullptr;
 }

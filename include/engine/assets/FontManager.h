@@ -2,26 +2,37 @@
 #define FONT_MANAGER_H
 
 #include <assets/Font.h>
+#include <assets/ResourceHandle.h>
 
 #include <SDL3_ttf/SDL_ttf.h>
 
 #include <memory>
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 class FontManager
 {
 public:
     FontManager() = default;
 
-    Font* loadFont(const std::string& id, const std::string& path, int fontSize);
-    Font* getFont(const std::string& id) const;
+    FontHandle loadFont(const std::string& id, const std::string& path, int fontSize);
+    FontHandle getHandle(const std::string& id) const;
     void unloadFont(const std::string& id);
-
     void clear();
 
+    Font* resolve(FontHandle handle);
+
 private:
-    std::unordered_map<std::string, std::unique_ptr<Font>> fonts_;
+    struct Slot
+    {
+        Font font;
+        uint32_t generation = 0;
+        bool active = false;
+    };
+
+    std::vector<Slot> slots_;
+    std::unordered_map<std::string, FontHandle> nameToHandle_;
 };
 
 #endif // FONT_MANAGER_H
