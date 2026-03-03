@@ -71,7 +71,7 @@ bool TextObject::rebuildTexture(Renderer& renderer, AssetManager& assets)
         return true;
     }
 
-    Font* font = assets.resolveFont(fontHandle_);
+    Font* font = assets.resolve<Font>(fontHandle_);
     if (!font) return false;
 
     SDL_Surface* surface = TTF_RenderText_Blended(

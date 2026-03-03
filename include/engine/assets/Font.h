@@ -17,8 +17,9 @@ struct TTFFontDeleter
 class Font
 {
 public:
-    bool loadFromFile(const std::string& path, int fontSize);
+    bool load(const std::string& path, int fontSize);
     TTF_Font* get() const { return ttfFont_.get(); }
+    void destroy();
 
 private:
     std::unique_ptr<TTF_Font, TTFFontDeleter> ttfFont_;

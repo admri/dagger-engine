@@ -10,8 +10,8 @@ namespace engine
 
 void DebugScene::init(AssetManager& assets)
 {
-    assets.loadFont("fpsDisplay", "assets/fonts/RobotoMono-Regular.ttf", 16);
-    FontHandle fpsFontHandle = assets.getFontHandle("fpsDisplay");
+    assets.load<Font>("fpsDisplay", "assets/fonts/RobotoMono-Regular.ttf", 16);
+    FontHandle fpsFontHandle = assets.get<Font>("fpsDisplay");
 
     auto fpsDisplay = std::make_unique<TextObject>();
     fpsDisplay->setFont(fpsFontHandle);

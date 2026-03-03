@@ -35,7 +35,7 @@ bool Texture::createFromSurface(const Renderer& renderer, SDL_Surface& surface)
     return true;
 }
 
-bool Texture::loadFromFile(const Renderer& renderer, const std::string& path)
+bool Texture::load(const Renderer& renderer, const std::string& path)
 {
     sdlTexture_.reset();
 
@@ -57,10 +57,7 @@ bool Texture::loadFromFile(const Renderer& renderer, const std::string& path)
 
 void Texture::destroy()
 {
-    if (!sdlTexture_)
-    {
-        return;
-    }
+    if (!sdlTexture_) return;
 
     sdlTexture_.reset();
 }

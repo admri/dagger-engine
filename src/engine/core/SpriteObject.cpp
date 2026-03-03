@@ -30,7 +30,7 @@ void SpriteObject::clearSourceRect()
 
 void SpriteObject::render(Renderer& renderer, AssetManager& assets)
 {
-    Texture* texture = assets.resolveTexture(textureHandle_);
+    Texture* texture = assets.resolve<Texture>(textureHandle_);
     if (!texture) return;
 
     const SDL_FRect* srcPtr = hasSourceRect_ ? &sourceRect_ : nullptr;

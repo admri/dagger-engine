@@ -21,7 +21,7 @@ class Texture
 {
 public:
     bool createFromSurface(const Renderer& renderer, SDL_Surface& surface);
-    bool loadFromFile(const Renderer& renderer, const std::string& path);
+    bool load(const Renderer& renderer, const std::string& path);
     void destroy();
 
     SDL_Texture* getSDLTexture() const { return sdlTexture_.get(); }

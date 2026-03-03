@@ -1,12 +1,17 @@
-#ifndef RESOURCE_HANDLE_H
-#define RESOURCE_HANDLE_H
+#ifndef HANDLE_H
+#define HANDLE_H
 
 #include <cstdint>
 
 namespace engine
 {
 
-struct ResourceHandle
+class Texture;
+class Font;
+class Sound;
+
+template <typename T>
+struct Handle
 {
     uint32_t index = 0xFFFFFFFF;
     uint32_t generation = 0;
@@ -14,10 +19,10 @@ struct ResourceHandle
     bool isValid() const { return index != 0xFFFFFFFF; }
 };
 
-using TextureHandle = ResourceHandle;
-using FontHandle = ResourceHandle;
-using SoundHandle = ResourceHandle;
+using TextureHandle = Handle<Texture>;
+using FontHandle = Handle<Font>;
+using SoundHandle = Handle<Sound>;
 
 } // namespace engine
 
-#endif // RESOURCE_HANDLE_H
+#endif // HANDLE_H

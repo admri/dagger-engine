@@ -48,13 +48,8 @@ bool Game::init(const std::string &title, int width, int height, SDL_WindowFlags
     window_.emplace();
     renderer_.emplace();
     input_.emplace();
-    assets_.emplace(*renderer_);
-
-    if (!assets_->initAudio())
-    {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to initialize audio manager.\n");
-        return false;
-    }
+    audioSystem_.emplace();
+    assets_.emplace(*renderer_, *audioSystem_);
     
     if (!window_->create(title, width, height, flags))
     {
@@ -65,6 +60,12 @@ bool Game::init(const std::string &title, int width, int height, SDL_WindowFlags
     if (!renderer_->create(*window_))
     {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to create renderer.\n");
+        return false;
+    }
+
+    if (!audioSystem_->init())
+    {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to initialize audio system.\n");
         return false;
     }
 
@@ -113,6 +114,7 @@ void Game::quit()
     if (window_) window_->destroy();
     
     assets_.reset();
+    audioSystem_.reset();
     input_.reset();
     renderer_.reset();
     window_.reset();

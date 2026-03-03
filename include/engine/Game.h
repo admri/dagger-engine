@@ -2,6 +2,7 @@
 #define GAME_H
 
 #include <assets/AssetManager.h>
+#include <audio/AudioSystem.h>
 #include <core/DebugScene.h>
 #include <core/GameEvent.h>
 #include <core/Scene.h>
@@ -45,6 +46,7 @@ private:
     std::optional<Window> window_;
     std::optional<Renderer> renderer_;
     std::optional<Input> input_;
+    std::optional<AudioSystem> audioSystem_;
     std::optional<AssetManager> assets_;
 
     std::queue<GameEvent> eventQueue_;

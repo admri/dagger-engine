@@ -1,53 +1,127 @@
 #ifndef ASSET_MANAGER_H
 #define ASSET_MANAGER_H
 
-#include <assets/FontManager.h>
+#include <assets/Font.h>
 #include <assets/ResourceHandle.h>
-#include <assets/SoundManager.h>
-#include <assets/TextureManager.h>
-#include <graphics/Renderer.h>
+#include <assets/ResourceManager.h>
+#include <assets/ResourceTraits.h>
+#include <audio/AudioSystem.h>
+#include <audio/Sound.h>
+#include <graphics/Texture.h>
 
 #include <memory>
 #include <string>
-#include <unordered_map>
+#include <utility>
 
 namespace engine
 {
 
-class Texture;
-class Font;
-class Sound;
+class Renderer;
+class AudioSystem;
 
 class AssetManager
 {
 public:
-    AssetManager(Renderer& renderer) : textures_(renderer), fonts_(), sounds_() {}
+    AssetManager(Renderer& renderer, AudioSystem& audio)
+        : renderer_(renderer)
+        , audio_(audio)
+    { }
     AssetManager(const AssetManager&) = delete;
+    AssetManager& operator=(const AssetManager&) = delete;
 
-    bool initAudio();
+    template <typename T, typename... Args>
+    auto load(const std::string& id, Args&&... args)
+    {
+        auto& manager = getManager<T>();
+        if (manager.has(id)) return manager.getHandle(id);
 
-    TextureHandle loadTexture(const std::string& id, const std::string& path);
-    TextureHandle getTextureHandle(const std::string& id) const;
-    void unloadTexture(const std::string& id);
-    Texture* resolveTexture(TextureHandle handle);
+        T newRes;
+        bool success = false;
 
-    FontHandle loadFont(const std::string& id, const std::string& path, int fontSize);
-    FontHandle getFontHandle(const std::string& id) const;
-    void unloadFont(const std::string& id);
-    Font* resolveFont(FontHandle handle);
+        if constexpr (ResourceTraits<T>::needsRenderer && ResourceTraits<T>::needsMixer)
+        {
+            success = newRes.load(renderer_, audio_.getMixer(), std::forward<Args>(args)...);
+        }
+        else if constexpr (ResourceTraits<T>::needsRenderer)
+        {
+            success = newRes.load(renderer_, std::forward<Args>(args)...);
+        }
+        else if constexpr (ResourceTraits<T>::needsMixer)
+        {
+            success = newRes.load(audio_.getMixer(), std::forward<Args>(args)...);
+        }
+        else
+        {
+            success = newRes.load(std::forward<Args>(args)...);
+        }
 
-    SoundHandle loadSound(const std::string& id, const std::string& path);
-    SoundHandle getSoundHandle(const std::string& id) const;
-    void unloadSound(const std::string& id);
-    Sound* resolveSound(SoundHandle handle);
+        if (!success)
+        {
+            return decltype(manager.getHandle(id)){};
+        }
 
-    void clear();
+        return manager.add(id, std::move(newRes));
+    }
+
+    template <typename T, typename... Args>
+    void replace(const std::string& id, Args&&... args)
+    {
+        auto& manager = getManager<T>();
+        if (!manager.has(id)) return;
+
+        T newRes;
+        if constexpr (ResourceTraits<T>::needsRenderer &&
+                      ResourceTraits<T>::needsMixer)
+        {
+            if (!newRes.load(renderer_, audio_.getMixer(), std::forward<Args>(args)...)) return;
+        }
+        else if constexpr (ResourceTraits<T>::needsRenderer)
+        {
+            if (!newRes.load(renderer_, std::forward<Args>(args)...)) return;
+        }
+        else if constexpr (ResourceTraits<T>::needsMixer)
+        {
+            if (!newRes.load(audio_.getMixer(), std::forward<Args>(args)...)) return;
+        }
+        else
+        {
+            if (!newRes.load(std::forward<Args>(args)...)) return;
+        }
+
+        manager.replace(id, std::move(newRes));
+    }
+
+    template <typename T>
+    auto get(const std::string& id) { return getManager<T>().getHandle(id); }
+
+    template <typename T, typename HandleType>
+    T* resolve(HandleType handle) { return getManager<T>().resolve(handle); }
+
+    template <typename T, typename HandleType>
+    void release(HandleType handle) { getManager<T>().release(handle); }
+
+    void clear()
+    {
+        textures_.clear();
+        fonts_.clear();
+        sounds_.clear();
+    }
 
 private:
-    TextureManager textures_;
-    FontManager fonts_;
-    SoundManager sounds_;
+    Renderer& renderer_;
+    AudioSystem& audio_;
+
+    ResourceManager<Texture, TextureHandle> textures_;
+    ResourceManager<Font, FontHandle> fonts_;
+    ResourceManager<Sound, SoundHandle> sounds_;
+
+    template <typename T>
+    auto& getManager();
 };
+
+template <> inline auto& AssetManager::getManager<Texture>() { return textures_; }
+template <> inline auto& AssetManager::getManager<Font>() { return fonts_; }
+template <> inline auto& AssetManager::getManager<Sound>() { return sounds_; }
 
 } // namespace engine
 

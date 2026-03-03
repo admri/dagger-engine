@@ -20,8 +20,9 @@ struct MIXAudioDeleter
 class Sound
 {
 public:
-    bool loadFromFile(MIX_Mixer* mixer, const std::string& path, bool predecode = true);
+    bool load(MIX_Mixer* mixer, const std::string& path, bool predecode = true);
     MIX_Audio* get() const { return audio_.get(); }
+    void destroy();
 
 private:
     std::unique_ptr<MIX_Audio, MIXAudioDeleter> audio_;
