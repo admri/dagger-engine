@@ -3,8 +3,7 @@
 
 #include <assets/AssetManager.h>
 #include <core/GameEvent.h>
-#include <core/GameObject.h>
-#include <core/TextObject.h>
+#include <core/Scene.h>
 #include <core/Window.h>
 #include <graphics/Renderer.h>
 #include <input/Input.h>
@@ -15,6 +14,8 @@
 #include <optional>
 #include <queue>
 #include <vector>
+
+class TextObject;
 
 class Game
 {
@@ -43,8 +44,8 @@ private:
     std::optional<AssetManager> assets_;
 
     std::queue<GameEvent> eventQueue_;
-    std::vector<std::unique_ptr<GameObject>> gameObjects_;
-    TextObject* fpsDisplay_;
+    std::unique_ptr<Scene> currentScene_;
+    TextObject* fpsDisplay_ = nullptr;
 
     void pollEvents();
     void processEvents();

@@ -1,5 +1,7 @@
 #include <Game.h>
 
+#include <core/TextObject.h>
+
 #include <SDL3/SDL_error.h>
 #include <SDL3/SDL_events.h>
 #include <SDL3/SDL_init.h>
@@ -63,19 +65,20 @@ bool Game::init(const std::string &title, int width, int height, SDL_WindowFlags
         return false;
     }
 
-    // Create FPS display
-    auto fpsDisplay = std::make_unique<TextObject>();
-    fpsDisplay_ = fpsDisplay.get();
+    // Create scene with FPS display
+    currentScene_ = std::make_unique<Scene>();
 
     assets_->loadFont("fpsDisplay", "assets/fonts/RobotoMono-Regular.ttf", 16);
     FontHandle fpsFontHandle = assets_->getFontHandle("fpsDisplay");
 
-    fpsDisplay_->setFont(fpsFontHandle);
-    fpsDisplay_->setColor(Colors::Black);
-    fpsDisplay_->setPosition(10.0f, 10.0f);
-    fpsDisplay_->setText("FPS: 0");
+    auto fpsDisplay = std::make_unique<TextObject>();
+    fpsDisplay->setFont(fpsFontHandle);
+    fpsDisplay->setColor(Colors::Black);
+    fpsDisplay->setPosition(10.0f, 10.0f);
+    fpsDisplay->setText("FPS: 0");
 
-    gameObjects_.push_back(std::move(fpsDisplay));
+    fpsDisplay_ = fpsDisplay.get();
+    currentScene_->addGameObject(std::move(fpsDisplay));
 
     initialized_ = true;
     SDL_Log("Game initialized successfully.\n\n");
@@ -192,34 +195,19 @@ void Game::update(float dt)
 {
     input_->update();
 
-    for (auto& obj : gameObjects_)
+    if (currentScene_)
     {
-        if (obj->isActive())
-        {
-            obj->update(dt);
-        }
+        currentScene_->update(dt);
     }
-
-    // Erase inactive game objects
-    gameObjects_.erase(
-        std::remove_if(
-            gameObjects_.begin(),
-            gameObjects_.end(),
-            [](auto& obj) { return !obj->isActive(); }),
-        gameObjects_.end()
-    );
 }
 
 void Game::render()
 {
     renderer_->clear(Colors::White);
 
-    for (auto& obj : gameObjects_)
+    if (currentScene_)
     {
-        if (obj->isActive())
-        {
-            obj->render(*renderer_, *assets_);
-        }
+        currentScene_->render(*renderer_, *assets_);
     }
 
     renderer_->present();
