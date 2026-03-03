@@ -2,6 +2,7 @@
 #define GAME_H
 
 #include <assets/AssetManager.h>
+#include <core/DebugScene.h>
 #include <core/GameEvent.h>
 #include <core/Scene.h>
 #include <core/Window.h>
@@ -32,6 +33,7 @@ private:
     bool initialized_ = false;
     bool isRunning_;
 
+    Uint64 currentTime_ = 0;
     Uint64 lastTime_ = 0;
     double deltaTime_ = 0.0;
     int frameCount_ = 0;
@@ -44,13 +46,16 @@ private:
     std::optional<AssetManager> assets_;
 
     std::queue<GameEvent> eventQueue_;
+
     std::unique_ptr<Scene> currentScene_;
-    TextObject* fpsDisplay_ = nullptr;
+    std::unique_ptr<DebugScene> debugScene_;
 
     void pollEvents();
     void processEvents();
     void update(float dt);
     void render();
+
+    void updateFPS();
 };
 
 #endif // GAME_H

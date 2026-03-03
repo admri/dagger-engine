@@ -67,18 +67,8 @@ bool Game::init(const std::string &title, int width, int height, SDL_WindowFlags
 
     // Create scene with FPS display
     currentScene_ = std::make_unique<Scene>();
-
-    assets_->loadFont("fpsDisplay", "assets/fonts/RobotoMono-Regular.ttf", 16);
-    FontHandle fpsFontHandle = assets_->getFontHandle("fpsDisplay");
-
-    auto fpsDisplay = std::make_unique<TextObject>();
-    fpsDisplay->setFont(fpsFontHandle);
-    fpsDisplay->setColor(Colors::Black);
-    fpsDisplay->setPosition(10.0f, 10.0f);
-    fpsDisplay->setText("FPS: 0");
-
-    fpsDisplay_ = fpsDisplay.get();
-    currentScene_->addGameObject(std::move(fpsDisplay));
+    debugScene_ = std::make_unique<DebugScene>();
+    debugScene_->init(*assets_);
 
     initialized_ = true;
     SDL_Log("Game initialized successfully.\n\n");
@@ -95,27 +85,14 @@ void Game::run()
 
     while (isRunning_)
     {
-        Uint64 currentTime = SDL_GetPerformanceCounter();
-        deltaTime_ = (double)(currentTime - lastTime_) / SDL_GetPerformanceFrequency();
-        lastTime_ = currentTime;
+        currentTime_ = SDL_GetPerformanceCounter();
+        deltaTime_ = (double)(currentTime_ - lastTime_) / SDL_GetPerformanceFrequency();
+        lastTime_ = currentTime_;
 
         pollEvents();
         processEvents();
         update(deltaTime_);
         render();
-
-        frameCount_++;
-        if ((currentTime - fpsTimer_) >= SDL_GetPerformanceFrequency())
-        {
-            currentFPS_ = frameCount_;
-            frameCount_ = 0;
-            fpsTimer_ = currentTime;
-
-            if (fpsDisplay_)
-            {
-                fpsDisplay_->setText("FPS: " + std::to_string(currentFPS_));
-            }
-        }
     }
 
     SDL_Log("Game stopped.\n\n");
@@ -195,20 +172,31 @@ void Game::update(float dt)
 {
     input_->update();
 
-    if (currentScene_)
-    {
-        currentScene_->update(dt);
-    }
+    if (currentScene_) currentScene_->update(dt);
+    if (debugScene_) debugScene_->update(dt);
+
+    updateFPS();
 }
 
 void Game::render()
 {
     renderer_->clear(Colors::White);
 
-    if (currentScene_)
-    {
-        currentScene_->render(*renderer_, *assets_);
-    }
+    if (currentScene_) currentScene_->render(*renderer_, *assets_);
+    if (debugScene_) debugScene_->render(*renderer_, *assets_);
 
     renderer_->present();
+}
+
+void Game::updateFPS()
+{
+    if ((currentTime_ - fpsTimer_) >= SDL_GetPerformanceFrequency())
+    {
+        currentFPS_ = frameCount_;
+        frameCount_ = 0;
+        fpsTimer_ = currentTime_;
+        
+        if (debugScene_) debugScene_->updateFPS(currentFPS_);
+    }
+    frameCount_++;
 }
