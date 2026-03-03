@@ -6,6 +6,9 @@
 #include <memory>
 #include <string>
 
+namespace engine
+{
+
 struct SDLWindowDeleter
 {
     void operator()(SDL_Window* window) const
@@ -27,5 +30,7 @@ public:
 private:
     std::unique_ptr<SDL_Window, SDLWindowDeleter> sdlWindow_;
 };
+
+} // namespace engine
 
 #endif // WINDOW_H

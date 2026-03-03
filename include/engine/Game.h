@@ -14,7 +14,9 @@
 #include <memory>
 #include <optional>
 #include <queue>
-#include <vector>
+
+namespace engine
+{
 
 class TextObject;
 
@@ -57,5 +59,7 @@ private:
 
     void updateFPS();
 };
+
+} // namespace engine
 
 #endif // GAME_H

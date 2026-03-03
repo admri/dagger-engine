@@ -3,6 +3,9 @@
 #include <SDL3/SDL_error.h>
 #include <SDL3/SDL_log.h>
 
+namespace engine
+{
+
 bool Window::create(const std::string& title, int width, int height, SDL_WindowFlags flags)
 {
     SDL_Window* window = SDL_CreateWindow(title.c_str(), width, height, flags);
@@ -35,3 +38,5 @@ void Window::setTitle(const std::string &title)
 
     SDL_SetWindowTitle(sdlWindow_.get(), title.c_str());
 }
+
+} // namespace engine

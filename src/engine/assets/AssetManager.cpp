@@ -3,6 +3,9 @@
 #include <SDL3/SDL_error.h>
 #include <SDL3/SDL_log.h>
 
+namespace engine
+{
+
 bool AssetManager::initAudio()
 {
     return sounds_.init();
@@ -74,3 +77,5 @@ void AssetManager::clear()
     fonts_.clear();
     sounds_.clear();
 }
+
+} // namespace engine

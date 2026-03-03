@@ -3,6 +3,9 @@
 #include <SDL3/SDL_error.h>
 #include <SDL3/SDL_log.h>
 
+namespace engine
+{
+
 SoundManager::~SoundManager()
 {
     slots_.clear();
@@ -136,3 +139,5 @@ Sound* SoundManager::resolve(SoundHandle handle)
 
     return nullptr;
 }
+
+} // namespace engine

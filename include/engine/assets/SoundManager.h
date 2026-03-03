@@ -11,6 +11,9 @@
 #include <unordered_map>
 #include <vector>
 
+namespace engine
+{
+
 class SoundManager
 {
 public:
@@ -39,5 +42,7 @@ private:
     std::vector<Slot> slots_;
     std::unordered_map<std::string, SoundHandle> nameToHandle_;
 };
+
+} // namespace engine
 
 #endif // SOUND_MANAGER_H

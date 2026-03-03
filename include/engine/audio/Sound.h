@@ -6,6 +6,9 @@
 #include <memory>
 #include <string>
 
+namespace engine
+{
+
 struct MIXAudioDeleter
 {
     void operator()(MIX_Audio* audio) const
@@ -23,5 +26,7 @@ public:
 private:
     std::unique_ptr<MIX_Audio, MIXAudioDeleter> audio_;
 };
+
+} // namespace engine
 
 #endif // SOUND_H

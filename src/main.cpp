@@ -6,7 +6,7 @@
 
 int main(int argc, char** argv)
 {
-    Game game;
+    engine::Game game;
 
     if (!game.init("Dungeon Crawler", 800, 600))
     {

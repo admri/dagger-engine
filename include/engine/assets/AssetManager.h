@@ -11,6 +11,9 @@
 #include <string>
 #include <unordered_map>
 
+namespace engine
+{
+
 class Texture;
 class Font;
 class Sound;
@@ -45,5 +48,7 @@ private:
     FontManager fonts_;
     SoundManager sounds_;
 };
+
+} // namespace engine
 
 #endif // ASSET_MANAGER_H

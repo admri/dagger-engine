@@ -6,6 +6,9 @@
 #include <memory>
 #include <vector>
 
+namespace engine
+{
+
 class Renderer;
 class AssetManager;
 
@@ -24,5 +27,7 @@ public:
 protected:
     std::vector<std::unique_ptr<GameObject>> gameObjects_;
 };
+
+} // namespace engine
 
 #endif // SCENE_H

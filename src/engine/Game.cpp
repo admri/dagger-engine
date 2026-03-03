@@ -12,6 +12,9 @@
 
 #include <algorithm>
 
+namespace engine
+{
+
 Game::~Game()
 {
     quit();
@@ -200,3 +203,5 @@ void Game::updateFPS()
     }
     frameCount_++;
 }
+
+} // namespace engine

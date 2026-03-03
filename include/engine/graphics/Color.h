@@ -3,6 +3,9 @@
 
 #include <SDL3/SDL_pixels.h>
 
+namespace engine
+{
+
 struct Color : SDL_Color
 {
     Color(Uint8 r, Uint8 g, Uint8 b, Uint8 a = 255)
@@ -27,5 +30,7 @@ namespace Colors
     inline Color Green{  0, 255,   0};
     inline Color Blue {  0,   0, 255};
 }
+
+} // namespace engine
 
 #endif // COLOR_H

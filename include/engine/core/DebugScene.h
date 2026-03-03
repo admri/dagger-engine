@@ -3,6 +3,9 @@
 
 #include <core/Scene.h>
 
+namespace engine
+{
+
 class AssetManager;
 class TextObject;
 
@@ -16,5 +19,7 @@ public:
 private:
     TextObject* fpsDisplay_ = nullptr;
 };
+
+} // namespace engine
 
 #endif // DEBUG_SCENE_H

@@ -8,6 +8,9 @@
 #include <SDL3/SDL_pixels.h>
 #include <SDL3/SDL_render.h>
 
+namespace engine
+{
+
 void SDLRendererDeleter::operator()(SDL_Renderer *renderer) const
 {
     if (renderer) SDL_DestroyRenderer(renderer);
@@ -96,3 +99,5 @@ void Renderer::toggleVSync()
     
     SDL_SetRenderVSync(sdlRenderer_.get(), vsync ? SDL_RENDERER_VSYNC_DISABLED : 1);
 }
+
+} // namespace engine

@@ -3,6 +3,9 @@
 #include <assets/AssetManager.h>
 #include <graphics/Renderer.h>
 
+namespace engine
+{
+
 void Scene::update(float dt)
 {
     for (auto& obj : gameObjects_)
@@ -38,3 +41,5 @@ void Scene::addGameObject(std::unique_ptr<GameObject> obj)
 {
     gameObjects_.push_back(std::move(obj));
 }
+
+} // namespace engine

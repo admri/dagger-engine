@@ -8,6 +8,9 @@
 struct SDL_Renderer;
 struct SDL_FRect;
 
+namespace engine
+{
+
 class Texture;
 class Window;
 
@@ -34,5 +37,7 @@ public:
 private:
     std::unique_ptr<SDL_Renderer, SDLRendererDeleter> sdlRenderer_;
 };
+
+} // namespace engine
 
 #endif // RENDERER_H

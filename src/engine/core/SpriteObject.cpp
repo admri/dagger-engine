@@ -4,6 +4,9 @@
 #include <graphics/Renderer.h>
 #include <graphics/Texture.h>
 
+namespace engine
+{
+
 SpriteObject::SpriteObject(TextureHandle handle)
     : textureHandle_(handle)
 {
@@ -34,3 +37,5 @@ void SpriteObject::render(Renderer& renderer, AssetManager& assets)
 
     renderer.drawTexture(*texture, x_, y_, srcPtr);
 }
+
+} // namespace engine

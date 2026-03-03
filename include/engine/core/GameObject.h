@@ -1,6 +1,9 @@
 #ifndef GAME_OBJECT_H
 #define GAME_OBJECT_H
 
+namespace engine
+{
+
 class Renderer;
 class AssetManager;
 
@@ -24,5 +27,7 @@ protected:
     float y_ = 0.0f;
     bool isActive_ = true;
 };
+
+} // namespace engine
 
 #endif // GAME_OBJECT_H

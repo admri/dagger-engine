@@ -11,6 +11,9 @@
 #include <unordered_map>
 #include <vector>
 
+namespace engine
+{
+
 class FontManager
 {
 public:
@@ -34,5 +37,7 @@ private:
     std::vector<Slot> slots_;
     std::unordered_map<std::string, FontHandle> nameToHandle_;
 };
+
+} // namespace engine
 
 #endif // FONT_MANAGER_H

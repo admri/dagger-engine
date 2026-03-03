@@ -6,6 +6,9 @@
 #include <SDL3/SDL_error.h>
 #include <SDL3_ttf/SDL_ttf.h>
 
+namespace engine
+{
+
 TextObject::TextObject()
     : fontHandle_()
     , color_(Colors::Black)
@@ -93,3 +96,5 @@ bool TextObject::rebuildTexture(Renderer& renderer, AssetManager& assets)
 
     return result;
 }
+
+} // namespace engine

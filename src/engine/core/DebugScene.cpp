@@ -5,6 +5,9 @@
 
 #include <string>
 
+namespace engine
+{
+
 void DebugScene::init(AssetManager& assets)
 {
     assets.loadFont("fpsDisplay", "assets/fonts/RobotoMono-Regular.ttf", 16);
@@ -27,3 +30,5 @@ void DebugScene::updateFPS(int currentFPS)
         fpsDisplay_->setText("FPS: " + std::to_string(currentFPS));
     }
 }
+
+} // namespace engine

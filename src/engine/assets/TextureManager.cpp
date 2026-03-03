@@ -5,6 +5,9 @@
 #include <SDL3/SDL_error.h>
 #include <SDL3/SDL_log.h>
 
+namespace engine
+{
+
 TextureHandle TextureManager::loadTexture(const std::string& id, const std::string& path, bool predecode)
 {
     // Check if texture already exists
@@ -113,3 +116,5 @@ Texture* TextureManager::resolve(TextureHandle handle)
 
     return nullptr;
 }
+
+} // namespace engine

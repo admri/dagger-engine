@@ -9,6 +9,9 @@
 #include <unordered_map>
 #include <vector>
 
+namespace engine
+{
+
 class Renderer;
 
 class TextureManager
@@ -35,5 +38,7 @@ private:
     std::vector<Slot> slots_;
     std::unordered_map<std::string, TextureHandle> nameToHandle_;
 };
+
+} // namespace engine
 
 #endif // TEXTURE_MANAGER_H

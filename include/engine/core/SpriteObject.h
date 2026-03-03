@@ -6,6 +6,9 @@
 
 #include <SDL3/SDL_rect.h>
 
+namespace engine
+{
+
 class Texture;
 class Renderer;
 class AssetManager;
@@ -26,5 +29,7 @@ protected:
     SDL_FRect sourceRect_{};
     bool hasSourceRect_ = false;
 };
+
+} // namespace engine
 
 #endif // SPRITE_OBJECT_H

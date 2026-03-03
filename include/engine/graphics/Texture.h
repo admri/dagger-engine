@@ -7,6 +7,9 @@
 struct SDL_Surface;
 struct SDL_Texture;
 
+namespace engine
+{
+
 class Renderer;
 
 struct SDLTextureDeleter
@@ -30,5 +33,7 @@ private:
     float width_ = 0.0f;
     float height_ = 0.0f;
 };
+
+} // namespace engine
 
 #endif // TEXTURE_H

@@ -8,6 +8,9 @@
 #include <SDL3/SDL_surface.h>
 #include <SDL3_image/SDL_image.h>
 
+namespace engine
+{
+
 void SDLTextureDeleter::operator()(SDL_Texture *texture) const
 {
     if (texture) SDL_DestroyTexture(texture);
@@ -61,3 +64,5 @@ void Texture::destroy()
 
     sdlTexture_.reset();
 }
+
+} // namespace engine

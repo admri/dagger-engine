@@ -6,6 +6,9 @@
 
 struct TTF_Font;
 
+namespace engine
+{
+
 struct TTFFontDeleter
 {
     void operator()(TTF_Font* font) const;
@@ -20,5 +23,7 @@ public:
 private:
     std::unique_ptr<TTF_Font, TTFFontDeleter> ttfFont_;
 };
+
+} // namespace engine
 
 #endif // FONT_H

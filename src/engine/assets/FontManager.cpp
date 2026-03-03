@@ -3,6 +3,9 @@
 #include <SDL3/SDL_error.h>
 #include <SDL3/SDL_log.h>
 
+namespace engine
+{
+
 FontHandle FontManager::loadFont(const std::string& id, const std::string& path, int fontSize)
 {
     auto it = nameToHandle_.find(id);
@@ -106,3 +109,5 @@ Font* FontManager::resolve(FontHandle handle)
 
     return nullptr;
 }
+
+} // namespace engine

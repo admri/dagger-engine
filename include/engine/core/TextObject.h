@@ -8,6 +8,9 @@
 
 #include <string>
 
+namespace engine
+{
+
 class Font;
 class Renderer;
 
@@ -32,5 +35,7 @@ private:
 
     bool rebuildTexture(Renderer& renderer, AssetManager& assets);
 };
+
+} // namespace engine
 
 #endif // TEXT_OBJECT_H

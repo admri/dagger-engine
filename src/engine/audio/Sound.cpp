@@ -3,6 +3,9 @@
 #include <SDL3/SDL_error.h>
 #include <SDL3/SDL_log.h>
 
+namespace engine
+{
+
 bool Sound::loadFromFile(MIX_Mixer* mixer, const std::string &path, bool predecode)
 {
     if (!mixer)
@@ -20,3 +23,5 @@ bool Sound::loadFromFile(MIX_Mixer* mixer, const std::string &path, bool predeco
 
     return true;
 }
+
+} // namespace engine
