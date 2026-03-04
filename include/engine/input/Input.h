@@ -5,6 +5,9 @@
 
 #include <array>
 
+namespace engine
+{
+
 class Input
 {
 public:
@@ -16,5 +19,7 @@ private:
     const bool* keyboardState_ = nullptr;
     std::array<bool, SDL_SCANCODE_COUNT> previousKeyboardState_ = {};
 };
+
+} // namespace engine
 
 #endif // INPUT_H

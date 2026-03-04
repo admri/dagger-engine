@@ -8,7 +8,7 @@ int main(int argc, char** argv)
 {
     Game game;
 
-    game.run({"Dungeon Crawler", 800, 600, SDL_WINDOW_RESIZABLE, true});
+    game.run({"Dungeon Crawler", 800, 600, SDL_WINDOW_RESIZABLE, true, true});
 
     return 0;
 }

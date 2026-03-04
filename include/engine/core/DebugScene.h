@@ -1,7 +1,7 @@
 #ifndef DEBUG_SCENE_H
 #define DEBUG_SCENE_H
 
-#include <core/Scene.h>
+#include <engine/core/Scene.h>
 
 namespace engine
 {

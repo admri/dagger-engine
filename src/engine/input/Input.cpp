@@ -4,6 +4,9 @@
 
 #include <algorithm>
 
+namespace engine
+{
+
 void Input::update()
 {
     if (keyboardState_)
@@ -33,3 +36,5 @@ bool Input::isKeyDown(SDL_Scancode key) const
 
     return keyboardState_[key];
 }
+
+} // namespace engine

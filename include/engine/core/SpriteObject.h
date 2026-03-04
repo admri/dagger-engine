@@ -1,8 +1,8 @@
 #ifndef SPRITE_OBJECT_H
 #define SPRITE_OBJECT_H
 
-#include <assets/ResourceHandle.h>
-#include <core/GameObject.h>
+#include <engine/assets/ResourceHandle.h>
+#include <engine/core/GameObject.h>
 
 #include <SDL3/SDL_rect.h>
 

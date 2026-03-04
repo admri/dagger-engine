@@ -1,7 +1,7 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
-#include <graphics/Color.h>
+#include <engine/graphics/Color.h>
 
 #include <memory>
 

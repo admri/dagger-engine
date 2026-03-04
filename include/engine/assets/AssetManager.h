@@ -1,13 +1,13 @@
 #ifndef ASSET_MANAGER_H
 #define ASSET_MANAGER_H
 
-#include <assets/Font.h>
-#include <assets/ResourceHandle.h>
-#include <assets/ResourceManager.h>
-#include <assets/ResourceTraits.h>
-#include <audio/AudioSystem.h>
-#include <audio/Sound.h>
-#include <graphics/Texture.h>
+#include <engine/assets/Font.h>
+#include <engine/assets/ResourceHandle.h>
+#include <engine/assets/ResourceManager.h>
+#include <engine/assets/ResourceTraits.h>
+#include <engine/audio/AudioSystem.h>
+#include <engine/audio/Sound.h>
+#include <engine/graphics/Texture.h>
 
 #include <memory>
 #include <string>

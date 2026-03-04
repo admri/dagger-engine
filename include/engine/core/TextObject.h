@@ -1,10 +1,10 @@
 #ifndef TEXT_OBJECT_H
 #define TEXT_OBJECT_H
 
-#include <assets/ResourceHandle.h>
-#include <core/GameObject.h>
-#include <graphics/Color.h>
-#include <graphics/Texture.h>
+#include <engine/assets/ResourceHandle.h>
+#include <engine/core/GameObject.h>
+#include <engine/graphics/Color.h>
+#include <engine/graphics/Texture.h>
 
 #include <string>
 

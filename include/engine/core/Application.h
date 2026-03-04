@@ -1,14 +1,14 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-#include <assets/AssetManager.h>
-#include <audio/AudioSystem.h>
-#include <core/DebugScene.h>
-#include <core/GameEvent.h>
-#include <core/Scene.h>
-#include <core/Window.h>
-#include <graphics/Renderer.h>
-#include <input/Input.h>
+#include <engine/assets/AssetManager.h>
+#include <engine/audio/AudioSystem.h>
+#include <engine/core/DebugScene.h>
+#include <engine/core/GameEvent.h>
+#include <engine/core/Scene.h>
+#include <engine/core/Window.h>
+#include <engine/graphics/Renderer.h>
+#include <engine/input/Input.h>
 
 #include <memory>
 #include <optional>
@@ -57,6 +57,8 @@ protected:
         nextScene_ = std::move(scene);
     }
 
+    std::queue<GameEvent> eventQueue_;
+
 private:
     bool initialized_ = false;
     bool sdlInit_ = false;
@@ -76,8 +78,6 @@ private:
     std::optional<Input> input_;
     std::optional<AudioSystem> audioSystem_;
     std::optional<AssetManager> assets_;
-
-    std::queue<GameEvent> eventQueue_;
 
     std::unique_ptr<Scene> currentScene_;
     std::unique_ptr<Scene> nextScene_;

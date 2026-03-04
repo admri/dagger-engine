@@ -1,13 +1,10 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include <core/Application.h>
+#include <engine/core/Application.h>
 
 class Game : public engine::Application
 {
-public:
-    ~Game() override;
-
 protected:
     bool onInit() override;
     void onUpdate(float dt) override;

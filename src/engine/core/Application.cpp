@@ -107,9 +107,9 @@ void Application::run(const AppConfig& config)
         lastTime_ = currentTime_;
 
         // Events
+        input_->update();
         pollEvents();
         processEvents();
-        input_->update();
 
         // Change scene
         if (nextScene_)
@@ -217,4 +217,4 @@ void Application::updateFPS()
     frameCount_++;
 }
 
-} // namespace engien
+} // namespace engine

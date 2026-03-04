@@ -1,18 +1,19 @@
 #include <game/Game.h>
 
+#include <engine/core/GameEvent.h>
 #include <engine/core/SpriteObject.h>
+#include <engine/input/Input.h>
 
-Game::~Game()
-{
-    quit();
-}
+#include <iostream>
+
+using namespace engine;
 
 bool Game::onInit()
 {
-    auto myScene = std::make_unique<engine::Scene>();
-    engine::TextureHandle texture = getAssets().load<engine::Texture>("player", "assets/player.png");
+    auto myScene = std::make_unique<Scene>();
+    TextureHandle texture = getAssets().load<Texture>("player", "assets/player.png");
     
-    auto player = std::make_unique<engine::SpriteObject>(texture);
+    auto player = std::make_unique<SpriteObject>(texture);
     player->setPosition(50.0f, 50.0f);
     
     myScene->addGameObject(std::move(player));
