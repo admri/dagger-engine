@@ -69,6 +69,8 @@ bool Application::init(const AppConfig& config)
         return false;
     }
 
+    input_->init();
+
     if (!audioSystem_->init())
     {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to initialize audio system.\n");

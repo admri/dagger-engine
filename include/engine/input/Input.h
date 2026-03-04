@@ -8,12 +8,15 @@
 namespace engine
 {
 
+enum class Key;
+
 class Input
 {
 public:
+    void init();
     void update();
-    bool isKeyPressed(SDL_Scancode key) const;
-    bool isKeyDown(SDL_Scancode key) const;
+    bool isKeyPressed(Key key) const;
+    bool isKeyDown(Key key) const;
 
 private:
     const bool* keyboardState_ = nullptr;

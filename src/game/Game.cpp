@@ -2,6 +2,7 @@
 
 #include <engine/core/GameEvent.h>
 #include <engine/core/SpriteObject.h>
+#include <engine/input/KeyCodes.h>
 #include <engine/input/Input.h>
 
 #include <iostream>
@@ -26,11 +27,11 @@ void Game::onUpdate(float dt)
 {
     Input& input = getInput();
 
-    if (input.isKeyPressed(SDL_SCANCODE_ESCAPE))
+    if (input.isKeyPressed(Key::Escape))
     {
         quit();
     }
-    if (input.isKeyPressed(SDL_SCANCODE_V))
+    if (input.isKeyPressed(Key::V))
     {
         getRenderer().toggleVSync();
     }
