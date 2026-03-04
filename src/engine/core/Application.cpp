@@ -1,6 +1,6 @@
-#include <Game.h>
+#include <core/Application.h>
 
-#include <core/TextObject.h>
+#include <core/SpriteObject.h>
 
 #include <SDL3/SDL_error.h>
 #include <SDL3/SDL_events.h>
@@ -10,39 +10,43 @@
 #include <SDL3_mixer/SDL_mixer.h>
 #include <SDL3_ttf/SDL_ttf.h>
 
-#include <algorithm>
-
 namespace engine
 {
 
-Game::~Game()
+Application::~Application()
 {
     quit();
 }
 
-bool Game::init(const std::string &title, int width, int height, SDL_WindowFlags flags)
+bool Application::init(const AppConfig& config)
 {
-    SDL_Log("Game initializing...");
+    SDL_Log("Application initializing...");
 
     if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS))
     {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to initialize SDL: %s\n", SDL_GetError());
+        quit();
         return false;
     }
+    sdlInit_ = true;
     SDL_Log("SDL initialized.");
 
     if (!TTF_Init())
     {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to initialize SDL_ttf: %s\n", SDL_GetError());
+        quit();
         return false;
     }
+    ttfInit_ = true;
     SDL_Log("SDL_TTF initialized.");
 
     if (!MIX_Init())
     {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to initialize SDL_mixer: %s\n", SDL_GetError());
+        quit();
         return false;
     }
+    mixInit_ = true;
     SDL_Log("SDL_Mixer initialized.");
 
     window_.emplace();
@@ -50,122 +54,149 @@ bool Game::init(const std::string &title, int width, int height, SDL_WindowFlags
     input_.emplace();
     audioSystem_.emplace();
     assets_.emplace(*renderer_, *audioSystem_);
-    
-    if (!window_->create(title, width, height, flags))
+
+    if (!window_->create(config.title, config.width, config.height, config.flags))
     {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to create window.\n");
+        quit();
         return false;
     }
 
     if (!renderer_->create(*window_))
     {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to create renderer.\n");
+        quit();
         return false;
     }
 
     if (!audioSystem_->init())
     {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to initialize audio system.\n");
+        quit();
         return false;
     }
 
-    // Create scene with FPS display
-    currentScene_ = std::make_unique<Scene>();
-    debugScene_ = std::make_unique<DebugScene>();
-    debugScene_->init(*assets_);
+    if (config.showFPS)
+    {
+        debugScene_ = std::make_unique<DebugScene>();
+        debugScene_->init(*assets_);
+    }
+
+    if (!config.vsync) renderer_->toggleVSync();
 
     initialized_ = true;
-    SDL_Log("Game initialized successfully.\n\n");
+
+    if (!onInit()) return false;
+
     return true;
 }
 
-void Game::run()
+void Application::run(const AppConfig& config)
 {
-    isRunning_ = true;
-    SDL_Log("Game running...\n");
+    if (!init(config)) return;
 
+    isRunning_ = true;
     lastTime_ = SDL_GetPerformanceCounter();
     fpsTimer_ = lastTime_;
 
     while (isRunning_)
     {
+        // Timing
         currentTime_ = SDL_GetPerformanceCounter();
         deltaTime_ = (double)(currentTime_ - lastTime_) / SDL_GetPerformanceFrequency();
         lastTime_ = currentTime_;
 
+        // Events
         pollEvents();
         processEvents();
-        update(deltaTime_);
-        render();
-    }
+        input_->update();
 
-    SDL_Log("Game stopped.\n\n");
+        // Change scene
+        if (nextScene_)
+        {
+            currentScene_ = std::move(nextScene_);
+            currentScene_->init(*assets_);
+        }
+
+        // Update
+        if (currentScene_) currentScene_->update(static_cast<float>(deltaTime_));
+        if (debugScene_) debugScene_->update(static_cast<float>(deltaTime_));
+        onUpdate(static_cast<float>(deltaTime_));
+
+        // Render
+        renderer_->clear(Colors::Black);
+        
+        if (currentScene_) currentScene_->render(*renderer_, *assets_);
+        if (debugScene_) debugScene_->render(*renderer_, *assets_);
+        onRender();
+
+        renderer_->present();
+        updateFPS();
+    }
 }
 
-void Game::quit()
+void Application::quit()
 {
-    if (!initialized_) return;
-
-    SDL_Log("Quitting game...\n");
     isRunning_ = false;
+    onShutdown();
 
     if (assets_) assets_->clear();
     if (renderer_) renderer_->destroy();
     if (window_) window_->destroy();
     
+    currentScene_.reset();
+    debugScene_.reset();
     assets_.reset();
     audioSystem_.reset();
     input_.reset();
     renderer_.reset();
     window_.reset();
 
-    SDL_Log("Resources cleaned up.\n");
-
-    TTF_Quit();
-    MIX_Quit();
-    SDL_Log("Quitting SDL...");
-    SDL_Quit();
+    if (mixInit_)
+    {
+        MIX_Quit();
+        mixInit_ = false;
+    }
+    if (ttfInit_)
+    {
+        TTF_Quit();
+        ttfInit_ = false;
+    }
+    if (sdlInit_)
+    {
+        SDL_Quit();
+        sdlInit_ = false;
+    }
     
     initialized_ = false;
 }
 
-void Game::pollEvents()
+void Application::pollEvents()
 {
     SDL_Event event;
     while (SDL_PollEvent(&event))
     {
-        switch (event.type)
+        if (event.type == SDL_EVENT_QUIT)
         {
-            case SDL_EVENT_QUIT:
-                eventQueue_.push({GameEventType::Quit});
-                break;
+            eventQueue_.push({GameEventType::Quit});
         }
-    }
-
-    if (input_->isKeyPressed(SDL_SCANCODE_ESCAPE))
-    {
-        eventQueue_.push({GameEventType::Quit});
-    }
-    if (input_->isKeyPressed(SDL_SCANCODE_V))
-    {
-        eventQueue_.push({GameEventType::ToggleVSync});
     }
 }
 
-void Game::processEvents()
+void Application::processEvents()
 {
     while (!eventQueue_.empty() && isRunning_)
     {
         const GameEvent& event = eventQueue_.front();
-
+        
         switch (event.type)
         {
-            case GameEventType::ToggleVSync:
-                renderer_->toggleVSync();
-                break;
-
             case GameEventType::Quit:
                 isRunning_ = false;
+                break;
+
+            default:
+                onEvent(event);
                 break;
         }
 
@@ -173,27 +204,7 @@ void Game::processEvents()
     }
 }
 
-void Game::update(float dt)
-{
-    input_->update();
-
-    if (currentScene_) currentScene_->update(dt);
-    if (debugScene_) debugScene_->update(dt);
-
-    updateFPS();
-}
-
-void Game::render()
-{
-    renderer_->clear(Colors::White);
-
-    if (currentScene_) currentScene_->render(*renderer_, *assets_);
-    if (debugScene_) debugScene_->render(*renderer_, *assets_);
-
-    renderer_->present();
-}
-
-void Game::updateFPS()
+void Application::updateFPS()
 {
     if ((currentTime_ - fpsTimer_) >= SDL_GetPerformanceFrequency())
     {
@@ -206,4 +217,4 @@ void Game::updateFPS()
     frameCount_++;
 }
 
-} // namespace engine
+} // namespace engien

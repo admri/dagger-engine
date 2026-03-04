@@ -15,7 +15,7 @@ void DebugScene::init(AssetManager& assets)
 
     auto fpsDisplay = std::make_unique<TextObject>();
     fpsDisplay->setFont(fpsFontHandle);
-    fpsDisplay->setColor(Colors::Black);
+    fpsDisplay->setColor(Colors::White);
     fpsDisplay->setPosition(10.0f, 10.0f);
     fpsDisplay->setText("FPS: 0");
 

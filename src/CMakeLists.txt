@@ -1,15 +1,17 @@
 cmake_minimum_required(VERSION 3.16)
 
-file(GLOB PROJECT_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp
+set(MAIN_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
+
+file(GLOB_RECURSE GAME_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/game/*.cpp
 )
 
-file(GLOB PROJECT_HEADERS
-    ${CMAKE_CURRENT_SOURCE_DIR}/*.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/*.hpp
+file(GLOB_RECURSE GAME_HEADERS
+    ${CMAKE_CURRENT_SOURCE_DIR}/../include/game/*.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/../include/game/*.hpp
 )
 
-add_executable(${PROJECT_NAME} ${PROJECT_SOURCES} ${PROJECT_HEADERS})
+add_executable(${PROJECT_NAME} ${MAIN_SOURCE} ${GAME_SOURCES} ${GAME_HEADERS})
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
     engine

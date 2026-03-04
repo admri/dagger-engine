@@ -1,4 +1,4 @@
-#include <engine/Game.h>
+#include <game/Game.h>
 
 #include <SDL3/SDL_main.h>
 
@@ -6,15 +6,9 @@
 
 int main(int argc, char** argv)
 {
-    engine::Game game;
+    Game game;
 
-    if (!game.init("Dungeon Crawler", 800, 600))
-    {
-        std::cerr << "Failed to initialize the game." << std::endl;
-        return -1;
-    }
-
-    game.run();
+    game.run({"Dungeon Crawler", 800, 600, SDL_WINDOW_RESIZABLE, true});
 
     return 0;
 }
