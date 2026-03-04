@@ -1,0 +1,43 @@
+#ifndef DAGGER_GRAPHICS_RENDERER_H
+#define DAGGER_GRAPHICS_RENDERER_H
+
+#include <dagger/graphics/Color.h>
+
+#include <memory>
+
+struct SDL_Renderer;
+struct SDL_FRect;
+
+namespace dagger
+{
+
+class Texture;
+class Window;
+
+struct SDLRendererDeleter
+{
+    void operator()(SDL_Renderer* renderer) const;
+};
+
+class Renderer
+{
+public:
+    bool create(const Window& window);
+    void destroy();
+
+    void clear(Color clearColor = Colors::Black);
+    void present();
+
+    void drawTexture(const Texture& texture, float x, float y, const SDL_FRect* srcRect = nullptr);
+
+    void toggleVSync();
+
+    SDL_Renderer* getSDLRenderer() const { return sdlRenderer_.get(); }
+
+private:
+    std::unique_ptr<SDL_Renderer, SDLRendererDeleter> sdlRenderer_;
+};
+
+} // namespace dagger
+
+#endif // DAGGER_GRAPHICS_RENDERER_H

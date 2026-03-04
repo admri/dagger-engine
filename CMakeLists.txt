@@ -30,5 +30,5 @@ if (POLICY CMP0141)
 endif()
 
 add_subdirectory(external)
-add_subdirectory(src/engine)
+add_subdirectory(src/dagger)
 add_subdirectory(src)

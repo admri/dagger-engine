@@ -1,4 +1,4 @@
-#include <game/Game.h>
+#include <delve/Game.h>
 
 #include <SDL3/SDL_main.h>
 
@@ -6,7 +6,7 @@
 
 int main(int argc, char** argv)
 {
-    Game game;
+    delve::Game game;
 
     game.run({"Dungeon Crawler", 800, 600, SDL_WINDOW_RESIZABLE, true, true});
 
