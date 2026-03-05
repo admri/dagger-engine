@@ -1,21 +1,23 @@
 #include <Game.h>
 
+#include <entities/Player.h>
+
 #include <dagger/core/GameEvent.h>
 #include <dagger/core/SpriteObject.h>
 #include <dagger/input/KeyCodes.h>
 #include <dagger/input/Input.h>
 
-using namespace dagger;
-
 namespace delve
 {
+    
+using namespace dagger;
 
 bool Game::onInit()
 {
     auto myScene = std::make_unique<Scene>();
     TextureHandle texture = getAssets().load<Texture>("player", "assets/player.png");
     
-    auto player = std::make_unique<SpriteObject>(texture);
+    auto player = std::make_unique<Player>(texture);
     player->setPosition(50.0f, 50.0f);
     
     myScene->addGameObject(std::move(player));

@@ -11,6 +11,7 @@ namespace dagger
 
 class Renderer;
 class AssetManager;
+class Input;
 
 class Scene
 {
@@ -19,7 +20,7 @@ public:
 
     virtual void init(AssetManager& assets) {}
 
-    virtual void update(float dt);
+    virtual void update(float dt, Input& input);
     virtual void render(Renderer& renderer, AssetManager& assets);
 
     void addGameObject(std::unique_ptr<GameObject> obj);

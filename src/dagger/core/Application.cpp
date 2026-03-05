@@ -121,8 +121,8 @@ void Application::run(const AppConfig& config)
         }
 
         // Update
-        if (currentScene_) currentScene_->update(static_cast<float>(deltaTime_));
-        if (debugScene_) debugScene_->update(static_cast<float>(deltaTime_));
+        if (currentScene_) currentScene_->update(static_cast<float>(deltaTime_), *input_);
+        if (debugScene_) debugScene_->update(static_cast<float>(deltaTime_), *input_);
         onUpdate(static_cast<float>(deltaTime_));
 
         // Render

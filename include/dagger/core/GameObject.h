@@ -6,13 +6,14 @@ namespace dagger
 
 class Renderer;
 class AssetManager;
+class Input;
 
 class GameObject
 {
 public:
     virtual ~GameObject() = default;
 
-    virtual void update(float dt) { }
+    virtual void update(float dt, Input& input) { }
     virtual void render(Renderer& renderer, AssetManager& assets) = 0;
 
     void setPosition(float x, float y) { x_ = x; y_ = y; }

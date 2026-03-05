@@ -2,17 +2,18 @@
 
 #include <assets/AssetManager.h>
 #include <graphics/Renderer.h>
+#include <input/Input.h>
 
 namespace dagger
 {
 
-void Scene::update(float dt)
+void Scene::update(float dt, Input& input)
 {
     for (auto& obj : gameObjects_)
     {
         if (obj->isActive())
         {
-            obj->update(dt);
+            obj->update(dt, input);
         }
     }
 
