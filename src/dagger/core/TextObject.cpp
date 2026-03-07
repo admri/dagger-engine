@@ -62,8 +62,6 @@ void TextObject::render(Renderer& renderer, AssetManager& assets)
 
 bool TextObject::rebuildTexture(Renderer& renderer, AssetManager& assets)
 {
-    if (!dirty_) return true;
-
     if (text_.empty()) 
     {
         cachedTexture_.destroy();
