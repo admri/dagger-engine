@@ -20,6 +20,11 @@ struct Color : SDL_Color
             && this->b == other.b
             && this->a == other.a;
     }
+
+    bool operator!=(Color other) const
+    {
+        return !(*this == other);
+    }
 };
 
 namespace Colors

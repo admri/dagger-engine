@@ -3,7 +3,6 @@
 
 #include <dagger/assets/AssetManager.h>
 #include <dagger/audio/AudioSystem.h>
-#include <dagger/core/DebugScene.h>
 #include <dagger/core/GameEvent.h>
 #include <dagger/core/Scene.h>
 #include <dagger/core/Window.h>
@@ -13,6 +12,7 @@
 #include <memory>
 #include <optional>
 #include <queue>
+#include <stdexcept>
 #include <string>
 
 namespace dagger
@@ -37,6 +37,14 @@ public:
     void run(const AppConfig& config = {});
     void quit();
 
+    inline Window& getWindow()             { if (window_)      return *window_;      throw std::runtime_error("Window not initialized"); }
+    inline Renderer& getRenderer()         { if (renderer_)    return *renderer_;    throw std::runtime_error("Renderer not initialized"); }
+    inline Input& getInput()               { if (input_)       return *input_;       throw std::runtime_error("Input not initialized"); }
+    inline AudioSystem& getAudioSystem()   { if (audioSystem_) return *audioSystem_; throw std::runtime_error("Audio system not initialized"); }
+    inline AssetManager& getAssets()       { if (assets_)      return *assets_;      throw std::runtime_error("Assets not initialized"); }
+    
+    inline int getFPS() const { return currentFPS_; }
+
 protected:
     virtual bool onInit() { return true; };
     virtual void onUpdate(float dt) {}
@@ -44,20 +52,11 @@ protected:
     virtual void onEvent(const GameEvent& event) {}
     virtual void onShutdown() {}
 
-    Window& getWindow()             { return *window_; }
-    Renderer& getRenderer()         { return *renderer_; }
-    Input& getInput()               { return *input_; }
-    AudioSystem& getAudioSystem()   { return *audioSystem_; }
-    AssetManager& getAssets()       { return *assets_; }
-    
-    int getFPS() const              { return currentFPS_; }
 
-    void setScene(std::unique_ptr<Scene> scene)
+    inline void setScene(std::unique_ptr<Scene> scene)
     {
         nextScene_ = std::move(scene);
     }
-
-    std::queue<GameEvent> eventQueue_;
 
 private:
     bool initialized_ = false;
@@ -81,12 +80,14 @@ private:
 
     std::unique_ptr<Scene> currentScene_;
     std::unique_ptr<Scene> nextScene_;
-    std::unique_ptr<DebugScene> debugScene_;
+
+    std::queue<GameEvent> eventQueue_;
 
     bool init(const AppConfig& config);
     void pollEvents();
     void processEvents();
     void updateFPS();
+    void cleanup();
 };
 
 } // namespace dagger

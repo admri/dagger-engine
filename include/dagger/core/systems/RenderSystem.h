@@ -1,6 +1,7 @@
 #ifndef DAGGER_CORE_SYSTEMS_RENDER_SYSTEM_H
 #define DAGGER_CORE_SYSTEMS_RENDER_SYSTEM_H
 
+#include <dagger/core/components/SpriteComponent.h>
 #include <dagger/core/components/TextComponent.h>
 
 #include <vector>
@@ -10,11 +11,7 @@ namespace dagger
 
 class Renderer;
 class AssetManager;
-
 class Entity;
-
-struct SpriteComponent;
-struct TextComponent;
 struct TransformComponent;
 
 struct RenderNode

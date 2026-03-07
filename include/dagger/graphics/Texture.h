@@ -24,9 +24,11 @@ public:
     bool load(const Renderer& renderer, const std::string& path);
     void destroy();
 
-    SDL_Texture* getSDLTexture() const { return sdlTexture_.get(); }
-    float getWidth() const { return width_; }
-    float getHeight() const { return height_; }
+    inline SDL_Texture* getSDLTexture() const { return sdlTexture_.get(); }
+    inline float getWidth() const { return width_; }
+    inline float getHeight() const { return height_; }
+
+    inline bool isValid() const { return sdlTexture_ != nullptr; }
 
 private:
     std::unique_ptr<SDL_Texture, SDLTextureDeleter> sdlTexture_;

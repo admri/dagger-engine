@@ -1,7 +1,5 @@
 #include <core/Application.h>
 
-#include <core/SpriteObject.h>
-
 #include <SDL3/SDL_error.h>
 #include <SDL3/SDL_events.h>
 #include <SDL3/SDL_init.h>
@@ -15,7 +13,10 @@ namespace dagger
 
 Application::~Application()
 {
-    quit();
+    if (initialized_)
+    {
+        cleanup();
+    }
 }
 
 bool Application::init(const AppConfig& config)
@@ -78,12 +79,6 @@ bool Application::init(const AppConfig& config)
         return false;
     }
 
-    if (config.showFPS)
-    {
-        debugScene_ = std::make_unique<DebugScene>();
-        debugScene_->init(*assets_);
-    }
-
     if (!config.vsync) renderer_->toggleVSync();
 
     initialized_ = true;
@@ -117,60 +112,29 @@ void Application::run(const AppConfig& config)
         if (nextScene_)
         {
             currentScene_ = std::move(nextScene_);
-            currentScene_->init(*assets_);
+            currentScene_->onInit(*assets_);
         }
 
         // Update
-        if (currentScene_) currentScene_->update(static_cast<float>(deltaTime_), *input_);
-        if (debugScene_) debugScene_->update(static_cast<float>(deltaTime_), *input_);
+        if (currentScene_) currentScene_->onUpdate(static_cast<float>(deltaTime_), *this);
         onUpdate(static_cast<float>(deltaTime_));
 
         // Render
         renderer_->clear(Colors::Black);
         
-        if (currentScene_) currentScene_->render(*renderer_, *assets_);
-        if (debugScene_) debugScene_->render(*renderer_, *assets_);
+        if (currentScene_) currentScene_->onRender(*renderer_, *assets_);
         onRender();
 
         renderer_->present();
         updateFPS();
     }
+
+    cleanup();
 }
 
 void Application::quit()
 {
     isRunning_ = false;
-    onShutdown();
-
-    if (assets_) assets_->clear();
-    if (renderer_) renderer_->destroy();
-    if (window_) window_->destroy();
-    
-    currentScene_.reset();
-    debugScene_.reset();
-    assets_.reset();
-    audioSystem_.reset();
-    input_.reset();
-    renderer_.reset();
-    window_.reset();
-
-    if (mixInit_)
-    {
-        MIX_Quit();
-        mixInit_ = false;
-    }
-    if (ttfInit_)
-    {
-        TTF_Quit();
-        ttfInit_ = false;
-    }
-    if (sdlInit_)
-    {
-        SDL_Quit();
-        sdlInit_ = false;
-    }
-    
-    initialized_ = false;
 }
 
 void Application::pollEvents()
@@ -213,10 +177,49 @@ void Application::updateFPS()
         currentFPS_ = frameCount_;
         frameCount_ = 0;
         fpsTimer_ = currentTime_;
-        
-        if (debugScene_) debugScene_->updateFPS(currentFPS_);
     }
     frameCount_++;
+}
+
+void Application::cleanup()
+{
+    SDL_Log("Shutting down application...");
+    onShutdown();
+
+    SDL_Log("Cleaning up resources...");
+    if (assets_) assets_->clear();
+    if (renderer_) renderer_->destroy();
+    if (window_) window_->destroy();
+    
+    currentScene_.reset();
+    assets_.reset();
+    audioSystem_.reset();
+    input_.reset();
+    renderer_.reset();
+    window_.reset();
+    SDL_Log("Resources cleaned up.");
+
+    if (mixInit_)
+    {
+        SDL_Log("Quitting SDL_mixer...");
+        MIX_Quit();
+        mixInit_ = false;
+    }
+    if (ttfInit_)
+    {
+        SDL_Log("Quitting SDL_ttf...");
+        TTF_Quit();
+        ttfInit_ = false;
+    }
+    if (sdlInit_)
+    {
+        SDL_Log("Quitting SDL...");
+        SDL_Quit();
+        sdlInit_ = false;
+    }
+
+    SDL_Log("Application shutdown complete.");
+    initialized_ = false;
 }
 
 } // namespace dagger

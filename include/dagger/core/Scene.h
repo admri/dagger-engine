@@ -1,7 +1,8 @@
 #ifndef DAGGER_CORE_SCENE_H
 #define DAGGER_CORE_SCENE_H
 
-#include <dagger/core/GameObject.h>
+#include <dagger/core/Entity.h>
+#include <dagger/core/systems/RenderSystem.h>
 
 #include <memory>
 #include <vector>
@@ -9,6 +10,7 @@
 namespace dagger
 {
 
+class Application;
 class Renderer;
 class AssetManager;
 class Input;
@@ -18,15 +20,24 @@ class Scene
 public:
     virtual ~Scene() = default;
 
-    virtual void init(AssetManager& assets) {}
+    virtual void onInit(AssetManager& assets) = 0;
+    virtual void onUpdate(float dt, Application& app) = 0;
+    virtual void onRender(Renderer& renderer, AssetManager& assets)
+    {
+        renderSystem_.render(renderer, assets);
+    }
 
-    virtual void update(float dt, Input& input);
-    virtual void render(Renderer& renderer, AssetManager& assets);
-
-    void addGameObject(std::unique_ptr<GameObject> obj);
+    Entity* createEntity()
+    {
+        auto entity = std::make_unique<Entity>();
+        Entity* ptr = entity.get();
+        entities_.push_back(std::move(entity));
+        return ptr;
+    }
 
 protected:
-    std::vector<std::unique_ptr<GameObject>> gameObjects_;
+    std::vector<std::unique_ptr<Entity>> entities_;
+    RenderSystem renderSystem_;
 };
 
 } // namespace dagger

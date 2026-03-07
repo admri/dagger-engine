@@ -3,14 +3,56 @@
 #include <assets/AssetManager.h>
 #include <core/Entity.h>
 #include <core/components/SpriteComponent.h>
-#include <dagger/core/components/TextComponent.h>
+#include <core/components/TextComponent.h>
 #include <core/components/TransformComponent.h>
 #include <graphics/Renderer.h>
+#include <graphics/Texture.h>
+
+#include <SDL3/SDL_error.h>
+#include <SDL3_ttf/SDL_ttf.h>
 
 #include <algorithm>
 
 namespace dagger
 {
+
+bool rebuildTexture(TextComponent* text, Renderer& renderer, AssetManager& assets)
+{
+    if (text->text.empty()) 
+    {
+        text->cachedTexture.destroy();
+        text->isDirty = false;
+        return true;
+    }
+
+    Font* font = assets.resolve<Font>(text->font);
+    if (!font) return false;
+
+    SDL_Surface* surface = TTF_RenderText_Blended(
+        font->get(),
+        text->text.c_str(),
+        text->text.length(),
+        text->color
+    );
+    if (!surface)
+    {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to create text surface: %s", SDL_GetError());
+        return false;
+    }
+
+    bool result = text->cachedTexture.createFromSurface(renderer, *surface);
+    SDL_DestroySurface(surface);
+    if (!result)
+    {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to create text texture: %s", SDL_GetError());
+        return false;
+    }
+
+    text->cachedString = text->text;
+    text->isDirty = false;
+
+    return true;
+}
 
 void RenderSystem::render(Renderer& renderer, AssetManager& assets)
 {
@@ -20,6 +62,10 @@ void RenderSystem::render(Renderer& renderer, AssetManager& assets)
 
     for (auto& node : nodes_)
     {
+        SpriteComponent* sprite = node.sprite;
+        TextComponent* text = node.text;
+        TransformComponent* transform = node.transform;
+
         if ((node.sprite && (!node.sprite->owner || !node.sprite->owner->isActive())) ||
             (node.text && (!node.text->owner || !node.text->owner->isActive()))) {
             continue; 
@@ -30,28 +76,17 @@ void RenderSystem::render(Renderer& renderer, AssetManager& assets)
             Texture* texture = assets.resolve<Texture, TextureHandle>(node.sprite->texture);
             if (texture) renderer.drawTexture(*texture, node.transform->x, node.transform->y, nullptr);
         }
-        else if (node.text)
+        else if (text)
         {
-            if (node.text->isDirty) 
+            if (text->isDirty && !rebuildTexture(text, renderer, assets)) 
             {
-                // Destroy the old cached texture if it exists
-                if (node.text->cachedTexture.isValid())
-                {
-                    // Free old texture memory here
-                }
-                
-                // Ask SDL_ttf / AssetManager to generate a brand new texture
-                node.text->cachedTexture = assets.generateTextTexture(node.text->font, node.text->text);
-                
-                // It is now clean!
-                node.text->cachedString = node.text->text;
-                node.text->isDirty = false;
+                continue;
             }
 
-            if (node.text->cachedTexture.isValid())
+            if (text->cachedTexture.isValid())
             {
-                Texture* texture = assets.resolve<Texture, TextureHandle>(node.text->cachedTexture);
-                renderer.drawTexture(*texture, node.transform->x, node.transform->y, nullptr);
+                Texture* texture = &text->cachedTexture;
+                renderer.drawTexture(*texture, transform->x, transform->y, nullptr);
             }
         }
     }
