@@ -21,10 +21,11 @@ public:
     virtual ~Scene() = default;
 
     virtual void onInit(AssetManager& assets) = 0;
-    virtual void onUpdate(float dt, Application& app) = 0;
-    virtual void onRender(Renderer& renderer, AssetManager& assets)
+    virtual void onFixedUpdate(float dt, Application& app) {}
+    virtual void onUpdate(float dt, Application& app) {}
+    virtual void onRender(Renderer& renderer, AssetManager& assets, float alpha = 0.0f)
     {
-        renderSystem_.render(renderer, assets);
+        renderSystem_.render(renderer, assets, alpha);
     }
 
     Entity* createEntity()

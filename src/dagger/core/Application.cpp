@@ -96,12 +96,16 @@ void Application::run(const AppConfig& config)
     lastTime_ = SDL_GetPerformanceCounter();
     fpsTimer_ = lastTime_;
 
+    double accumulator = 0.0;
     while (isRunning_)
     {
         // Timing
         currentTime_ = SDL_GetPerformanceCounter();
         deltaTime_ = (double)(currentTime_ - lastTime_) / SDL_GetPerformanceFrequency();
         lastTime_ = currentTime_;
+
+        if (deltaTime_ > 0.25) deltaTime_ = 0.25;
+        accumulator += deltaTime_;
 
         // Events
         input_->update();
@@ -116,13 +120,21 @@ void Application::run(const AppConfig& config)
         }
 
         // Update
+        while (accumulator >= FIXED_DT)
+        {
+            if (currentScene_) currentScene_->onFixedUpdate(static_cast<float>(FIXED_DT), *this);
+            accumulator -= FIXED_DT;
+        }
+        
+        float alpha = static_cast<float>(accumulator / FIXED_DT);
+
         if (currentScene_) currentScene_->onUpdate(static_cast<float>(deltaTime_), *this);
         onUpdate(static_cast<float>(deltaTime_));
 
         // Render
         renderer_->clear(Colors::Black);
         
-        if (currentScene_) currentScene_->onRender(*renderer_, *assets_);
+        if (currentScene_) currentScene_->onRender(*renderer_, *assets_, alpha);
         onRender();
 
         renderer_->present();

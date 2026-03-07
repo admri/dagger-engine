@@ -54,7 +54,7 @@ bool rebuildTexture(TextComponent* text, Renderer& renderer, AssetManager& asset
     return true;
 }
 
-void RenderSystem::render(Renderer& renderer, AssetManager& assets)
+void RenderSystem::render(Renderer& renderer, AssetManager& assets, float alpha)
 {
     std::sort(nodes_.begin(), nodes_.end(), [](const RenderNode& a, const RenderNode& b) {
         return a.getZIndex() < b.getZIndex();
@@ -71,10 +71,13 @@ void RenderSystem::render(Renderer& renderer, AssetManager& assets)
             continue; 
         }
 
-        if (node.sprite) 
+        float renderX = transform->prevX + (transform->x - transform->prevX) * alpha;
+        float renderY = transform->prevY + (transform->y - transform->prevY) * alpha;
+
+        if (sprite) 
         {
-            Texture* texture = assets.resolve<Texture, TextureHandle>(node.sprite->texture);
-            if (texture) renderer.drawTexture(*texture, node.transform->x, node.transform->y, nullptr);
+            Texture* texture = assets.resolve<Texture, TextureHandle>(sprite->texture);
+            if (texture) renderer.drawTexture(*texture, renderX, renderY, nullptr);
         }
         else if (text)
         {

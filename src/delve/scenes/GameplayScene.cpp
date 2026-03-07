@@ -51,12 +51,15 @@ void GameplayScene::onInit(dagger::AssetManager& assets)
     fpsTextComp_ = &textComp;
 }
 
-void GameplayScene::onUpdate(float dt, dagger::Application& app)
+void GameplayScene::onFixedUpdate(float dt, dagger::Application& app)
 {
     dagger::Input& input = app.getInput();
 
     if (playerTransform_)
     {
+        playerTransform_->prevX = playerTransform_->x;
+        playerTransform_->prevY = playerTransform_->y;
+
         float& x = playerTransform_->x;
         float& y = playerTransform_->y;
         float speed = 300.0f;
@@ -66,7 +69,10 @@ void GameplayScene::onUpdate(float dt, dagger::Application& app)
         if (input.isKeyDown(dagger::Key::A)) x -= speed * dt;
         if (input.isKeyDown(dagger::Key::D)) x += speed * dt;
     }
+}
 
+void GameplayScene::onUpdate(float dt, dagger::Application& app)
+{
     if (fpsTextComp_)
     {
         fpsTextComp_->setText("FPS: " + std::to_string(app.getFPS()));

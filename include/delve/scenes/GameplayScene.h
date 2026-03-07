@@ -11,6 +11,7 @@ class GameplayScene : public dagger::Scene
 {
 public:
     void onInit(dagger::AssetManager& assets) override;
+    void onFixedUpdate(float dt, dagger::Application& app) override;
     void onUpdate(float dt, dagger::Application& app) override;
 
 private:

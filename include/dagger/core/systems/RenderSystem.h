@@ -31,7 +31,7 @@ struct RenderNode
 class RenderSystem
 {
 public:
-    void render(Renderer& renderer, AssetManager& assets);
+    void render(Renderer& renderer, AssetManager& assets, float alpha = 0.0f);
     void registerEntity(Entity* sprite);
 
 private:

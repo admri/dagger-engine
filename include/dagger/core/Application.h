@@ -18,6 +18,8 @@
 namespace dagger
 {
 
+constexpr double FIXED_DT = 1.0 / 60.0;
+
 struct AppConfig
 {
     std::string title = "Engine Game";
