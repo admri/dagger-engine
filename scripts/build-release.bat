@@ -45,7 +45,7 @@ if exist "build\Release" (
 )
 
 echo.
-echo Build succeeded! You can find the release build in "build\%OUTPUT_DIR%".
+echo Build succeeded! You can find the release build in %OUTPUT_DIR%.
 echo.
 
 pause

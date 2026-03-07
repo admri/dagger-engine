@@ -12,11 +12,11 @@ int main(int argc, char** argv)
     {
         game.run({"Dungeon Crawler", 800, 600, SDL_WINDOW_RESIZABLE, true, true});
     }
-    catch(const std::exception& e)
+    catch (const std::exception& e)
     {
         std::cerr << e.what() << '\n';
     }
-    catch(...)
+    catch (...)
     {
         std::cerr << "An unknown error occurred.\n";
     }

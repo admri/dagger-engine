@@ -9,6 +9,8 @@
 #include <dagger/audio/Sound.h>
 #include <dagger/graphics/Texture.h>
 
+#include <SDL3/SDL_filesystem.h>
+
 #include <memory>
 #include <string>
 #include <utility>
@@ -25,34 +27,49 @@ public:
     AssetManager(Renderer& renderer, AudioSystem& audio)
         : renderer_(renderer)
         , audio_(audio)
-    { }
+    {
+        const char* basePath = SDL_GetBasePath();
+        if (basePath)
+        {
+            basePath_ = std::string(basePath);
+        }
+        else 
+        {
+            SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,
+                         "Failed to get base path: %s",
+                         SDL_GetError());
+            basePath_ = "";
+        }
+    }
     AssetManager(const AssetManager&) = delete;
     AssetManager& operator=(const AssetManager&) = delete;
 
     template <typename T, typename... Args>
-    auto load(const std::string& id, Args&&... args)
+    auto load(const std::string& id, const std::string& filePath = "", Args&&... args)
     {
         auto& manager = getManager<T>();
         if (manager.has(id)) return manager.getHandle(id);
+
+        std::string absolutePath = basePath_ + filePath;
 
         T newRes;
         bool success = false;
 
         if constexpr (ResourceTraits<T>::needsRenderer && ResourceTraits<T>::needsMixer)
         {
-            success = newRes.load(renderer_, audio_.getMixer(), std::forward<Args>(args)...);
+            success = newRes.load(renderer_, audio_.getMixer(), absolutePath, std::forward<Args>(args)...);
         }
         else if constexpr (ResourceTraits<T>::needsRenderer)
         {
-            success = newRes.load(renderer_, std::forward<Args>(args)...);
+            success = newRes.load(renderer_, absolutePath, std::forward<Args>(args)...);
         }
         else if constexpr (ResourceTraits<T>::needsMixer)
         {
-            success = newRes.load(audio_.getMixer(), std::forward<Args>(args)...);
+            success = newRes.load(audio_.getMixer(), absolutePath, std::forward<Args>(args)...);
         }
         else
         {
-            success = newRes.load(std::forward<Args>(args)...);
+            success = newRes.load(absolutePath, std::forward<Args>(args)...);
         }
 
         if (!success)
@@ -110,6 +127,8 @@ public:
 private:
     Renderer& renderer_;
     AudioSystem& audio_;
+
+    std::string basePath_;
 
     ResourceManager<Texture, TextureHandle> textures_;
     ResourceManager<Font, FontHandle> fonts_;

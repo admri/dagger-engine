@@ -18,7 +18,7 @@
 namespace dagger
 {
 
-constexpr double FIXED_DT = 1.0 / 60.0;
+constexpr double FIXED_DT = 1.0 / 60.0; // 60 TPS (Ticks Per Second)
 
 struct AppConfig
 {
@@ -36,6 +36,9 @@ public:
     Application() : isRunning_(false) {}
     virtual ~Application();
 
+    Application(const Application&) = delete;
+    Application& operator=(const Application&) = delete;
+
     void run(const AppConfig& config = {});
     void quit();
 
@@ -47,18 +50,14 @@ public:
     
     inline int getFPS() const { return currentFPS_; }
 
+    inline void setScene(std::unique_ptr<Scene> scene) { nextScene_ = std::move(scene); }
+
 protected:
     virtual bool onInit() { return true; };
     virtual void onUpdate(float dt) {}
     virtual void onRender() {}
     virtual void onEvent(const GameEvent& event) {}
     virtual void onShutdown() {}
-
-
-    inline void setScene(std::unique_ptr<Scene> scene)
-    {
-        nextScene_ = std::move(scene);
-    }
 
 private:
     bool initialized_ = false;
