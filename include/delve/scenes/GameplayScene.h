@@ -7,9 +7,6 @@
 namespace delve
 {
 
-class dagger::TransformComponent;
-class dagger::TextComponent;
-
 class GameplayScene : public dagger::Scene
 {
 public:

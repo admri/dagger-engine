@@ -32,6 +32,7 @@ void GameplayScene::onInit(dagger::AssetManager& assets)
     pSprite.zIndex = 10;
 
     renderSystem_.registerEntity(player_);
+    playerTransform_ = &pTransform;
 
     // FPS Display
     dagger::Entity* fpsDisplay_ = createEntity();
@@ -47,6 +48,7 @@ void GameplayScene::onInit(dagger::AssetManager& assets)
     textComp.zIndex = 100;
 
     renderSystem_.registerEntity(fpsDisplay_);
+    fpsTextComp_ = &textComp;
 }
 
 void GameplayScene::onUpdate(float dt, dagger::Application& app)
