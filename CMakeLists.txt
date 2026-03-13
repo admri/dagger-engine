@@ -29,6 +29,23 @@ if (POLICY CMP0141)
     set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<IF:$<AND:$<C_COMPILER_ID:MSVC>,$<CXX_COMPILER_ID:MSVC>>,$<$<CONFIG:Debug,RelWithDebInfo>:EditAndContinue>,$<$<CONFIG:Debug,RelWithDebInfo>:ProgramDatabase>>")
 endif()
 
+include(CheckIPOSupported)
+check_ipo_supported(RESULT ipo_supported OUTPUT error)
+if(ipo_supported)
+    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
+    message(STATUS "LTO / IPO optimalizace: ZAPNUTO")
+else()
+    message(STATUS "LTO / IPO optimalizace: NEPODPOROVÁNO (${error})")
+endif()
+
+if(MSVC)
+    add_compile_options("$<$<CONFIG:Release>:/O2;/Oi;/fp:fast>")
+else()
+    add_compile_options("$<$<CONFIG:Release>:-O3;-ffast-math>")
+    
+    add_compile_options("$<$<CONFIG:Release>:-march=native>")
+endif()
+
 add_subdirectory(external)
 add_subdirectory(src/dagger)
 add_subdirectory(src)
