@@ -8,6 +8,10 @@
 #include <SDL3_mixer/SDL_mixer.h>
 #include <SDL3_ttf/SDL_ttf.h>
 
+#ifdef __APPLE__
+#include <graphics/MacHacks.h>
+#endif
+
 namespace dagger
 {
 
@@ -69,6 +73,9 @@ bool Application::init(const AppConfig& config)
         quit();
         return false;
     }
+#ifdef __APPLE__
+    ApplyMetalOptimizations(renderer_->getSDLRenderer());
+#endif
 
     input_->init();
 
