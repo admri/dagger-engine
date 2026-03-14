@@ -1,5 +1,7 @@
 #include <scenes/GameplayScene.h>
 
+#include <components/PlayerInputComponent.h>
+
 #include <dagger/assets/AssetManager.h>
 #include <dagger/assets/Font.h>
 #include <dagger/core/Application.h>
@@ -7,9 +9,8 @@
 #include <dagger/core/components/SpriteComponent.h>
 #include <dagger/core/components/TextComponent.h>
 #include <dagger/core/components/TransformComponent.h>
+#include <dagger/core/components/VelocityComponent.h>
 #include <dagger/graphics/Texture.h>
-#include <dagger/input/Input.h>
-#include <dagger/input/KeyCodes.h>
 
 namespace delve
 {
@@ -21,7 +22,7 @@ void GameplayScene::onInit(dagger::AssetManager& assets)
     dagger::FontHandle uiFont = assets.load<dagger::Font>("ui", "assets/fonts/RobotoMono-Regular.ttf", 16);
 
     // Player
-    dagger::Entity* player_ = createEntity();
+    player_ = createEntity();
 
     auto& pTransform = player_->addComponent<dagger::TransformComponent>();
     pTransform.x = 50.0f;
@@ -31,11 +32,11 @@ void GameplayScene::onInit(dagger::AssetManager& assets)
     pSprite.texture = playerTexture;
     pSprite.zIndex = 10;
 
-    renderSystem_.registerEntity(player_);
-    playerTransform_ = &pTransform;
+    player_->addComponent<dagger::VelocityComponent>();
+    player_->addComponent<PlayerInputComponent>();
 
     // FPS Display
-    dagger::Entity* fpsDisplay_ = createEntity();
+    fpsDisplay_ = createEntity();
 
     auto& uiTransform = fpsDisplay_->addComponent<dagger::TransformComponent>();
     uiTransform.x = 20.0f;
@@ -47,35 +48,31 @@ void GameplayScene::onInit(dagger::AssetManager& assets)
     textComp.setText("FPS: 0");
     textComp.zIndex = 100;
 
+    renderSystem_.registerEntity(player_);
     renderSystem_.registerEntity(fpsDisplay_);
-    fpsTextComp_ = &textComp;
 }
 
 void GameplayScene::onFixedUpdate(float dt, dagger::Application& app)
 {
-    dagger::Input& input = app.getInput();
+    if (!player_) return;
 
-    if (playerTransform_)
+    auto* pTransform = player_->getComponent<dagger::TransformComponent>();
+    auto* pVelocity = player_->getComponent<dagger::VelocityComponent>();
+    auto* pInput = player_->getComponent<PlayerInputComponent>();
+
+    if (pTransform && pVelocity && pInput)
     {
-        playerTransform_->prevX = playerTransform_->x;
-        playerTransform_->prevY = playerTransform_->y;
-
-        float& x = playerTransform_->x;
-        float& y = playerTransform_->y;
-        float speed = 300.0f;
-        
-        if (input.isKeyDown(dagger::Key::W)) y -= speed * dt;
-        if (input.isKeyDown(dagger::Key::S)) y += speed * dt;
-        if (input.isKeyDown(dagger::Key::A)) x -= speed * dt;
-        if (input.isKeyDown(dagger::Key::D)) x += speed * dt;
+        inputSystem_.update(app.getInput(), *pVelocity, *pInput);
+        movementSystem_.update(dt, *pTransform, *pVelocity);
     }
 }
 
 void GameplayScene::onUpdate(float dt, dagger::Application& app)
 {
-    if (fpsTextComp_)
+    if (fpsDisplay_)
     {
-        fpsTextComp_->setText("FPS: " + std::to_string(app.getFPS()));
+        auto* textComp = fpsDisplay_->getComponent<dagger::TextComponent>();
+        textComp->setText("FPS: " + std::to_string(app.getFPS()));
     }
 }
 

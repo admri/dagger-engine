@@ -11,7 +11,7 @@
 namespace dagger
 {
 
-struct TextComponent : Component
+struct TextComponent : public Component
 {
     std::string text = "";
     FontHandle font = {};

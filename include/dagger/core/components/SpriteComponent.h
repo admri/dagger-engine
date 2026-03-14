@@ -10,7 +10,7 @@
 namespace dagger
 {
 
-struct SpriteComponent : Component
+struct SpriteComponent : public Component
 {
     TextureHandle texture;
     int width;
