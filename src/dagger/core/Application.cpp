@@ -1,3 +1,6 @@
+#define SDL_MAIN_HANDLED
+#include <SDL3/SDL_main.h>
+
 #include <core/Application.h>
 
 #include <assets/AssetManager.h>
@@ -37,6 +40,8 @@ Application::~Application()
 bool Application::init(const AppConfig& config)
 {
     if (initialized_) return true;
+
+    SDL_SetMainReady();
 
     SDL_Log("Application initializing...");
 
@@ -99,7 +104,7 @@ bool Application::init(const AppConfig& config)
         return false;
     }
 
-    if (!config.vsync) renderer_->toggleVSync();
+    if (config.vsync) renderer_->toggleVSync();
 
     initialized_ = true;
 

@@ -2,21 +2,28 @@
 
 #include <dagger/core/AppConfig.h>
 
-#include <SDL3/SDL_main.h>
-
 #include <iostream>
+#include <stdexcept>
 
 int main(int argc, char** argv)
 {
     delve::Game game;
 
+    dagger::AppConfig config {
+        "Dungeon Crawler",
+        800, 600,
+        dagger::WindowFlags::Resizable,
+        true,  // Show FPS
+        false  // Turn on V-Sync
+    };
+
     try
     {
-        game.run({"Dungeon Crawler", 800, 600, dagger::WindowFlags::Resizable, true, true});
+        game.run(config);
     }
     catch (const std::exception& e)
     {
-        std::cerr << e.what() << '\n';
+        std::cerr << "Fatal Error: " << e.what() << '\n';
     }
     catch (...)
     {

@@ -29,7 +29,7 @@ inline bool hasFlag(WindowFlags mask, WindowFlags flag)
 
 struct AppConfig
 {
-    std::string title = "Engine Game";
+    std::string title = "Dagger Application";
     int width = 800;
     int height = 600;
     WindowFlags flags = WindowFlags::Resizable;
