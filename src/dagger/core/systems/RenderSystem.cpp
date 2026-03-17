@@ -9,12 +9,23 @@
 #include <graphics/Texture.h>
 
 #include <SDL3/SDL_error.h>
+#include <SDL3/SDL_pixels.h>
 #include <SDL3_ttf/SDL_ttf.h>
 
 #include <algorithm>
 
 namespace dagger
 {
+
+namespace
+{
+
+SDL_Color toSDL(Color c)
+{
+    return {c.r, c.g, c.b, c.a};
+}
+
+} // namespace
 
 bool rebuildTexture(TextComponent* text, Renderer& renderer, AssetManager& assets)
 {
@@ -32,7 +43,7 @@ bool rebuildTexture(TextComponent* text, Renderer& renderer, AssetManager& asset
         font->get(),
         text->text.c_str(),
         text->text.length(),
-        text->color
+        toSDL(text->color)
     );
     if (!surface)
     {

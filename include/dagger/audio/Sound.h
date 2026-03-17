@@ -1,20 +1,18 @@
 #ifndef DAGGER_AUDIO_SOUND_H
 #define DAGGER_AUDIO_SOUND_H
 
-#include <SDL3_mixer/SDL_mixer.h>
-
 #include <memory>
 #include <string>
+
+struct MIX_Mixer;
+struct MIX_Audio;
 
 namespace dagger
 {
 
 struct MIXAudioDeleter
 {
-    void operator()(MIX_Audio* audio) const
-    {
-        if (audio) MIX_DestroyAudio(audio);
-    }
+    void operator()(MIX_Audio* audio) const;
 };
 
 class Sound

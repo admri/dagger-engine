@@ -1,26 +1,25 @@
 #ifndef DAGGER_CORE_WINDOW_H
 #define DAGGER_CORE_WINDOW_H
 
-#include <SDL3/SDL_video.h>
+#include <core/AppConfig.h>
 
 #include <memory>
 #include <string>
+
+struct SDL_Window;
 
 namespace dagger
 {
 
 struct SDLWindowDeleter
 {
-    void operator()(SDL_Window* window) const
-    {
-        if (window) SDL_DestroyWindow(window);
-    }
+    void operator()(SDL_Window* window) const;
 };
 
 class Window
 {
 public:
-    bool create(const std::string& title, int width, int height, SDL_WindowFlags flags);
+    bool create(const std::string& title, int width, int height, WindowFlags flags);
     void destroy();
 
     void setTitle(const std::string& title);

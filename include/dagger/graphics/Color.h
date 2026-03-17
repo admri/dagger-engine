@@ -1,15 +1,17 @@
 #ifndef DAGGER_GRAPHICS_COLOR_H
 #define DAGGER_GRAPHICS_COLOR_H
 
-#include <SDL3/SDL_pixels.h>
+#include <cstdint>
 
 namespace dagger
 {
 
-struct Color : SDL_Color
+struct Color
 {
-    Color(Uint8 r, Uint8 g, Uint8 b, Uint8 a = 255)
-        : SDL_Color{ r, g, b, a }
+    uint8_t r, g, b, a;
+
+    Color(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255)
+        : r(r), g(g), b(b), a(a)
     {
     }
 

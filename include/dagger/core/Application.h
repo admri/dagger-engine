@@ -1,39 +1,30 @@
 #ifndef DAGGER_CORE_APPLICATION_H
 #define DAGGER_CORE_APPLICATION_H
 
-#include <dagger/assets/AssetManager.h>
-#include <dagger/audio/AudioSystem.h>
+#include <dagger/core/AppConfig.h>
 #include <dagger/core/GameEvent.h>
 #include <dagger/core/Scene.h>
-#include <dagger/core/Window.h>
-#include <dagger/graphics/Renderer.h>
-#include <dagger/input/Input.h>
 
+#include <cassert>
+#include <cstdint>
 #include <memory>
 #include <optional>
 #include <queue>
 #include <stdexcept>
-#include <string>
 
 namespace dagger
 {
 
-constexpr double FIXED_DT = 1.0 / 60.0; // 60 TPS (Ticks Per Second)
-
-struct AppConfig
-{
-    std::string title = "Engine Game";
-    int width = 800;
-    int height = 600;
-    SDL_WindowFlags flags = SDL_WINDOW_RESIZABLE;
-    bool showFPS = true;
-    bool vsync = true;
-};
+class Window;
+class Renderer;
+class Input;
+class AudioSystem;
+class AssetManager;
 
 class Application
 {
 public:
-    Application() : isRunning_(false) {}
+    Application();
     virtual ~Application();
 
     Application(const Application&) = delete;
@@ -42,11 +33,11 @@ public:
     void run(const AppConfig& config = {});
     void quit();
 
-    inline Window& getWindow()             { if (window_)      return *window_;      throw std::runtime_error("Window not initialized"); }
-    inline Renderer& getRenderer()         { if (renderer_)    return *renderer_;    throw std::runtime_error("Renderer not initialized"); }
-    inline Input& getInput()               { if (input_)       return *input_;       throw std::runtime_error("Input not initialized"); }
-    inline AudioSystem& getAudioSystem()   { if (audioSystem_) return *audioSystem_; throw std::runtime_error("Audio system not initialized"); }
-    inline AssetManager& getAssets()       { if (assets_)      return *assets_;      throw std::runtime_error("Assets not initialized"); }
+    inline Window& getWindow()           { assert(window_      != nullptr && "Window accessed before Application::init()!");        return *window_; }
+    inline Renderer& getRenderer()       { assert(renderer_    != nullptr && "Renderer accessed before Application::init()!");      return *renderer_; }
+    inline Input& getInput()             { assert(input_       != nullptr && "Input accessed before Application::init()!");         return *input_; }
+    inline AudioSystem& getAudioSystem() { assert(audioSystem_ != nullptr && "Audio system accessed before Application::init()!");  return *audioSystem_; }
+    inline AssetManager& getAssets()     { assert(assets_      != nullptr && "Asset manager accessed before Application::init()!"); return *assets_; }
     
     inline int getFPS() const { return currentFPS_; }
 
@@ -61,23 +52,24 @@ protected:
 
 private:
     bool initialized_ = false;
-    bool sdlInit_ = false;
-    bool ttfInit_ = false;
-    bool mixInit_ = false;
-    bool isRunning_;
+    bool isRunning_ = false;
 
-    Uint64 currentTime_ = 0;
-    Uint64 lastTime_ = 0;
+    bool coreInitialized_ = false; 
+    bool audioInitialized_ = false;
+    bool fontInitialized_ = false;
+
+    uint64_t currentTime_ = 0;
+    uint64_t lastTime_ = 0;
     double deltaTime_ = 0.0;
     int frameCount_ = 0;
     int currentFPS_ = 0;
-    Uint64 fpsTimer_ = 0;
+    uint64_t fpsTimer_ = 0;
 
-    std::optional<Window> window_;
-    std::optional<Renderer> renderer_;
-    std::optional<Input> input_;
-    std::optional<AudioSystem> audioSystem_;
-    std::optional<AssetManager> assets_;
+    std::unique_ptr<Window> window_;
+    std::unique_ptr<Renderer> renderer_;
+    std::unique_ptr<Input> input_;
+    std::unique_ptr<AudioSystem> audioSystem_;
+    std::unique_ptr<AssetManager> assets_;
 
     std::unique_ptr<Scene> currentScene_;
     std::unique_ptr<Scene> nextScene_;

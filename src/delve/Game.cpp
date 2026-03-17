@@ -3,6 +3,7 @@
 #include <scenes/GameplayScene.h>
 
 #include <dagger/core/GameEvent.h>
+#include <dagger/graphics/Renderer.h>
 #include <dagger/input/KeyCodes.h>
 #include <dagger/input/Input.h>
 

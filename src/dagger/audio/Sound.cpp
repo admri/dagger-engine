@@ -2,9 +2,15 @@
 
 #include <SDL3/SDL_error.h>
 #include <SDL3/SDL_log.h>
+#include <SDL3_mixer/SDL_mixer.h>
 
 namespace dagger
 {
+
+void MIXAudioDeleter::operator()(MIX_Audio* audio) const
+{
+    if (audio) MIX_DestroyAudio(audio);
+}
 
 bool Sound::load(MIX_Mixer* mixer, const std::string& path, bool predecode)
 {

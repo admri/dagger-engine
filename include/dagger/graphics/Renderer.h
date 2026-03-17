@@ -21,6 +21,9 @@ struct SDLRendererDeleter
 
 class Renderer
 {
+    friend class Texture;
+    friend class Application;
+
 public:
     bool create(const Window& window);
     void destroy();
@@ -32,9 +35,9 @@ public:
 
     void toggleVSync();
 
-    SDL_Renderer* getSDLRenderer() const { return sdlRenderer_.get(); }
-
 private:
+    SDL_Renderer* get() const { return sdlRenderer_.get(); }
+
     std::unique_ptr<SDL_Renderer, SDLRendererDeleter> sdlRenderer_;
 };
 

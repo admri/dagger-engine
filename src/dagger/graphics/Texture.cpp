@@ -20,7 +20,7 @@ bool Texture::createFromSurface(const Renderer& renderer, SDL_Surface& surface)
 {
     sdlTexture_.reset();
 
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer.getSDLRenderer(), &surface);
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer.get(), &surface);
     if (!texture)
     {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,

@@ -1,5 +1,12 @@
 #include <core/Application.h>
 
+#include <assets/AssetManager.h>
+#include <audio/AudioSystem.h>
+#include <core/Constants.h>
+#include <core/Window.h>
+#include <graphics/Renderer.h>
+#include <input/Input.h>
+
 #include <SDL3/SDL_error.h>
 #include <SDL3/SDL_events.h>
 #include <SDL3/SDL_init.h>
@@ -15,6 +22,10 @@
 namespace dagger
 {
 
+Application::Application()
+{
+}
+
 Application::~Application()
 {
     if (initialized_)
@@ -25,6 +36,8 @@ Application::~Application()
 
 bool Application::init(const AppConfig& config)
 {
+    if (initialized_) return true;
+
     SDL_Log("Application initializing...");
 
     if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS))
@@ -33,7 +46,7 @@ bool Application::init(const AppConfig& config)
         quit();
         return false;
     }
-    sdlInit_ = true;
+    coreInitialized_ = true;
     SDL_Log("SDL initialized.");
 
     if (!TTF_Init())
@@ -42,7 +55,7 @@ bool Application::init(const AppConfig& config)
         quit();
         return false;
     }
-    ttfInit_ = true;
+    fontInitialized_ = true;
     SDL_Log("SDL_TTF initialized.");
 
     if (!MIX_Init())
@@ -51,14 +64,14 @@ bool Application::init(const AppConfig& config)
         quit();
         return false;
     }
-    mixInit_ = true;
+    audioInitialized_ = true;
     SDL_Log("SDL_Mixer initialized.");
 
-    window_.emplace();
-    renderer_.emplace();
-    input_.emplace();
-    audioSystem_.emplace();
-    assets_.emplace(*renderer_, *audioSystem_);
+    window_ = std::make_unique<Window>();
+    renderer_ = std::make_unique<Renderer>();
+    input_ = std::make_unique<Input>();
+    audioSystem_ = std::make_unique<AudioSystem>();
+    assets_ = std::make_unique<AssetManager>(*renderer_, *audioSystem_);
 
     if (!window_->create(config.title, config.width, config.height, config.flags))
     {
@@ -74,7 +87,7 @@ bool Application::init(const AppConfig& config)
         return false;
     }
 #ifdef __APPLE__
-    ApplyMetalOptimizations(renderer_->getSDLRenderer());
+    ApplyMetalOptimizations(renderer_->get());
 #endif
 
     input_->init();
@@ -218,23 +231,23 @@ void Application::cleanup()
     window_.reset();
     SDL_Log("Resources cleaned up.");
 
-    if (mixInit_)
+    if (audioInitialized_)
     {
         SDL_Log("Quitting SDL_mixer...");
         MIX_Quit();
-        mixInit_ = false;
+        audioInitialized_ = false;
     }
-    if (ttfInit_)
+    if (fontInitialized_)
     {
         SDL_Log("Quitting SDL_ttf...");
         TTF_Quit();
-        ttfInit_ = false;
+        fontInitialized_ = false;
     }
-    if (sdlInit_)
+    if (coreInitialized_)
     {
         SDL_Log("Quitting SDL...");
         SDL_Quit();
-        sdlInit_ = false;
+        coreInitialized_ = false;
     }
 
     SDL_Log("Application shutdown complete.");

@@ -19,18 +19,20 @@ struct SDLTextureDeleter
 
 class Texture
 {
+    friend class Renderer;
+
 public:
     bool createFromSurface(const Renderer& renderer, SDL_Surface& surface);
     bool load(const Renderer& renderer, const std::string& path);
     void destroy();
 
-    inline SDL_Texture* getSDLTexture() const { return sdlTexture_.get(); }
     inline float getWidth() const { return width_; }
     inline float getHeight() const { return height_; }
-
     inline bool isValid() const { return sdlTexture_ != nullptr; }
 
 private:
+    inline SDL_Texture* getSDLTexture() const { return sdlTexture_.get(); }
+
     std::unique_ptr<SDL_Texture, SDLTextureDeleter> sdlTexture_;
     float width_ = 0.0f;
     float height_ = 0.0f;

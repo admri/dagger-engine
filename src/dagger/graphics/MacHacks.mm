@@ -1,7 +1,11 @@
 #include <graphics/MacHacks.h>
 
 #ifdef __APPLE__
-#include <SDL3/SDL.h>
+#include <graphics/Renderer.h>
+
+#include <SDL3/SDL_log.h>
+#include <SDL3/SDL_render.h>
+
 #import <QuartzCore/CAMetalLayer.h>
 
 namespace dagger

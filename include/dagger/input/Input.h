@@ -1,14 +1,13 @@
 #ifndef DAGGER_INPUT_INPUT_H
 #define DAGGER_INPUT_INPUT_H
 
-#include <SDL3/SDL_scancode.h>
-
 #include <array>
 
 namespace dagger
 {
 
 enum class Key;
+constexpr int MAX_KEYS = 512;
 
 class Input
 {
@@ -20,7 +19,7 @@ public:
 
 private:
     const bool* keyboardState_ = nullptr;
-    std::array<bool, SDL_SCANCODE_COUNT> previousKeyboardState_ = {};
+    std::array<bool, MAX_KEYS> previousKeyboardState_ = {};
 };
 
 } // namespace dagger

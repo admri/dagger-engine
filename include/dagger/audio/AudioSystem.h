@@ -1,7 +1,7 @@
 #ifndef DAGGER_AUDIO_AUDIO_SYSTEM_H
 #define DAGGER_AUDIO_AUDIO_SYSTEM_H
 
-#include <SDL3_mixer/SDL_mixer.h>
+struct MIX_Mixer;
 
 namespace dagger
 {
@@ -11,33 +11,11 @@ class AudioSystem
 public:
     AudioSystem()
         : mixer_(nullptr) {}
-    ~AudioSystem()
-    {
-        if (mixer_)
-        {
-            MIX_DestroyMixer(mixer_);
-            mixer_ = nullptr;
-        }
-    }
+    ~AudioSystem();
 
-    bool init()
-    {
-        mixer_ = MIX_CreateMixerDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, NULL);
-        if (!mixer_)
-        {
-            SDL_LogError(
-                SDL_LOG_CATEGORY_APPLICATION,
-                "Audio Error: %s",
-                SDL_GetError());
-            return false;
-        }
-        return true;
-    }
+    bool init();
 
-    MIX_Mixer* getMixer()
-    {
-        return mixer_;
-    }
+    MIX_Mixer* getMixer() { return mixer_; }
 
 private:
     MIX_Mixer* mixer_;
