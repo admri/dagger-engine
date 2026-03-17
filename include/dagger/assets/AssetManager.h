@@ -9,8 +9,6 @@
 #include <dagger/audio/Sound.h>
 #include <dagger/graphics/Texture.h>
 
-#include <SDL3/SDL_filesystem.h>
-
 #include <memory>
 #include <string>
 #include <utility>
@@ -19,28 +17,11 @@ namespace dagger
 {
 
 class Renderer;
-class AudioSystem;
 
 class AssetManager
 {
 public:
-    AssetManager(Renderer& renderer, AudioSystem& audio)
-        : renderer_(renderer)
-        , audio_(audio)
-    {
-        const char* basePath = SDL_GetBasePath();
-        if (basePath)
-        {
-            basePath_ = std::string(basePath);
-        }
-        else 
-        {
-            SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,
-                         "Failed to get base path: %s",
-                         SDL_GetError());
-            basePath_ = "";
-        }
-    }
+    AssetManager(Renderer& renderer, AudioSystem& audio);
     AssetManager(const AssetManager&) = delete;
     AssetManager& operator=(const AssetManager&) = delete;
 

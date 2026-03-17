@@ -7,8 +7,8 @@ file(GLOB_RECURSE GAME_SOURCES
 )
 
 file(GLOB_RECURSE GAME_HEADERS
-    ${PROJECT_SOURCE_DIR}/include/delve/*.h
-    ${PROJECT_SOURCE_DIR}/include/delve/*.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/delve/*.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/delve/*.hpp
 )
 
 add_executable(${PROJECT_NAME} ${MAIN_SOURCE} ${GAME_SOURCES} ${GAME_HEADERS})
@@ -19,7 +19,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE
-    ${PROJECT_SOURCE_DIR}/include/delve
+    ${CMAKE_CURRENT_SOURCE_DIR}/delve
 )
 
 add_custom_command(TARGET DungeonCrawler POST_BUILD

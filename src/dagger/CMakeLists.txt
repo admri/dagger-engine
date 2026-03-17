@@ -12,21 +12,24 @@ endif()
 file(GLOB_RECURSE ENGINE_HEADERS
     ${PROJECT_SOURCE_DIR}/include/dagger/*.h
     ${PROJECT_SOURCE_DIR}/include/dagger/*.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/*.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/*.hpp
 )
 
 add_library(dagger STATIC ${ENGINE_SOURCES} ${ENGINE_HEADERS})
 
-target_link_libraries(dagger PUBLIC external)
+target_link_libraries(dagger PRIVATE external)
 
 if(APPLE)
-    target_link_libraries(dagger PUBLIC 
+    target_link_libraries(dagger PRIVATE 
         "-framework Foundation"
         "-framework QuartzCore" 
         "-framework Metal"
     )
 endif()
 
-target_include_directories(dagger PUBLIC
-    ${PROJECT_SOURCE_DIR}/include
-    ${PROJECT_SOURCE_DIR}/include/dagger
+target_include_directories(dagger
+    PUBLIC ${PROJECT_SOURCE_DIR}/include
+    PRIVATE ${PROJECT_SOURCE_DIR}/include/dagger
+    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
 )

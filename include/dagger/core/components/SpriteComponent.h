@@ -5,8 +5,6 @@
 #include <dagger/core/Component.h>
 #include <dagger/graphics/Texture.h>
 
-#include <SDL3/SDL_rect.h>
-
 namespace dagger
 {
 

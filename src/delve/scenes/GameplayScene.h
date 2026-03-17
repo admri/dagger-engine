@@ -1,7 +1,7 @@
 #ifndef DELVE_SCENES_GAMEPLAY_SCENE_H
 #define DELVE_SCENES_GAMEPLAY_SCENE_H
 
-#include <delve/systems/PlayerInputSystem.h>
+#include <systems/PlayerInputSystem.h>
 
 #include <dagger/core/Entity.h>
 #include <dagger/core/Scene.h>
