@@ -2,6 +2,7 @@
 
 #include <assets/AssetManager.h>
 #include <core/Entity.h>
+#include <dagger/core/components/CameraComponent.h>
 #include <core/components/SpriteComponent.h>
 #include <core/components/TextComponent.h>
 #include <core/components/TransformComponent.h>
@@ -71,6 +72,19 @@ void RenderSystem::render(Renderer& renderer, AssetManager& assets, float alpha)
         return a.getZIndex() < b.getZIndex();
     });
 
+    float camX = 0.0f;
+    float camY = 0.0f;
+
+    if (activeCamera_ && activeCamera_->isActive())
+    {
+        auto* camTransform = activeCamera_->getComponent<TransformComponent>();
+        if (camTransform)
+        {
+            camX = camTransform->prevX + (camTransform->x - camTransform->prevX) * alpha;
+            camY = camTransform->prevY + (camTransform->y - camTransform->prevY) * alpha;
+        }
+    }
+
     for (auto& node : nodes_)
     {
         SpriteComponent* sprite = node.sprite;
@@ -87,8 +101,11 @@ void RenderSystem::render(Renderer& renderer, AssetManager& assets, float alpha)
 
         if (sprite) 
         {
+            float screenX = renderX - camX;
+            float screenY = renderY - camY;
+
             Texture* texture = assets.resolve<Texture, TextureHandle>(sprite->texture);
-            if (texture) renderer.drawTexture(*texture, renderX, renderY, nullptr);
+            if (texture) renderer.drawTexture(*texture, screenX, screenY, nullptr);
         }
         else if (text)
         {
@@ -100,7 +117,7 @@ void RenderSystem::render(Renderer& renderer, AssetManager& assets, float alpha)
             if (text->cachedTexture.isValid())
             {
                 Texture* texture = &text->cachedTexture;
-                renderer.drawTexture(*texture, transform->x, transform->y, nullptr);
+                renderer.drawTexture(*texture, renderX, renderY, nullptr);
             }
         }
     }
@@ -109,8 +126,12 @@ void RenderSystem::render(Renderer& renderer, AssetManager& assets, float alpha)
 void RenderSystem::registerEntity(Entity* entity)
 {
     auto* transform = entity->getComponent<TransformComponent>();
-
     if (!transform) return;
+
+    if (entity->hasComponent<CameraComponent>())
+    {
+        activeCamera_ = entity;
+    }
 
     auto* sprite = entity->getComponent<SpriteComponent>();
     auto* text = entity->getComponent<TextComponent>();

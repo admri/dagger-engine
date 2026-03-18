@@ -10,7 +10,6 @@
 #include <memory>
 #include <optional>
 #include <queue>
-#include <stdexcept>
 
 namespace dagger
 {

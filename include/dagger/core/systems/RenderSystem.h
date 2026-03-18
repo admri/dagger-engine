@@ -36,6 +36,7 @@ public:
 
 private:
     std::vector<RenderNode> nodes_;
+    Entity* activeCamera_ = nullptr;
 };
 
 } // namespace dagger

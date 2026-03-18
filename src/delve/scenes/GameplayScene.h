@@ -24,6 +24,7 @@ public:
     void onUpdate(float dt, dagger::Application& app) override;
 
 private:
+    dagger::Entity* camera_ = nullptr;
     dagger::Entity* player_ = nullptr;
     dagger::Entity* fpsDisplay_ = nullptr;
 

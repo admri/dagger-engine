@@ -10,11 +10,12 @@ int main()
     delve::Game game;
 
     dagger::AppConfig config {
-        "Dungeon Crawler",
-        800, 600,
-        dagger::WindowFlags::Resizable,
-        true,  // Show FPS
-        false  // Turn on V-Sync
+        .title = "Dungeon Crawler",
+        .width = 800,
+        .height = 600,
+        .flags = dagger::WindowFlags::Resizable,
+        .showFPS = true,
+        .vsync = true
     };
 
     try
