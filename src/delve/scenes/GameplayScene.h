@@ -9,6 +9,7 @@
 #include <dagger/core/Scene.h>
 
 #include <memory>
+#include <vector>
 
 namespace dagger
 {
@@ -22,7 +23,7 @@ namespace delve
 class GameplayScene : public dagger::Scene
 {
 public:
-    void onInit(dagger::AssetManager& assets) override;
+    void onInit(dagger::Application& app) override;
     void onFixedUpdate(float dt, dagger::Application& app) override;
     void onUpdate(float dt, dagger::Application& app) override;
     void onRender(dagger::Renderer& renderer, dagger::AssetManager& assets, float alpha) override;
@@ -38,6 +39,9 @@ private:
     std::unique_ptr<TileMap> tileMap_;
     dagger::TextureHandle floorTex_;
     dagger::TextureHandle wallTex_;
+
+    std::vector<dagger::Entity*> enemies_;
+    std::vector<dagger::Entity*> projectiles_;
 };
 
 } // namespace delve

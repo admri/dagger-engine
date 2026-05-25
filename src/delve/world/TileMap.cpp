@@ -104,8 +104,8 @@ std::pair<float, float> TileMap::generateDungeon(int maxRooms, int minRoomSize, 
         }
     }
 
-    int wormsPerRoom = 3; 
-    int wormLength = 150; 
+    int wormsPerRoom = 5; 
+    int wormLength = 200; 
 
     for (const auto& room : rooms)
     {

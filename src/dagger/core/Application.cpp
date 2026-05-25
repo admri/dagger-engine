@@ -141,7 +141,7 @@ void Application::run(const AppConfig& config)
         if (nextScene_)
         {
             currentScene_ = std::move(nextScene_);
-            currentScene_->onInit(*assets_);
+            currentScene_->onInit(*this);
         }
 
         // Update

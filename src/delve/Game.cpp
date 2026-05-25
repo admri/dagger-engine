@@ -1,6 +1,6 @@
 #include <Game.h>
 
-#include <scenes/GameplayScene.h>
+#include <scenes/MainMenuScene.h>
 
 #include <dagger/core/GameEvent.h>
 #include <dagger/graphics/Renderer.h>
@@ -14,8 +14,8 @@ using namespace dagger;
 
 bool Game::onInit()
 {
-    auto gameplayScene = std::make_unique<GameplayScene>();
-    setScene(std::move(gameplayScene));
+    auto mainMenuScene = std::make_unique<MainMenuScene>();
+    setScene(std::move(mainMenuScene));
     return true;
 }
 

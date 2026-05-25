@@ -3,6 +3,7 @@
 #include <input/KeyCodes.h>
 
 #include <SDL3/SDL_keyboard.h>
+#include <SDL3/SDL_mouse.h>
 #include <SDL3/SDL_scancode.h>
 
 #include <algorithm>
@@ -107,6 +108,23 @@ bool Input::isKeyDown(Key key) const
 
     SDL_Scancode scancode = mapKey(key);
     return keyboardState_[scancode];
+}
+
+bool Input::isLeftMouseDown() const
+{
+    float x, y;
+    SDL_MouseButtonFlags state = SDL_GetMouseState(&x, &y);
+    
+    return (state & SDL_BUTTON_MASK(SDL_BUTTON_LEFT)) != 0;
+}
+
+void Input::getMousePosition(int* x, int* y) const
+{
+    float floatX, floatY;
+    SDL_GetMouseState(&floatX, &floatY);
+
+    if (x) *x = static_cast<int>(floatX);
+    if (y) *y = static_cast<int>(floatY);
 }
 
 } // namespace dagger

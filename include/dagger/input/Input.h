@@ -14,8 +14,12 @@ class Input
 public:
     void init();
     void update();
+    
     bool isKeyPressed(Key key) const;
     bool isKeyDown(Key key) const;
+
+    bool isLeftMouseDown() const;
+    void getMousePosition(int* x, int* y) const;
 
 private:
     const bool* keyboardState_ = nullptr;

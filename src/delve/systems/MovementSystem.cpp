@@ -22,7 +22,7 @@ void MovementSystem::update(float dt, dagger::TransformComponent& transform, dag
     }
     else
     {
-        velocity.vx = 0.0f; 
+        velocity.vx = 0.0f;
     }
 
     float targetY = transform.y + velocity.vy * dt;
@@ -35,6 +35,25 @@ void MovementSystem::update(float dt, dagger::TransformComponent& transform, dag
     {
         velocity.vy = 0.0f; 
     }
+}
+
+bool MovementSystem::updateProjectile(float dt, dagger::TransformComponent& transform, dagger::VelocityComponent& velocity,
+                                      const TileMap& tileMap, float width, float height)
+{
+    transform.prevX = transform.x;
+    transform.prevY = transform.y;
+
+    float targetX = transform.x + velocity.vx * dt;
+    float targetY = transform.y + velocity.vy * dt;
+
+    if (tileMap.isAreaSolid(targetX, targetY, width, height))
+    {
+        return true; 
+    }
+
+    transform.x = targetX;
+    transform.y = targetY;
+    return false;
 }
 
 } // namespace delve

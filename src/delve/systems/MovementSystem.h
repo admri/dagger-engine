@@ -17,6 +17,9 @@ class MovementSystem
 public:
     void update(float dt, dagger::TransformComponent& transform, dagger::VelocityComponent& velocity,
                 const TileMap& tileMap, float width, float height);
+
+    bool updateProjectile(float dt, dagger::TransformComponent& transform, dagger::VelocityComponent& velocity, 
+                          const TileMap& tileMap, float width, float height);
 };
 
 } // namespace delve
