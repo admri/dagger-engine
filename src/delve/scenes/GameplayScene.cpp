@@ -99,10 +99,11 @@ void GameplayScene::onFixedUpdate(float dt, dagger::Application& app)
             auto* camTransform = camera_->getComponent<dagger::TransformComponent>();
             if (camTransform)
             {
-                camTransform->setPosition(
-                    pTransform->x - (800.0f / 2.0f) + (pSprite->width / 2.0f),
-                    pTransform->y - (600.0f / 2.0f)+ (pSprite->width / 2.0f)
-                );
+                camTransform->prevX = camTransform->x;
+                camTransform->prevY = camTransform->y;
+
+                camTransform->x = pTransform->x - (800.0f / 2.0f) + (pSprite->width / 2.0f);
+                camTransform->y = pTransform->y - (600.0f / 2.0f) + (pSprite->height / 2.0f);
             }
         }
     }
