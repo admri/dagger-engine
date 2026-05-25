@@ -67,21 +67,24 @@ void Renderer::present()
     SDL_RenderPresent(sdlRenderer_.get());
 }
 
-void Renderer::drawTexture(const Texture& texture, float x, float y, const SDL_FRect* srcRect)
+void Renderer::drawTexture(const Texture& texture, const Rect& dstRect, const Rect* srcRect)
 {
     if (!sdlRenderer_ || !texture.getSDLTexture())
     {
         return;
     }
 
-    SDL_FRect dstRect = {
-        x, 
-        y, 
-        (srcRect ? srcRect->w : texture.getWidth()),
-        (srcRect ? srcRect->h : texture.getHeight())
-    };
+    SDL_FRect sdlDstRect = { dstRect.x, dstRect.y, dstRect.w, dstRect.h };
 
-    if (!SDL_RenderTexture(sdlRenderer_.get(), texture.getSDLTexture(), srcRect, &dstRect))
+    SDL_FRect sdlSrcRect;
+    SDL_FRect* pSrcRect = nullptr;
+    if (srcRect)
+    {
+        sdlSrcRect = { srcRect->x, srcRect->y, srcRect->w, srcRect->h };
+        pSrcRect = &sdlSrcRect;
+    }
+
+    if (!SDL_RenderTexture(sdlRenderer_.get(), texture.getSDLTexture(), pSrcRect, &sdlDstRect))
     {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to render texture: %s", SDL_GetError());
     }

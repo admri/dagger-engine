@@ -44,6 +44,8 @@ bool Window::create(const std::string& title, int width, int height, WindowFlags
         return false;
     }
 
+    width_ = width;
+    height_ = height;
     sdlWindow_.reset(window);
     return true;
 }
@@ -56,6 +58,22 @@ void Window::destroy()
     }
 
     sdlWindow_.reset();
+}
+
+int Window::getWidth() const
+{
+    if (!sdlWindow_) return 0;
+    int w, h;
+    SDL_GetWindowSizeInPixels(sdlWindow_.get(), &w, &h);
+    return w;
+}
+
+int Window::getHeight() const
+{
+    if (!sdlWindow_) return 0;
+    int w, h;
+    SDL_GetWindowSizeInPixels(sdlWindow_.get(), &w, &h);
+    return h;
 }
 
 void Window::setTitle(const std::string &title)

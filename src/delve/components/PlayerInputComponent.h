@@ -8,7 +8,7 @@ namespace delve
 
 struct PlayerInputComponent : dagger::Component
 {
-    float speed = 300.0f;
+    float speed = 500.0f;
 };
 
 } // namespace delve

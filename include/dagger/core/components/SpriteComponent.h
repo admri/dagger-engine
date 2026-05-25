@@ -11,8 +11,8 @@ namespace dagger
 struct SpriteComponent : public Component
 {
     TextureHandle texture;
-    int width;
-    int height;
+    float width = 0.0f;
+    float height = 0.0f;
     int zIndex = 0;
 };
 

@@ -12,6 +12,7 @@
 #include <dagger/core/components/TransformComponent.h>
 #include <dagger/core/components/VelocityComponent.h>
 #include <dagger/graphics/Texture.h>
+#include "GameplayScene.h"
 
 namespace delve
 {
@@ -23,6 +24,22 @@ void GameplayScene::onInit(dagger::AssetManager& assets)
     auto enemyTexture = assets.load<dagger::Texture>("enemy", "assets/enemy.png");
     auto uiFont = assets.load<dagger::Font>("ui", "assets/fonts/RobotoMono-Regular.ttf", 16);
 
+    floorTex_ = assets.load<dagger::Texture>("floor", "assets/grass4.png");
+    wallTex_ = assets.load<dagger::Texture>("wall", "assets/water1.png");
+
+    // Map
+    tileMap_ = std::make_unique<TileMap>(60, 60, 64.0f);
+
+    auto spawnPoint = tileMap_->generateDungeon(15, 5, 10);
+
+    for (int y = 20; y < 30; ++y)
+    {
+        for (int x = 20; x < 30; ++x)
+        {
+            tileMap_->setTile(x, y, TileType::Floor);
+        }
+    }
+
     // Camera
     camera_ = createEntity();
     camera_->addComponent<dagger::TransformComponent>();
@@ -32,16 +49,18 @@ void GameplayScene::onInit(dagger::AssetManager& assets)
     player_ = createEntity();
 
     auto& pTransform = player_->addComponent<dagger::TransformComponent>();
-    pTransform.setPosition(100.0f, 100.0f);
+    pTransform.setPosition(spawnPoint.first, spawnPoint.second);
 
     auto& pSprite = player_->addComponent<dagger::SpriteComponent>();
     pSprite.texture = playerTexture;
     pSprite.zIndex = 10;
-    if (auto* texPtr = assets.resolve<dagger::Texture>(playerTexture))
+    /*if (auto* texPtr = assets.resolve<dagger::Texture>(playerTexture))
     {
         pSprite.width = texPtr->getWidth();
         pSprite.height = texPtr->getHeight();
-    }
+    }*/
+    pSprite.width = 48.0f;
+    pSprite.height = 48.0f;
 
     player_->addComponent<dagger::VelocityComponent>();
     player_->addComponent<PlayerInputComponent>();
@@ -92,7 +111,7 @@ void GameplayScene::onFixedUpdate(float dt, dagger::Application& app)
     if (pTransform && pSprite && pVelocity && pInput)
     {
         inputSystem_.update(app.getInput(), *pVelocity, *pInput);
-        movementSystem_.update(dt, *pTransform, *pVelocity);
+        movementSystem_.update(dt, *pTransform, *pVelocity, *tileMap_, pSprite->width, pSprite->height);
 
         if (camera_)
         {
@@ -102,8 +121,11 @@ void GameplayScene::onFixedUpdate(float dt, dagger::Application& app)
                 camTransform->prevX = camTransform->x;
                 camTransform->prevY = camTransform->y;
 
-                camTransform->x = pTransform->x - (800.0f / 2.0f) + (pSprite->width / 2.0f);
-                camTransform->y = pTransform->y - (600.0f / 2.0f) + (pSprite->height / 2.0f);
+                float screenW = static_cast<float>(app.getWindowWidth());
+                float screenH = static_cast<float>(app.getWindowHeight());
+
+                camTransform->x = pTransform->x - (screenW / 2.0f) + (pSprite->width / 2.0f);
+                camTransform->y = pTransform->y - (screenH / 2.0f) + (pSprite->height / 2.0f);
             }
         }
     }
@@ -111,6 +133,34 @@ void GameplayScene::onFixedUpdate(float dt, dagger::Application& app)
 
 void GameplayScene::onUpdate(float dt, dagger::Application& app)
 {
+}
+
+void GameplayScene::onRender(dagger::Renderer &renderer, dagger::AssetManager &assets, float alpha)
+{
+    float camX = 0.0f;
+    float camY = 0.0f;
+
+    if (camera_)
+    {
+        auto* camTransform = camera_->getComponent<dagger::TransformComponent>();
+        if (camTransform)
+        {
+            camX = camTransform->prevX + (camTransform->x - camTransform->prevX) * alpha;
+            camY = camTransform->prevY + (camTransform->y - camTransform->prevY) * alpha;
+        }
+    }
+
+    if (tileMap_)
+    {
+        auto* floor = assets.resolve<dagger::Texture>(floorTex_);
+        auto* wall = assets.resolve<dagger::Texture>(wallTex_);
+        if (floor && wall)
+        {
+            tileMap_->render(renderer, *floor, *wall, camX, camY);
+        }
+    }
+
+    renderSystem_.render(renderer, assets, alpha);
 }
 
 } // namespace delve

@@ -25,9 +25,13 @@ public:
     void setTitle(const std::string& title);
     
     inline SDL_Window* getSDLWindow() const { return sdlWindow_.get(); };
+    int getWidth() const;
+    int getHeight() const;
 
 private:
     std::unique_ptr<SDL_Window, SDLWindowDeleter> sdlWindow_;
+    int width_;
+    int height_;
 };
 
 } // namespace dagger

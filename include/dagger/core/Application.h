@@ -39,6 +39,8 @@ public:
     inline AssetManager& getAssets()     { assert(assets_      != nullptr && "Asset manager accessed before Application::init()!"); return *assets_; }
     
     inline int getFPS() const { return currentFPS_; }
+    int getWindowWidth() const;
+    int getWindowHeight() const;
 
     inline void setScene(std::unique_ptr<Scene> scene) { nextScene_ = std::move(scene); }
 

@@ -105,7 +105,10 @@ void RenderSystem::render(Renderer& renderer, AssetManager& assets, float alpha)
             float screenY = renderY - camY;
 
             Texture* texture = assets.resolve<Texture, TextureHandle>(sprite->texture);
-            if (texture) renderer.drawTexture(*texture, screenX, screenY, nullptr);
+            if (texture)
+            {
+                renderer.drawTexture(*texture, { screenX, screenY, sprite->width, sprite->height });
+            }
         }
         else if (text)
         {
@@ -117,7 +120,7 @@ void RenderSystem::render(Renderer& renderer, AssetManager& assets, float alpha)
             if (text->cachedTexture.isValid())
             {
                 Texture* texture = &text->cachedTexture;
-                renderer.drawTexture(*texture, renderX, renderY, nullptr);
+                renderer.drawTexture(*texture, { renderX, renderY, texture->getWidth(), texture->getHeight() });
             }
         }
     }

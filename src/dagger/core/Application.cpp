@@ -218,6 +218,16 @@ void Application::updateFPS()
     frameCount_++;
 }
 
+int Application::getWindowWidth() const
+{
+    return window_->getWidth();
+}
+
+int Application::getWindowHeight() const
+{
+    return window_->getHeight();
+}
+
 void Application::cleanup()
 {
     SDL_Log("Shutting down application...");

@@ -2,11 +2,11 @@
 #define DAGGER_GRAPHICS_RENDERER_H
 
 #include <dagger/graphics/Color.h>
+#include <dagger/graphics/Rect.h>
 
 #include <memory>
 
 struct SDL_Renderer;
-struct SDL_FRect;
 
 namespace dagger
 {
@@ -31,7 +31,7 @@ public:
     void clear(Color clearColor = Colors::Black);
     void present();
 
-    void drawTexture(const Texture& texture, float x, float y, const SDL_FRect* srcRect = nullptr);
+    void drawTexture(const Texture& texture, const Rect& dstRect, const Rect* srcRect = nullptr);
 
     void toggleVSync();
 
