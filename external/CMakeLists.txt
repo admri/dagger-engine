@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 
+include(FetchContent)
+
 include(${CMAKE_CURRENT_LIST_DIR}/external_config.cmake)
 
 if (USE_PREBUILT_EXTERNAL)
@@ -35,12 +37,39 @@ if (USE_PREBUILT_EXTERNAL)
 
 else()
 
-    message(STATUS "Building external libraries from source")
+    message(STATUS "Fetching external libraries from GitHub...")
 
-    add_subdirectory(SDL EXCLUDE_FROM_ALL)
-    add_subdirectory(SDL_image EXCLUDE_FROM_ALL)
-    add_subdirectory(SDL_ttf EXCLUDE_FROM_ALL)
-    add_subdirectory(SDL_mixer EXCLUDE_FROM_ALL)
+    # SDL
+    FetchContent_Declare(
+        SDL3
+        GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
+        GIT_TAG release-3.4.8
+    )
+    FetchContent_MakeAvailable(SDL3)
+
+    # SDL_image
+    FetchContent_Declare(
+        SDL3_image
+        GIT_REPOSITORY https://github.com/libsdl-org/SDL_image.git
+        GIT_TAG release-3.4.4
+    )
+    FetchContent_MakeAvailable(SDL3_image)
+
+    # SDL_ttf
+    FetchContent_Declare(
+        SDL3_ttf
+        GIT_REPOSITORY https://github.com/libsdl-org/SDL_ttf.git
+        GIT_TAG release-3.2.2
+    )
+    FetchContent_MakeAvailable(SDL3_ttf)
+
+    # SDL_mixer
+    FetchContent_Declare(
+        SDL3_mixer
+        GIT_REPOSITORY https://github.com/libsdl-org/SDL_mixer.git
+        GIT_TAG release-3.2.2
+    )
+    FetchContent_MakeAvailable(SDL3_mixer)
 
 endif()
 

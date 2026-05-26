@@ -43,7 +43,7 @@ if(MSVC)
 else()
     add_compile_options("$<$<CONFIG:Release>:-O3;-ffast-math>")
     
-    add_compile_options("$<$<CONFIG:Release>:-march=native>")
+    # add_compile_options("$<$<CONFIG:Release>:-march=native>")
 endif()
 
 add_subdirectory(external)

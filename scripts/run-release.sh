@@ -9,12 +9,18 @@ if [ ! -d build ]; then
     mkdir build || { echo "ERROR: Failed to create build directory!"; exit 1; }
 fi
 
-echo "Configuring CMake for Demo build..."
-cmake -S . -B build -DUSE_PREBUILT_EXTERNAL=ON -DCMAKE_BUILD_TYPE=Release || { echo "ERROR: CMake configuration failed!"; exit 1; }
+echo "Configuring CMake for Release build..."
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release || { echo "ERROR: CMake configuration failed!"; exit 1; }
 
 CPU_CORES=$(nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 1)
 echo "Building project using $CPU_CORES cores..."
 cmake --build build --config Release -j"$CPU_CORES" || { echo "ERROR: Build failed!"; exit 1; }
+
+if [ -d "build/Release" ]; then
+    OUTPUT_DIR="build/Release"
+else
+    OUTPUT_DIR="build"
+fi
 
 echo
 echo "Build succeeded! Running the program..."

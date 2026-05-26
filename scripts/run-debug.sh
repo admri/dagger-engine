@@ -4,9 +4,6 @@ cd "$(dirname "$0")/.." || { echo "ERROR: Cannot change to project root"; exit 1
 set -e
 set -o pipefail
 
-echo "Updating git submodules..."
-git submodule update --init --recursive || { echo "ERROR: Git submodule update failed!"; exit 1; }
-
 if [ ! -d build ]; then
     echo "Creating build directory..."
     mkdir build || { echo "ERROR: Failed to create build directory!"; exit 1; }

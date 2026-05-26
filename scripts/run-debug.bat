@@ -4,14 +4,6 @@ setlocal
 cd /d "%~dp0"
 cd ..
 
-echo Updating git submodules...
-git submodule update --init --recursive
-if errorlevel 1 (
-    echo ERROR: Git submodule update failed!
-    pause
-    exit /b 1
-)
-
 if not exist build (
     echo Creating build directory...
     mkdir build

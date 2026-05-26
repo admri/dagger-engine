@@ -14,8 +14,8 @@ if not exist build (
     )
 )
 
-echo Configuring CMake for Demo build...
-cmake -S . -B build -DUSE_PREBUILT_EXTERNAL=ON
+echo Configuring CMake for Release build...
+cmake -S . -B build
 if errorlevel 1 (
     echo ERROR: CMake configuration failed!
     pause
