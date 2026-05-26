@@ -1,11 +1,10 @@
+#include <dagger/main.h>
 #include <Game.h>
-
-#include <dagger/core/AppConfig.h>
 
 #include <iostream>
 #include <stdexcept>
 
-int main()
+int main(int argc, char* argv[])
 {
     delve::Game game;
 
