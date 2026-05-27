@@ -1,31 +1,25 @@
 @echo off
 setlocal
 
-cd /d "%~dp0"
-cd ..
+pushd "%~dp0.."
 
 if not exist build (
-    echo Creating build directory...
+    echo Creating build directory and configuring CMake for Release build...
     mkdir build
+    cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -Wno-dev
     if errorlevel 1 (
-        echo ERROR: Failed to create build directory!
+        echo ERROR: CMake configuration failed!
+        popd
         pause
         exit /b 1
     )
 )
 
-echo Configuring CMake for Release build...
-cmake -S . -B build
-if errorlevel 1 (
-    echo ERROR: CMake configuration failed!
-    pause
-    exit /b 1
-)
-
 echo Building project...
-cmake --build build --config Release
+cmake --build build --config Release --parallel
 if errorlevel 1 (
     echo ERROR: Build failed!
+    popd
     pause
     exit /b 1
 )
@@ -39,4 +33,5 @@ echo.
 echo Build succeeded! You can find the release build in %OUTPUT_DIR%.
 echo.
 
+popd
 pause

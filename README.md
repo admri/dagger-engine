@@ -41,7 +41,7 @@ cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 3. Build the project:
 
 ```bash
-cmake --build build --config Release
+cmake --build build --config Release --parallel
 ```
 
 4. Run the game:
@@ -71,4 +71,3 @@ If you prefer an automated one-click solution, the `scripts` folder contains uti
 ```bash
 ./scripts/run-release.sh
 ```
-

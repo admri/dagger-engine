@@ -1,20 +1,17 @@
 #!/bin/bash
-cd "$(dirname "$0")/.." || { echo "ERROR: Cannot change to project root"; exit 1; }
-
 set -e
 set -o pipefail
 
+pushd "$(dirname "$0")/.." > /dev/null || { echo "ERROR: Cannot change to project root"; exit 1; }
+
 if [ ! -d build ]; then
-    echo "Creating build directory..."
-    mkdir build || { echo "ERROR: Failed to create build directory!"; exit 1; }
+    echo "Creating build directory and configuring CMake for Release build..."
+    mkdir build || { echo "ERROR: Failed to create build directory!"; popd > /dev/null; exit 1; }
+    cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -Wno-dev || { echo "ERROR: CMake configuration failed!"; popd > /dev/null; exit 1; }
 fi
 
-echo "Configuring CMake for Release build..."
-cmake -S . -B build -DCMAKE_BUILD_TYPE=Release || { echo "ERROR: CMake configuration failed!"; exit 1; }
-
-CPU_CORES=$(nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 1)
-echo "Building project using $CPU_CORES cores..."
-cmake --build build --config Release -j"$CPU_CORES" || { echo "ERROR: Build failed!"; exit 1; }
+echo "Building project..."
+cmake --build build --config Release --parallel || { echo "ERROR: Build failed!"; popd > /dev/null; exit 1; }
 
 if [ -d "build/Release" ]; then
     OUTPUT_DIR="build/Release"
@@ -24,3 +21,5 @@ fi
 
 echo
 echo "Build succeeded! You can find the release build in '$OUTPUT_DIR'"
+
+popd > /dev/null

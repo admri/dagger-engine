@@ -1,40 +1,41 @@
 @echo off
 setlocal
 
-cd /d "%~dp0"
-cd ..
+pushd "%~dp0.."
 
 if not exist build (
-    echo Creating build directory...
+    echo Creating build directory and configuring CMake for Release build...
     mkdir build
+    cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -Wno-dev
     if errorlevel 1 (
-        echo ERROR: Failed to create build directory!
+        echo ERROR: CMake configuration failed!
+        popd
         pause
         exit /b 1
     )
 )
 
-echo Configuring CMake for Release build...
-cmake -S . -B build
+echo Building project...
+cmake --build build --config Release --parallel
 if errorlevel 1 (
-    echo ERROR: CMake configuration failed!
+    echo ERROR: Build failed!
+    popd
     pause
     exit /b 1
 )
 
-echo Building project...
-cmake --build build --config Release
-if errorlevel 1 (
-    echo ERROR: Build failed!
-    pause
-    exit /b 1
+set "OUTPUT_DIR=build"
+if exist "build\Release" (
+    set "OUTPUT_DIR=build\Release"
 )
 
 echo.
 echo Build succeeded! Running the program...
 echo.
 
-cd .\build\Release
+pushd %OUTPUT_DIR%
 .\DungeonCrawler.exe
+popd
 
+popd
 pause

@@ -17,6 +17,9 @@ file(GLOB_RECURSE ENGINE_HEADERS
 )
 
 add_library(dagger STATIC ${ENGINE_SOURCES} ${ENGINE_HEADERS})
+if(ipo_supported)
+    set_target_properties(dagger PROPERTIES INTERPROCEDURAL_OPTIMIZATION TRUE)
+endif()
 
 target_link_libraries(dagger PRIVATE external)
 

@@ -12,6 +12,9 @@ file(GLOB_RECURSE GAME_HEADERS
 )
 
 add_executable(${PROJECT_NAME} ${MAIN_SOURCE} ${GAME_SOURCES} ${GAME_HEADERS})
+if(ipo_supported)
+    set_target_properties(${PROJECT_NAME} PROPERTIES INTERPROCEDURAL_OPTIMIZATION TRUE)
+endif()
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
     dagger

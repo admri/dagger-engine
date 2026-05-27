@@ -1,7 +1,10 @@
 cmake_minimum_required(VERSION 3.16)
 
-include(FetchContent)
+if(POLICY CMP0135)
+    cmake_policy(SET CMP0135 NEW)
+endif()
 
+include(FetchContent)
 include(${CMAKE_CURRENT_LIST_DIR}/external_config.cmake)
 
 if (USE_PREBUILT_EXTERNAL)
@@ -40,10 +43,12 @@ else()
     message(STATUS "Fetching external libraries from GitHub...")
 
     # SDL
+    message(STATUS "Downloading and configuring SDL3...")
     FetchContent_Declare(
         SDL3
         GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
         GIT_TAG release-3.4.8
+        GIT_SHALLOW TRUE
     )
     FetchContent_MakeAvailable(SDL3)
 
@@ -52,22 +57,27 @@ else()
         SDL3_image
         GIT_REPOSITORY https://github.com/libsdl-org/SDL_image.git
         GIT_TAG release-3.4.4
+        GIT_SHALLOW TRUE
     )
     FetchContent_MakeAvailable(SDL3_image)
 
     # SDL_ttf
+    message(STATUS "Downloading and configuring SDL3_ttf...")
     FetchContent_Declare(
         SDL3_ttf
         GIT_REPOSITORY https://github.com/libsdl-org/SDL_ttf.git
         GIT_TAG release-3.2.2
+        GIT_SHALLOW TRUE
     )
     FetchContent_MakeAvailable(SDL3_ttf)
 
     # SDL_mixer
+    message(STATUS "Downloading and configuring SDL3_mixer...")
     FetchContent_Declare(
         SDL3_mixer
         GIT_REPOSITORY https://github.com/libsdl-org/SDL_mixer.git
         GIT_TAG release-3.2.2
+        GIT_SHALLOW TRUE
     )
     FetchContent_MakeAvailable(SDL3_mixer)
 
