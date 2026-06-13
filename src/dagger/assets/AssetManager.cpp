@@ -13,14 +13,14 @@ AssetManager::AssetManager(Renderer& renderer, AudioSystem& audio)
     const char* basePath = SDL_GetBasePath();
     if (basePath)
     {
-        basePath_ = std::string(basePath);
+        basePath_ = std::string(basePath) + "assets/";
     }
     else 
     {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,
                      "Failed to get base path: %s",
                      SDL_GetError());
-        basePath_ = "";
+        basePath_ = "assets/";
     }
 }
 

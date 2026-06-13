@@ -19,7 +19,7 @@ class MainMenuScene : public dagger::Scene
 public:
     void onInit(dagger::Application& app) override
     {
-        auto uiFont = app.getAssets().load<dagger::Font>("ui", "assets/fonts/RobotoMono-Regular.ttf", 24);
+        auto uiFont = app.getAssets().load<dagger::Font>("ui", "fonts/RobotoMono-Regular.ttf", 24);
 
         float centerX = (app.getWindowWidth() / 2.0f) - 120.0f;
         float startY = 150.0f;

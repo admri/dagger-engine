@@ -25,13 +25,18 @@ public:
     AssetManager(const AssetManager&) = delete;
     AssetManager& operator=(const AssetManager&) = delete;
 
+    std::string getAbsolutePath(const std::string& relativePath) const
+    {
+        return basePath_ + relativePath;
+    }
+
     template <typename T, typename... Args>
     auto load(const std::string& id, const std::string& filePath = "", Args&&... args)
     {
         auto& manager = getManager<T>();
         if (manager.has(id)) return manager.getHandle(id);
 
-        std::string absolutePath = basePath_ + filePath;
+        std::string absolutePath = getAbsolutePath(filePath);
 
         T newRes;
         bool success = false;

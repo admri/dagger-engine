@@ -12,6 +12,7 @@
 #include <systems/CollisionSystem.h>
 
 #include <dagger/assets/AssetManager.h>
+#include <dagger/assets/AssetPreloader.h>
 #include <dagger/assets/Font.h>
 #include <dagger/assets/ResourceHandle.h>
 #include <dagger/core/Application.h>
@@ -36,12 +37,14 @@ void GameplayScene::onInit(dagger::Application& app)
 
     // Load assets
     auto& assets = app.getAssets();
+    dagger::AssetPreloader::loadFromManifest("manifests/level1.json", assets);
 
-    auto uiFont = assets.load<dagger::Font>("ui", "assets/fonts/RobotoMono-Regular.ttf", 16);
-    auto playerTexture = assets.load<dagger::Texture>("player", "assets/player.png");
-    auto enemyTexture = assets.load<dagger::Texture>("enemy", "assets/crawl-tiles/dc-mon/orc_knight.png");
-    floorTex_ = assets.load<dagger::Texture>("floor", "assets/crawl-tiles/dc-dngn/floor/pebble_brown0.png");
-    wallTex_ = assets.load<dagger::Texture>("wall", "assets/crawl-tiles/dc-dngn/wall/lair1.png");
+    auto uiFont = assets.get<dagger::Font>("ui");
+    auto playerTexture = assets.get<dagger::Texture>("player");
+    auto enemyTexture = assets.get<dagger::Texture>("enemy");
+
+    floorTex_ = assets.get<dagger::Texture>("floor");
+    wallTex_ = assets.get<dagger::Texture>("wall");
     
     // UI
     UIFactory::createFPSDisplay(*this, uiFont, 20.0f, 20.0f);

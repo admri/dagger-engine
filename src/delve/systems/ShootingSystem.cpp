@@ -52,7 +52,7 @@ void ShootingSystem::update(float dt, dagger::Application& app, dagger::Scene& s
             fTransform.setPosition(startX - 8.0f, startY - 8.0f); 
 
             auto& fSprite = fireball->addComponent<dagger::SpriteComponent>();
-            fSprite.texture = app.getAssets().load<dagger::Texture>("fireball", "assets/crawl-tiles/spells/conjuration/orb_of_destruction.png"); 
+            fSprite.texture = app.getAssets().get<dagger::Texture>("fireball"); 
             fSprite.width = 16.0f; fSprite.height = 16.0f; fSprite.zIndex = 5;
 
             auto& fVelocity = fireball->addComponent<dagger::VelocityComponent>();

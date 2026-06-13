@@ -1,0 +1,12 @@
+{
+  "textures": [
+    { "id": "player", "path": "player.png" },
+    { "id": "enemy", "path": "crawl-tiles/dc-mon/orc_knight.png" },
+    { "id": "fireball", "path": "crawl-tiles/spells/conjuration/orb_of_destruction.png" },
+    { "id": "floor", "path": "crawl-tiles/dc-dngn/floor/pebble_brown0.png" },
+    { "id": "wall", "path": "crawl-tiles/dc-dngn/wall/lair1.png" }
+  ],
+  "fonts": [
+    { "id": "ui", "path": "fonts/RobotoMono-Regular.ttf", "size": 16 }
+  ]
+}

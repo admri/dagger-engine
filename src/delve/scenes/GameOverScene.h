@@ -18,7 +18,7 @@ class GameOverScene : public dagger::Scene
 public:
     void onInit(dagger::Application& app) override
     {
-        auto uiFont = app.getAssets().load<dagger::Font>("ui", "assets/fonts/RobotoMono-Regular.ttf", 24);
+        auto uiFont = app.getAssets().load<dagger::Font>("ui", "fonts/RobotoMono-Regular.ttf", 24);
 
         dagger::Entity* title = createEntity();
         auto& tTransform = title->addComponent<dagger::TransformComponent>();
