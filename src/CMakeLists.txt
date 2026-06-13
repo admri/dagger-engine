@@ -2,16 +2,43 @@ cmake_minimum_required(VERSION 3.16)
 
 set(MAIN_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
 
-file(GLOB_RECURSE GAME_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/delve/*.cpp
+set(DELVE_SOURCES
+    delve/Game.cpp
+    delve/factories/CharacterFactory.cpp
+    delve/factories/UIFactory.cpp
+    delve/scenes/GameplayScene.cpp
+    delve/systems/CollisionSystem.cpp
+    delve/systems/CombatSystem.cpp
+    delve/systems/EnemyAISystem.cpp
+    delve/systems/MovementSystem.cpp
+    delve/systems/PlayerInputSystem.cpp
+    delve/systems/ShootingSystem.cpp
+    delve/world/TileMap.cpp
 )
 
-file(GLOB_RECURSE GAME_HEADERS
-    ${CMAKE_CURRENT_SOURCE_DIR}/delve/*.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/delve/*.hpp
+set(DELVE_HEADERS
+    delve/Game.h
+    delve/components/EnemyAIComponent.h
+    delve/components/HealthComponent.h
+    delve/components/PlayerInputComponent.h
+    delve/components/ProjectileComponent.h
+    delve/components/WeaponComponent.h
+    delve/factories/CharacterFactory.h
+    delve/factories/UIFactory.h
+    delve/scenes/GameOverScene.h
+    delve/scenes/GameplayScene.h
+    delve/scenes/MainMenuScene.h
+    delve/systems/CollisionSystem.h
+    delve/systems/CombatSystem.h
+    delve/systems/EnemyAISystem.h
+    delve/systems/MovementSystem.h
+    delve/systems/PlayerInputSystem.h
+    delve/systems/ShootingSystem.h
+    delve/systems/UISystem.h
+    delve/world/TileMap.h
 )
 
-add_executable(${PROJECT_NAME} ${MAIN_SOURCE} ${GAME_SOURCES} ${GAME_HEADERS})
+add_executable(${PROJECT_NAME} ${MAIN_SOURCE} ${DELVE_SOURCES} ${DELVE_HEADERS})
 if(ipo_supported)
     set_target_properties(${PROJECT_NAME} PROPERTIES INTERPROCEDURAL_OPTIMIZATION TRUE)
 endif()

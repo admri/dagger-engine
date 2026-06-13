@@ -3,19 +3,18 @@
 
 namespace dagger
 {
-    class Input;
-    class VelocityComponent;
+    class Application;
+    class Scene;
+    class Entity;
 }
 
 namespace delve
 {
 
-struct PlayerInputComponent;
-
 class PlayerInputSystem
 {
 public:
-    void update(dagger::Input& input, dagger::VelocityComponent& vel, const PlayerInputComponent& playerInput);
+    void update(dagger::Application& app, dagger::Scene& scene, dagger::Entity* camera);
 };
 
 } // namespace delve

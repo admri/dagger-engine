@@ -8,7 +8,7 @@ namespace delve
 
 struct ProjectileComponent : public dagger::Component
 {
-    bool active = true; 
+    int damage = 1;
 };
 
 } // namespace delve

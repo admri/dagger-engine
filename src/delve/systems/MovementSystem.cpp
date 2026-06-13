@@ -1,16 +1,23 @@
 #include <systems/MovementSystem.h>
 
+#include <components/PlayerInputComponent.h>
+#include <components/ProjectileComponent.h>
 #include <world/TileMap.h>
 
+#include <dagger/core/Scene.h>
+#include <dagger/core/Entity.h>
 #include <dagger/core/components/TransformComponent.h>
 #include <dagger/core/components/VelocityComponent.h>
+#include <dagger/core/components/SpriteComponent.h>
 
 namespace delve
 {
 
-void MovementSystem::update(float dt, dagger::TransformComponent& transform, dagger::VelocityComponent& velocity,
+bool MovementSystem::update(float dt, dagger::TransformComponent& transform, dagger::VelocityComponent& velocity,
                             const TileMap& tileMap, float width, float height)
 {
+    bool hitWall = false;
+
     transform.prevX = transform.x;
     transform.prevY = transform.y;
 
@@ -23,6 +30,7 @@ void MovementSystem::update(float dt, dagger::TransformComponent& transform, dag
     else
     {
         velocity.vx = 0.0f;
+        hitWall = true;
     }
 
     float targetY = transform.y + velocity.vy * dt;
@@ -34,26 +42,42 @@ void MovementSystem::update(float dt, dagger::TransformComponent& transform, dag
     else
     {
         velocity.vy = 0.0f; 
+        hitWall = true;
     }
+
+    return hitWall;
 }
 
-bool MovementSystem::updateProjectile(float dt, dagger::TransformComponent& transform, dagger::VelocityComponent& velocity,
-                                      const TileMap& tileMap, float width, float height)
+void MovementSystem::updateAll(float dt, dagger::Scene& scene, TileMap& map)
 {
-    transform.prevX = transform.x;
-    transform.prevY = transform.y;
-
-    float targetX = transform.x + velocity.vx * dt;
-    float targetY = transform.y + velocity.vy * dt;
-
-    if (tileMap.isAreaSolid(targetX, targetY, width, height))
+    // Player movement
+    auto players = scene.getEntitiesWith<dagger::TransformComponent, dagger::VelocityComponent, dagger::SpriteComponent, PlayerInputComponent>();
+    for (auto* player : players)
     {
-        return true; 
+        auto* t = player->getComponent<dagger::TransformComponent>();
+        auto* v = player->getComponent<dagger::VelocityComponent>();
+        auto* s = player->getComponent<dagger::SpriteComponent>();
+        
+        update(dt, *t, *v, map, s->width, s->height);
     }
 
-    transform.x = targetX;
-    transform.y = targetY;
-    return false;
+    // Projectile movement
+    auto projectiles = scene.getEntitiesWith<dagger::TransformComponent, dagger::VelocityComponent, dagger::SpriteComponent, ProjectileComponent>();
+    for (auto* proj : projectiles)
+    {
+        if (!proj->isActive()) continue;
+
+        auto* t = proj->getComponent<dagger::TransformComponent>();
+        auto* v = proj->getComponent<dagger::VelocityComponent>();
+        auto* s = proj->getComponent<dagger::SpriteComponent>();
+
+        bool didHit = update(dt, *t, *v, map, s->width, s->height);
+        
+        if (didHit)
+        {
+            proj->setActive(false);
+        }
+    }
 }
 
 } // namespace delve

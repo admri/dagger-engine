@@ -5,6 +5,7 @@ namespace dagger
 {
     struct TransformComponent;
     struct VelocityComponent;
+    struct Scene;
 }
 
 namespace delve
@@ -15,11 +16,8 @@ class TileMap;
 class MovementSystem
 {
 public:
-    void update(float dt, dagger::TransformComponent& transform, dagger::VelocityComponent& velocity,
-                const TileMap& tileMap, float width, float height);
-
-    bool updateProjectile(float dt, dagger::TransformComponent& transform, dagger::VelocityComponent& velocity, 
-                          const TileMap& tileMap, float width, float height);
+    bool update(float dt, dagger::TransformComponent& transform, dagger::VelocityComponent& velocity, const TileMap& map, float w, float h);
+    void updateAll(float dt, dagger::Scene& scene, TileMap& map);
 };
 
 } // namespace delve

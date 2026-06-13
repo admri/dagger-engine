@@ -1,12 +1,17 @@
 #ifndef DELVE_SCENES_GAMEPLAY_SCENE_H
 #define DELVE_SCENES_GAMEPLAY_SCENE_H
 
+#include <systems/CombatSystem.h>
+#include <systems/EnemyAISystem.h>
 #include <systems/MovementSystem.h>
 #include <systems/PlayerInputSystem.h>
+#include <systems/ShootingSystem.h>
+#include <systems/UISystem.h>
 #include <world/TileMap.h>
 
 #include <dagger/core/Entity.h>
 #include <dagger/core/Scene.h>
+#include <dagger/core/systems/CameraSystem.h>
 
 #include <memory>
 #include <vector>
@@ -31,17 +36,18 @@ public:
 private:
     dagger::Entity* camera_ = nullptr;
     dagger::Entity* player_ = nullptr;
-    dagger::Entity* fpsDisplay_ = nullptr;
 
+    dagger::CameraSystem cameraSystem_;
+    UISystem uiSystem_;
     PlayerInputSystem inputSystem_;
     MovementSystem movementSystem_;
-
+    CombatSystem combatSystem_;
+    EnemyAISystem enemyAISystem_;
+    ShootingSystem shootingSystem_;
+    
     std::unique_ptr<TileMap> tileMap_;
     dagger::TextureHandle floorTex_;
     dagger::TextureHandle wallTex_;
-
-    std::vector<dagger::Entity*> enemies_;
-    std::vector<dagger::Entity*> projectiles_;
 };
 
 } // namespace delve

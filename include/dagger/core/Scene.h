@@ -58,6 +58,25 @@ public:
         return entity;
     }
 
+    template <typename... Components>
+    std::vector<Entity*> getEntitiesWith()
+    {
+        std::vector<Entity*> result;
+        for (const auto& entity : entities_)
+        {
+            if (entity->isActive() && (entity->hasComponent<Components>() && ...))
+            {
+                result.push_back(entity.get());
+            }
+        }
+        return result;
+    }
+
+    void registerRenderable(Entity* entity)
+    {
+        renderSystem_.registerEntity(entity);
+    }
+
 protected:
     std::vector<std::unique_ptr<Entity>> entities_;
     RenderSystem renderSystem_;

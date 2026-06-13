@@ -1,22 +1,64 @@
-file(GLOB_RECURSE ENGINE_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp
+set(DAGGER_SOURCES
+    assets/AssetManager.cpp
+    assets/Font.cpp
+    audio/AudioSystem.cpp
+    audio/Sound.cpp
+    core/Application.cpp
+    core/Window.cpp
+    core/systems/CameraSystem.cpp
+    core/systems/RenderSystem.cpp
+    graphics/Renderer.cpp
+    graphics/Texture.cpp
+    input/Input.cpp
 )
 
 if(APPLE)
-    file(GLOB_RECURSE MAC_SOURCES
-        ${CMAKE_CURRENT_SOURCE_DIR}/*.mm
+    set(MAC_SOURCES
+        core/graphics/MacHacks.mm
     )
-    list(APPEND ENGINE_SOURCES ${MAC_SOURCES})
+    list(APPEND DAGGER_SOURCES ${MAC_SOURCES})
 endif()
 
-file(GLOB_RECURSE ENGINE_HEADERS
-    ${PROJECT_SOURCE_DIR}/include/dagger/*.h
-    ${PROJECT_SOURCE_DIR}/include/dagger/*.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/*.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/*.hpp
+set(DAGGER_HEADERS
+    ${PROJECT_SOURCE_DIR}/include/dagger/assets.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/audio.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/core.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/dagger.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/graphics.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/input.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/main.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/assets/AssetManager.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/assets/Font.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/assets/ResourceHandle.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/assets/ResourceManager.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/assets/ResourceTraits.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/audio/AudioSystem.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/audio/Sound.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/core/AppConfig.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/core/Application.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/core/Component.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/core/Constants.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/core/Entity.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/core/GameEvent.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/core/Scene.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/core/components/CameraComponent.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/core/components/SpriteComponent.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/core/components/TextComponent.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/core/components/TransformComponent.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/core/components/VelocityComponent.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/core/systems/CameraSystem.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/core/systems/RenderSystem.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/graphics/Color.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/graphics/Rect.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/graphics/Renderer.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/graphics/Texture.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/input/Input.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/input/KeyCodes.h
+    core/Window.h
+    graphics/MacHacks.h
 )
 
-add_library(dagger STATIC ${ENGINE_SOURCES} ${ENGINE_HEADERS})
+add_library(dagger STATIC ${DAGGER_SOURCES} ${DAGGER_HEADERS})
 if(ipo_supported)
     set_target_properties(dagger PROPERTIES INTERPROCEDURAL_OPTIMIZATION TRUE)
 endif()
