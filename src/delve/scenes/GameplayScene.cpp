@@ -64,12 +64,12 @@ void GameplayScene::onInit(dagger::Application& app)
     }
 
     // Camera
-    camera_ = createEntity();
-    camera_->addComponent<dagger::TransformComponent>();
-    camera_->addComponent<dagger::CameraComponent>();
+    auto camera = createEntity();
+    camera->addComponent<dagger::TransformComponent>();
+    camera->addComponent<dagger::CameraComponent>();
 
     // Player
-    player_ = CharacterFactory::createPlayer(*this, playerTexture, spawnPoint.first, spawnPoint.second);
+    CharacterFactory::createPlayer(*this, playerTexture, spawnPoint.first, spawnPoint.second);
 
     // Enemies
     int numberOfEnemies = 20;
@@ -99,32 +99,36 @@ void GameplayScene::onInit(dagger::Application& app)
 
 void GameplayScene::onFixedUpdate(float dt, dagger::Application& app)
 {
-    if (!player_) return;
-
-    inputSystem_.update(app, *this, camera_);
     shootingSystem_.update(dt, app, *this);
     movementSystem_.updateAll(dt, *this, *tileMap_);
-    enemyAISystem_.update(dt, *this, player_, movementSystem_, *tileMap_);
-    combatSystem_.update(dt, app, *this, player_);
-
-    // UI
-    uiSystem_.updateElement<FPSCounterTag>(*this, [&app]() {
-        return "FPS: " + std::to_string(app.getFPS());
-    });
-
-    auto* pHealth = player_->getComponent<HealthComponent>();
-    int playerHealth = pHealth ? pHealth->hp : 0;
-    uiSystem_.updateElement<HealthDisplayTag>(*this, [playerHealth]() {
-        return "HP: " + std::to_string(playerHealth);
-    });
-
-    cameraSystem_.update(app, camera_, player_);
-
-    cleanup();
+    enemyAISystem_.update(dt, *this, movementSystem_, *tileMap_);
+    combatSystem_.update(dt, app, *this);
+    cameraSystem_.update(app, *this);
 }
 
 void GameplayScene::onUpdate(float dt, dagger::Application& app)
 {
+    inputSystem_.update(app, *this);
+
+    // UI - FPS
+    uiSystem_.updateElement<FPSCounterTag>(*this, [&app]() {
+        return "FPS: " + std::to_string(app.getFPS());
+    });
+
+    // UI - Health
+    int playerHealth = 0;
+    auto* player = getFirstEntityWith<HealthComponent, PlayerInputComponent>();
+    if (player)
+    {
+        playerHealth = player->getComponent<HealthComponent>()->hp;
+    }
+
+    uiSystem_.updateElement<HealthDisplayTag>(*this, [playerHealth]() {
+        return "HP: " + std::to_string(playerHealth);
+    });
+    
+    // Cleanup dead entities
+    cleanup();
 }
 
 void GameplayScene::onRender(dagger::Renderer &renderer, dagger::AssetManager &assets, float alpha)
@@ -132,9 +136,10 @@ void GameplayScene::onRender(dagger::Renderer &renderer, dagger::AssetManager &a
     float camX = 0.0f;
     float camY = 0.0f;
 
-    if (camera_)
+    auto* camera = getFirstEntityWith<dagger::TransformComponent, dagger::CameraComponent>();
+    if (camera)
     {
-        auto* camTransform = camera_->getComponent<dagger::TransformComponent>();
+        auto* camTransform = camera->getComponent<dagger::TransformComponent>();
         if (camTransform)
         {
             camX = camTransform->prevX + (camTransform->x - camTransform->prevX) * alpha;

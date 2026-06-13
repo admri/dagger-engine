@@ -1,6 +1,7 @@
 #include <systems/EnemyAISystem.h>
 
 #include <components/EnemyAIComponent.h>
+#include <components/PlayerInputComponent.h>
 #include <systems/MovementSystem.h>
 #include <world/TileMap.h>
 
@@ -13,20 +14,16 @@
 namespace delve
 {
 
-void EnemyAISystem::update(float dt, dagger::Scene& scene, dagger::Entity* player, 
-                           MovementSystem& movementSystem, TileMap& tileMap)
+void EnemyAISystem::update(float dt, dagger::Scene& scene, MovementSystem& movementSystem, TileMap& tileMap)
 {
+    auto* player = scene.getFirstEntityWith<dagger::TransformComponent, PlayerInputComponent>();
     if (!player) return;
 
     auto* pTransform = player->getComponent<dagger::TransformComponent>();
     if (!pTransform) return;
 
-    auto enemies = scene.getEntitiesWith<dagger::TransformComponent, 
-                                         dagger::VelocityComponent, 
-                                         dagger::SpriteComponent, 
-                                         EnemyAIComponent>();
-
-    for (auto* enemy : enemies)
+    scene.forEachEntityWith<dagger::TransformComponent, dagger::VelocityComponent, dagger::SpriteComponent, EnemyAIComponent>(
+        [&](auto* enemy)
     {
         auto* eTransform = enemy->getComponent<dagger::TransformComponent>();
         auto* eVelocity = enemy->getComponent<dagger::VelocityComponent>();
@@ -51,7 +48,7 @@ void EnemyAISystem::update(float dt, dagger::Scene& scene, dagger::Entity* playe
         }
 
         movementSystem.update(dt, *eTransform, *eVelocity, tileMap, eSprite->width, eSprite->height);
-    }
+    });
 }
 
 } // namespace delve

@@ -28,6 +28,7 @@ set(DAGGER_HEADERS
     ${PROJECT_SOURCE_DIR}/include/dagger/input.h
     ${PROJECT_SOURCE_DIR}/include/dagger/main.h
     ${PROJECT_SOURCE_DIR}/include/dagger/assets/AssetManager.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/assets/AssetPreloader.h
     ${PROJECT_SOURCE_DIR}/include/dagger/assets/Font.h
     ${PROJECT_SOURCE_DIR}/include/dagger/assets/ResourceHandle.h
     ${PROJECT_SOURCE_DIR}/include/dagger/assets/ResourceManager.h
@@ -42,6 +43,7 @@ set(DAGGER_HEADERS
     ${PROJECT_SOURCE_DIR}/include/dagger/core/GameEvent.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/Scene.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/components/CameraComponent.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/core/components/CameraTargetComponent.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/components/SpriteComponent.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/components/TextComponent.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/components/TransformComponent.h

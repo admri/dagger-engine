@@ -22,7 +22,8 @@ void ShootingSystem::update(float dt, dagger::Application& app, dagger::Scene& s
 {
     auto shooters = scene.getEntitiesWith<dagger::TransformComponent, dagger::SpriteComponent, WeaponComponent>();
 
-    for (auto* shooter : shooters)
+    scene.forEachEntityWith<dagger::TransformComponent, dagger::SpriteComponent, WeaponComponent>(
+        [&](auto* shooter)
     {
         auto* transform = shooter->getComponent<dagger::TransformComponent>();
         auto* sprite = shooter->getComponent<dagger::SpriteComponent>();
@@ -62,7 +63,7 @@ void ShootingSystem::update(float dt, dagger::Application& app, dagger::Scene& s
             auto& fProjectile = fireball->addComponent<ProjectileComponent>();
             fProjectile.damage = weapon->damage;
         }
-    }
+    });
 }
 
 } // namespace delve

@@ -5,12 +5,12 @@ namespace dagger
 {
 
 class Application;
-class Entity;
+class Scene;
 
 class CameraSystem
 {
 public:
-    void update(Application& app, Entity* camera, Entity* target);
+    void update(Application& app, Scene& scene);
 };
 
 } // namespace dagger

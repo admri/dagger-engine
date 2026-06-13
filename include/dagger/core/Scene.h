@@ -57,19 +57,52 @@ public:
 
         return entity;
     }
+    
+    template <typename... Components>
+    Entity* getFirstEntityWith()
+    {
+        for (const auto& entity : entities_)
+        {
+            if (entity->isActive() && (entity->hasComponent<Components>() && ...))
+            {
+                return entity.get();
+            }
+        }
+        return nullptr;
+    }
+
+    template <typename... Components>
+    void getEntitiesWith(std::vector<Entity*>& outEntities)
+    {
+        outEntities.clear();
+
+        for (const auto& entity : entities_)
+        {
+            if (entity->isActive() && (entity->hasComponent<Components>() && ...))
+            {
+                outEntities.push_back(entity.get());
+            }
+        }
+    }
 
     template <typename... Components>
     std::vector<Entity*> getEntitiesWith()
     {
         std::vector<Entity*> result;
+        getEntitiesWith<Components...>(result);
+        return result;
+    }
+
+    template <typename... Components, typename Func>
+    void forEachEntityWith(Func action)
+    {
         for (const auto& entity : entities_)
         {
             if (entity->isActive() && (entity->hasComponent<Components>() && ...))
             {
-                result.push_back(entity.get());
+                action(entity.get());
             }
         }
-        return result;
     }
 
     void cleanup()

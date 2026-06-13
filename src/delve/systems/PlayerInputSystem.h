@@ -5,7 +5,6 @@ namespace dagger
 {
     class Application;
     class Scene;
-    class Entity;
 }
 
 namespace delve
@@ -14,7 +13,7 @@ namespace delve
 class PlayerInputSystem
 {
 public:
-    void update(dagger::Application& app, dagger::Scene& scene, dagger::Entity* camera);
+    void update(dagger::Application& app, dagger::Scene& scene);
 };
 
 } // namespace delve

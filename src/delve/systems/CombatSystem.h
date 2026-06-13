@@ -5,7 +5,6 @@ namespace dagger
 {
     class Application;
     class Scene;
-    class Entity;
 }
 
 namespace delve
@@ -14,7 +13,7 @@ namespace delve
 class CombatSystem
 {
 public:
-    void update(float dt, dagger::Application& app, dagger::Scene& scene, dagger::Entity* player);
+    void update(float dt, dagger::Application& app, dagger::Scene& scene);
 };
 
 } // namespace delve

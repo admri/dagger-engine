@@ -2,6 +2,7 @@
 
 #include <components/EnemyAIComponent.h>
 #include <components/HealthComponent.h>
+#include <components/PlayerInputComponent.h>
 #include <components/ProjectileComponent.h>
 #include <systems/CollisionSystem.h>
 #include <scenes/GameOverScene.h>
@@ -14,8 +15,9 @@
 
 namespace delve {
 
-void CombatSystem::update(float dt, dagger::Application& app, dagger::Scene& scene, dagger::Entity* player)
+void CombatSystem::update(float dt, dagger::Application& app, dagger::Scene& scene)
 {
+    auto* player = scene.getFirstEntityWith<dagger::TransformComponent, PlayerInputComponent>();
     if (!player) return;
 
     auto* pTransform = player->getComponent<dagger::TransformComponent>();
@@ -29,17 +31,17 @@ void CombatSystem::update(float dt, dagger::Application& app, dagger::Scene& sce
         pHealth->invulnerabilityTimer -= dt;
     }
 
-    // Find all active enemies in the scene
-    auto enemies = scene.getEntitiesWith<dagger::TransformComponent, dagger::SpriteComponent, EnemyAIComponent, HealthComponent>();
+    bool playerDied = false;
 
     // ==================
     // Player vs Enemies
     // ==================
     if (pHealth->invulnerabilityTimer <= 0.0f)
     {
-        for (auto* enemy : enemies)
+        scene.forEachEntityWith<dagger::TransformComponent, dagger::SpriteComponent, EnemyAIComponent, HealthComponent>(
+            [&](auto* enemy)
         {
-            if (!enemy->isActive()) continue;
+            if (playerDied || !enemy->isActive()) return;
 
             auto* eTransform = enemy->getComponent<dagger::TransformComponent>();
             auto* eSprite = enemy->getComponent<dagger::SpriteComponent>();
@@ -53,29 +55,30 @@ void CombatSystem::update(float dt, dagger::Application& app, dagger::Scene& sce
                 if (pHealth->hp <= 0)
                 {
                     app.setScene(std::make_unique<GameOverScene>());
-                    return;
+                    playerDied = true;
                 }
-                break;
             }
-        }
+        });
     }
+
+    if (playerDied) return;
 
     // =======================
     // Projectiles vs Enemies
     // =======================
-    auto projectiles = scene.getEntitiesWith<dagger::TransformComponent, dagger::SpriteComponent, ProjectileComponent>();
-
-    for (auto* proj : projectiles)
+    scene.forEachEntityWith<dagger::TransformComponent, dagger::SpriteComponent, ProjectileComponent>(
+        [&](auto* projectile)
     {
-        if (!proj->isActive()) continue;
+        if (!projectile->isActive()) return;
 
-        auto* projTransform = proj->getComponent<dagger::TransformComponent>();
-        auto* projSprite = proj->getComponent<dagger::SpriteComponent>();
-        auto* projData = proj->getComponent<ProjectileComponent>();
+        auto* projTransform = projectile->getComponent<dagger::TransformComponent>();
+        auto* projSprite = projectile->getComponent<dagger::SpriteComponent>();
+        auto* projData = projectile->getComponent<ProjectileComponent>();
 
-        for (auto* enemy : enemies)
+        scene.forEachEntityWith<dagger::TransformComponent, dagger::SpriteComponent, EnemyAIComponent, HealthComponent>(
+            [&](auto* enemy)
         {
-            if (!enemy->isActive()) continue;
+             if (!projectile->isActive() || !enemy->isActive()) return;
 
             auto* eTransform = enemy->getComponent<dagger::TransformComponent>();
             auto* eSprite = enemy->getComponent<dagger::SpriteComponent>();
@@ -91,11 +94,10 @@ void CombatSystem::update(float dt, dagger::Application& app, dagger::Scene& sce
                     enemy->setActive(false);
                 }
                 
-                proj->setActive(false);
-                break;
+                projectile->setActive(false);
             }
-        }
-    }
+        });
+    });
 }
 
 } // namespace delve

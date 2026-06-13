@@ -4,7 +4,6 @@
 namespace dagger
 {
     class Scene;
-    class Entity;
 }
 
 namespace delve
@@ -16,8 +15,7 @@ class TileMap;
 class EnemyAISystem
 {
 public:
-    void update(float dt, dagger::Scene& scene, dagger::Entity* player, 
-                MovementSystem& movementSystem, TileMap& tileMap);
+    void update(float dt, dagger::Scene& scene, MovementSystem& movementSystem, TileMap& tileMap);
 };
 
 } // namespace delve

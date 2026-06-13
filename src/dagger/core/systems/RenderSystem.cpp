@@ -88,26 +88,26 @@ void RenderSystem::render(Renderer& renderer, AssetManager& assets, Scene& scene
     nodes.clear();
 
     // Retrieve all sprites
-    auto sprites = scene.getEntitiesWith<TransformComponent, SpriteComponent>();
-    for (auto* e : sprites)
+    scene.forEachEntityWith<TransformComponent, SpriteComponent>(
+        [&](auto* e)
     {
         nodes.push_back({
             e->getComponent<TransformComponent>(),
             e->getComponent<SpriteComponent>(),
             nullptr
         });
-    }
+    });
 
     // Retrieve all texts
-    auto texts = scene.getEntitiesWith<TransformComponent, TextComponent>();
-    for (auto* e : texts)
+    scene.forEachEntityWith<TransformComponent, TextComponent>(
+        [&](auto* e)
     {
         nodes.push_back({
             e->getComponent<TransformComponent>(),
             nullptr,
             e->getComponent<TextComponent>()
         });
-    }
+    });
 
     // Sort nodes by zIndex
     std::sort(nodes.begin(), nodes.end(), [](const RenderNode& a, const RenderNode& b) {
@@ -117,10 +117,10 @@ void RenderSystem::render(Renderer& renderer, AssetManager& assets, Scene& scene
     // Find active camera
     float camX = 0.0f;
     float camY = 0.0f;
-    auto cameras = scene.getEntitiesWith<TransformComponent, CameraComponent>();
-    if (!cameras.empty())
+    auto* camera = scene.getFirstEntityWith<TransformComponent, CameraComponent>();
+    if (camera)
     {
-        auto* camTransform = cameras[0]->getComponent<TransformComponent>();
+        auto* camTransform = camera->getComponent<TransformComponent>();
         camX = camTransform->prevX + (camTransform->x - camTransform->prevX) * alpha;
         camY = camTransform->prevY + (camTransform->y - camTransform->prevY) * alpha;
     }

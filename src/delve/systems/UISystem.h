@@ -16,11 +16,12 @@ public:
     {
         auto elements = scene.getEntitiesWith<dagger::TextComponent, Tag>();
 
-        for (auto* entity : elements)
+        scene.forEachEntityWith<dagger::TextComponent, Tag>(
+            [&](auto* entity)
         {
             auto* textComp = entity->getComponent<dagger::TextComponent>();
             textComp->setText(generator());
-        }
+        });
     }
 };
 

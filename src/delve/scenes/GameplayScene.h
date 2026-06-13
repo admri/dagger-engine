@@ -9,7 +9,6 @@
 #include <systems/UISystem.h>
 #include <world/TileMap.h>
 
-#include <dagger/core/Entity.h>
 #include <dagger/core/Scene.h>
 #include <dagger/core/systems/CameraSystem.h>
 
@@ -34,9 +33,6 @@ public:
     void onRender(dagger::Renderer& renderer, dagger::AssetManager& assets, float alpha) override;
 
 private:
-    dagger::Entity* camera_ = nullptr;
-    dagger::Entity* player_ = nullptr;
-
     dagger::CameraSystem cameraSystem_;
     UISystem uiSystem_;
     PlayerInputSystem inputSystem_;

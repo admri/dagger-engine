@@ -7,6 +7,7 @@
 
 #include <dagger/core/Entity.h>
 #include <dagger/core/Scene.h>
+#include <dagger/core/components/CameraTargetComponent.h>
 #include <dagger/core/components/SpriteComponent.h>
 #include <dagger/core/components/TransformComponent.h>
 #include <dagger/core/components/VelocityComponent.h>
@@ -30,6 +31,7 @@ dagger::Entity* CharacterFactory::createPlayer(dagger::Scene& scene, dagger::Tex
     player->addComponent<dagger::VelocityComponent>();
     player->addComponent<PlayerInputComponent>();
     player->addComponent<WeaponComponent>();
+    player->addComponent<dagger::CameraTargetComponent>();
 
     auto& pHealth = player->addComponent<HealthComponent>();
     pHealth.hp = 3;

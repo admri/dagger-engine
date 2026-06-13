@@ -6,6 +6,7 @@
 #include <dagger/core/Application.h>
 #include <dagger/core/Entity.h>
 #include <dagger/core/Scene.h>
+#include <dagger/core/components/CameraComponent.h>
 #include <dagger/core/components/TransformComponent.h>
 #include <dagger/core/components/VelocityComponent.h>
 #include <dagger/input/Input.h>
@@ -16,13 +17,12 @@
 namespace delve
 {
 
-void PlayerInputSystem::update(dagger::Application& app, dagger::Scene& scene, dagger::Entity* camera)
+void PlayerInputSystem::update(dagger::Application& app, dagger::Scene& scene)
 {
     auto& input = app.getInput();
 
-    auto players = scene.getEntitiesWith<PlayerInputComponent, dagger::VelocityComponent>();
-
-    for (auto* player : players)
+    scene.forEachEntityWith<PlayerInputComponent, dagger::VelocityComponent>(
+        [&](dagger::Entity* player)
     {
         auto* vel = player->getComponent<dagger::VelocityComponent>();
         auto* pInput = player->getComponent<PlayerInputComponent>();
@@ -61,11 +61,13 @@ void PlayerInputSystem::update(dagger::Application& app, dagger::Scene& scene, d
                 
                 float camX = 0.0f; 
                 float camY = 0.0f;
-                
+
+                auto* camera = scene.getFirstEntityWith<dagger::TransformComponent, dagger::CameraComponent>();
                 if (camera)
                 {
                     auto* cTransform = camera->getComponent<dagger::TransformComponent>();
-                    if (cTransform) { 
+                    if (cTransform)
+                    { 
                         camX = cTransform->x; 
                         camY = cTransform->y; 
                     }
@@ -79,7 +81,7 @@ void PlayerInputSystem::update(dagger::Application& app, dagger::Scene& scene, d
                 weapon->isTriggerPulled = false;
             }
         }
-    }
+    });
 }
 
 } // namespace delve
