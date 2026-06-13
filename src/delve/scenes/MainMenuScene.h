@@ -36,11 +36,7 @@ public:
     {
         if (app.getInput().isKeyPressed(dagger::Key::Enter))
         {
-            app.setScene(std::make_unique<GameplayScene>());
-        }
-        if (app.getInput().isKeyPressed(dagger::Key::Escape))
-        {
-            app.quit();
+            app.getSceneManager().replace(std::make_unique<GameplayScene>());
         }
     }
 };

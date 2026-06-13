@@ -4,6 +4,7 @@ set(DAGGER_SOURCES
     audio/AudioSystem.cpp
     audio/Sound.cpp
     core/Application.cpp
+    core/SceneManager.cpp
     core/Window.cpp
     core/systems/CameraSystem.cpp
     core/systems/RenderSystem.cpp
@@ -42,6 +43,7 @@ set(DAGGER_HEADERS
     ${PROJECT_SOURCE_DIR}/include/dagger/core/Entity.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/GameEvent.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/Scene.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/core/SceneManager.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/components/CameraComponent.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/components/CameraTargetComponent.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/components/SpriteComponent.h

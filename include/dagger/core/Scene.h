@@ -37,7 +37,7 @@ public:
     {
         auto entity = std::make_unique<Entity>();
         Entity* ptr = entity.get();
-        entities_.push_back(std::move(entity));
+        pendingEntities_.push_back(std::move(entity));
         return ptr;
     }
 
@@ -107,6 +107,15 @@ public:
 
     void cleanup()
     {
+        if (!pendingEntities_.empty())
+        {
+            for (auto& newEntity : pendingEntities_)
+            {
+                entities_.push_back(std::move(newEntity));
+            }
+            pendingEntities_.clear();
+        }
+
         entities_.erase(std::remove_if(entities_.begin(), entities_.end(),
             [](const std::unique_ptr<Entity>& entity) {
                 return !entity->isActive();
@@ -116,6 +125,8 @@ public:
 
 protected:
     std::vector<std::unique_ptr<Entity>> entities_;
+    std::vector<std::unique_ptr<Entity>> pendingEntities_;
+
     RenderSystem renderSystem_;
 };
 

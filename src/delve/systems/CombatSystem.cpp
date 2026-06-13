@@ -54,7 +54,7 @@ void CombatSystem::update(float dt, dagger::Application& app, dagger::Scene& sce
 
                 if (pHealth->hp <= 0)
                 {
-                    app.setScene(std::make_unique<GameOverScene>());
+                    app.getSceneManager().replace(std::make_unique<GameOverScene>());
                     playerDied = true;
                 }
             }

@@ -15,7 +15,7 @@ using namespace dagger;
 bool Game::onInit()
 {
     auto mainMenuScene = std::make_unique<MainMenuScene>();
-    setScene(std::move(mainMenuScene));
+    getSceneManager().replace(std::move(mainMenuScene));
     return true;
 }
 

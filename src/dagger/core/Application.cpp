@@ -133,28 +133,30 @@ void Application::run(const AppConfig& config)
         processEvents();
 
         // Change scene
-        if (nextScene_)
+        sceneManager_.processActions(*this);
+
+        if (sceneManager_.isEmpty())
         {
-            currentScene_ = std::move(nextScene_);
-            currentScene_->onInit(*this);
+            isRunning_ = false;
+            continue;
         }
 
         // Update
         while (accumulator >= FIXED_DT)
         {
-            if (currentScene_) currentScene_->onFixedUpdate(static_cast<float>(FIXED_DT), *this);
+            sceneManager_.fixedUpdate(static_cast<float>(FIXED_DT), *this);
             accumulator -= FIXED_DT;
         }
         
         float alpha = static_cast<float>(accumulator / FIXED_DT);
 
-        if (currentScene_) currentScene_->onUpdate(static_cast<float>(deltaTime_), *this);
+        sceneManager_.update(static_cast<float>(deltaTime_), *this);
         onUpdate(static_cast<float>(deltaTime_));
 
         // Render
         renderer_->clear(Colors::Black);
         
-        if (currentScene_) currentScene_->onRender(*renderer_, *assets_, alpha);
+        sceneManager_.render(*renderer_, *assets_, alpha);
         onRender();
 
         renderer_->present();
@@ -233,7 +235,7 @@ void Application::cleanup()
     if (renderer_) renderer_->destroy();
     if (window_) window_->destroy();
     
-    currentScene_.reset();
+    sceneManager_.clear();
     assets_.reset();
     audioSystem_.reset();
     input_.reset();

@@ -2,6 +2,7 @@
 
 #include <components/PlayerInputComponent.h>
 #include <components/WeaponComponent.h>
+#include <scenes/PauseScene.h>
 
 #include <dagger/core/Application.h>
 #include <dagger/core/Entity.h>
@@ -44,6 +45,11 @@ void PlayerInputSystem::update(dagger::Application& app, dagger::Scene& scene)
             float length = std::sqrt(vel->vx * vel->vx + vel->vy * vel->vy);
             vel->vx = (vel->vx / length) * pInput->speed;
             vel->vy = (vel->vy / length) * pInput->speed;
+        }
+
+        if (input.isKeyPressed(dagger::Key::P))
+        {
+            app.getSceneManager().push(std::make_unique<PauseScene>());
         }
 
         // ======

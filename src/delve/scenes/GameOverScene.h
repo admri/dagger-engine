@@ -1,5 +1,5 @@
-#ifndef DELVE_GAME_OVER_SCENE_H
-#define DELVE_GAME_OVER_SCENE_H
+#ifndef DELVE_SCENES_GAME_OVER_SCENE_H
+#define DELVE_SCENES_GAME_OVER_SCENE_H
 
 #include <scenes/GameplayScene.h>
 
@@ -35,11 +35,11 @@ public:
     {
         if (app.getInput().isKeyPressed(dagger::Key::Enter))
         {
-            app.setScene(std::make_unique<GameplayScene>());
+            app.getSceneManager().replace(std::make_unique<GameplayScene>());
         }
     }
 };
 
 } // namespace delve
 
-#endif // DELVE_GAME_OVER_SCENE_H
+#endif // DELVE_SCENES_GAME_OVER_SCENE_H

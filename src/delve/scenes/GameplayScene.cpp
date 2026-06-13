@@ -126,9 +126,6 @@ void GameplayScene::onUpdate(float dt, dagger::Application& app)
     uiSystem_.updateElement<HealthDisplayTag>(*this, [playerHealth]() {
         return "HP: " + std::to_string(playerHealth);
     });
-    
-    // Cleanup dead entities
-    cleanup();
 }
 
 void GameplayScene::onRender(dagger::Renderer &renderer, dagger::AssetManager &assets, float alpha)

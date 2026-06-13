@@ -4,6 +4,7 @@
 #include <dagger/core/AppConfig.h>
 #include <dagger/core/GameEvent.h>
 #include <dagger/core/Scene.h>
+#include <dagger/core/SceneManager.h>
 
 #include <cassert>
 #include <cstdint>
@@ -37,12 +38,11 @@ public:
     inline Input& getInput()             { assert(input_       != nullptr && "Input accessed before Application::init()!");         return *input_; }
     inline AudioSystem& getAudioSystem() { assert(audioSystem_ != nullptr && "Audio system accessed before Application::init()!");  return *audioSystem_; }
     inline AssetManager& getAssets()     { assert(assets_      != nullptr && "Asset manager accessed before Application::init()!"); return *assets_; }
-    
+    inline SceneManager& getSceneManager() { return sceneManager_; }
+
     inline int getFPS() const { return currentFPS_; }
     int getWindowWidth() const;
     int getWindowHeight() const;
-
-    inline void setScene(std::unique_ptr<Scene> scene) { nextScene_ = std::move(scene); }
 
 protected:
     virtual bool onInit() { return true; };
@@ -71,9 +71,7 @@ private:
     std::unique_ptr<Input> input_;
     std::unique_ptr<AudioSystem> audioSystem_;
     std::unique_ptr<AssetManager> assets_;
-
-    std::unique_ptr<Scene> currentScene_;
-    std::unique_ptr<Scene> nextScene_;
+    SceneManager sceneManager_;
 
     std::queue<GameEvent> eventQueue_;
 

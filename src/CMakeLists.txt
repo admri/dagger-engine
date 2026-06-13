@@ -28,6 +28,7 @@ set(DELVE_HEADERS
     delve/scenes/GameOverScene.h
     delve/scenes/GameplayScene.h
     delve/scenes/MainMenuScene.h
+    delve/scenes/PauseScene.h
     delve/systems/CollisionSystem.h
     delve/systems/CombatSystem.h
     delve/systems/EnemyAISystem.h
