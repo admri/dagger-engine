@@ -25,7 +25,6 @@ dagger::Entity* UIFactory::createFPSDisplay(dagger::Scene& scene, dagger::FontHa
     
     fpsDisplay->addComponent<FPSCounterTag>();
 
-    scene.registerRenderable(fpsDisplay);
     return fpsDisplay;
 }
 
@@ -43,9 +42,7 @@ dagger::Entity* UIFactory::createHealthDisplay(dagger::Scene& scene, dagger::Fon
     
     hpDisplay->addComponent<HealthDisplayTag>();
     
-    scene.registerRenderable(hpDisplay);
     return hpDisplay;
-
 }
 
 } // namespace delve

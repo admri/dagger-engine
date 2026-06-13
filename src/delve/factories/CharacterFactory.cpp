@@ -35,7 +35,6 @@ dagger::Entity* CharacterFactory::createPlayer(dagger::Scene& scene, dagger::Tex
     pHealth.hp = 3;
     pHealth.maxHp = 3;
 
-    scene.registerRenderable(player);
     return player;
 }
 
@@ -58,7 +57,6 @@ dagger::Entity* CharacterFactory::createEnemy(dagger::Scene& scene, dagger::Text
     auto& eHealth = enemy->addComponent<HealthComponent>();
     eHealth.hp = 2;
     
-    scene.registerRenderable(enemy);
     return enemy;
 }
 

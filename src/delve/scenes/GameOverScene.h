@@ -29,8 +29,6 @@ public:
         tText.setColor(dagger::Colors::Red);
         tText.setText("YOU DIED\nPress ENTER to restart");
         tText.zIndex = 100;
-
-        renderSystem_.registerEntity(title);
     }
 
     void onUpdate(float dt, dagger::Application& app) override

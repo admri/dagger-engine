@@ -92,8 +92,6 @@ void GameplayScene::onInit(dagger::Application& app)
 
         CharacterFactory::createEnemy(*this, enemyTexture, spawnX, spawnY);
     }
-
-    renderSystem_.registerEntity(camera_);
 }
 
 void GameplayScene::onFixedUpdate(float dt, dagger::Application& app)
@@ -106,6 +104,7 @@ void GameplayScene::onFixedUpdate(float dt, dagger::Application& app)
     enemyAISystem_.update(dt, *this, player_, movementSystem_, *tileMap_);
     combatSystem_.update(dt, app, *this, player_);
 
+    // UI
     uiSystem_.updateElement<FPSCounterTag>(*this, [&app]() {
         return "FPS: " + std::to_string(app.getFPS());
     });
@@ -117,6 +116,8 @@ void GameplayScene::onFixedUpdate(float dt, dagger::Application& app)
     });
 
     cameraSystem_.update(app, camera_, player_);
+
+    cleanup();
 }
 
 void GameplayScene::onUpdate(float dt, dagger::Application& app)
@@ -148,7 +149,7 @@ void GameplayScene::onRender(dagger::Renderer &renderer, dagger::AssetManager &a
         }
     }
 
-    renderSystem_.render(renderer, assets, alpha);
+    renderSystem_.render(renderer, assets, *this, alpha);
 }
 
 } // namespace delve

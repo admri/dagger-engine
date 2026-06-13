@@ -61,8 +61,6 @@ void ShootingSystem::update(float dt, dagger::Application& app, dagger::Scene& s
             
             auto& fProjectile = fireball->addComponent<ProjectileComponent>();
             fProjectile.damage = weapon->damage;
-
-            scene.registerRenderable(fireball);
         }
     }
 }

@@ -8,6 +8,7 @@
 #include <dagger/core/systems/RenderSystem.h>
 #include <dagger/graphics/Color.h>
 
+#include <algorithm>
 #include <memory>
 #include <vector>
 
@@ -29,7 +30,7 @@ public:
     virtual void onUpdate(float dt, Application& app) {}
     virtual void onRender(Renderer& renderer, AssetManager& assets, float alpha = 0.0f)
     {
-        renderSystem_.render(renderer, assets, alpha);
+        renderSystem_.render(renderer, assets, *this, alpha);
     }
 
     Entity* createEntity()
@@ -54,7 +55,6 @@ public:
         tText.setText(text);
         tText.zIndex = 100;
 
-        renderSystem_.registerEntity(entity);
         return entity;
     }
 
@@ -72,9 +72,13 @@ public:
         return result;
     }
 
-    void registerRenderable(Entity* entity)
+    void cleanup()
     {
-        renderSystem_.registerEntity(entity);
+        entities_.erase(std::remove_if(entities_.begin(), entities_.end(),
+            [](const std::unique_ptr<Entity>& entity) {
+                return !entity->isActive();
+            }), entities_.end()
+        );
     }
 
 protected:

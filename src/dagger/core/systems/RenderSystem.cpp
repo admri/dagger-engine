@@ -2,6 +2,7 @@
 
 #include <assets/AssetManager.h>
 #include <core/Entity.h>
+#include <core/Scene.h>
 #include <dagger/core/components/CameraComponent.h>
 #include <core/components/SpriteComponent.h>
 #include <core/components/TextComponent.h>
@@ -14,6 +15,7 @@
 #include <SDL3_ttf/SDL_ttf.h>
 
 #include <algorithm>
+#include <vector>
 
 namespace dagger
 {
@@ -27,6 +29,20 @@ SDL_Color toSDL(Color c)
 }
 
 } // namespace
+
+struct RenderNode
+{
+    TransformComponent* transform;
+    SpriteComponent* sprite = nullptr;
+    TextComponent* text = nullptr;
+
+    inline int getZIndex() const
+    {
+        if (sprite) return sprite->zIndex;
+        if (text) return text->zIndex;
+        return 0;
+    }
+};
 
 bool rebuildTexture(TextComponent* text, Renderer& renderer, AssetManager& assets)
 {
@@ -66,35 +82,55 @@ bool rebuildTexture(TextComponent* text, Renderer& renderer, AssetManager& asset
     return true;
 }
 
-void RenderSystem::render(Renderer& renderer, AssetManager& assets, float alpha)
+void RenderSystem::render(Renderer& renderer, AssetManager& assets, Scene& scene, float alpha)
 {
-    std::sort(nodes_.begin(), nodes_.end(), [](const RenderNode& a, const RenderNode& b) {
+    static std::vector<RenderNode> nodes;
+    nodes.clear();
+
+    // Retrieve all sprites
+    auto sprites = scene.getEntitiesWith<TransformComponent, SpriteComponent>();
+    for (auto* e : sprites)
+    {
+        nodes.push_back({
+            e->getComponent<TransformComponent>(),
+            e->getComponent<SpriteComponent>(),
+            nullptr
+        });
+    }
+
+    // Retrieve all texts
+    auto texts = scene.getEntitiesWith<TransformComponent, TextComponent>();
+    for (auto* e : texts)
+    {
+        nodes.push_back({
+            e->getComponent<TransformComponent>(),
+            nullptr,
+            e->getComponent<TextComponent>()
+        });
+    }
+
+    // Sort nodes by zIndex
+    std::sort(nodes.begin(), nodes.end(), [](const RenderNode& a, const RenderNode& b) {
         return a.getZIndex() < b.getZIndex();
     });
 
+    // Find active camera
     float camX = 0.0f;
     float camY = 0.0f;
-
-    if (activeCamera_ && activeCamera_->isActive())
+    auto cameras = scene.getEntitiesWith<TransformComponent, CameraComponent>();
+    if (!cameras.empty())
     {
-        auto* camTransform = activeCamera_->getComponent<TransformComponent>();
-        if (camTransform)
-        {
-            camX = camTransform->prevX + (camTransform->x - camTransform->prevX) * alpha;
-            camY = camTransform->prevY + (camTransform->y - camTransform->prevY) * alpha;
-        }
+        auto* camTransform = cameras[0]->getComponent<TransformComponent>();
+        camX = camTransform->prevX + (camTransform->x - camTransform->prevX) * alpha;
+        camY = camTransform->prevY + (camTransform->y - camTransform->prevY) * alpha;
     }
 
-    for (auto& node : nodes_)
+    // Render all nodes
+    for (auto& node : nodes)
     {
         SpriteComponent* sprite = node.sprite;
         TextComponent* text = node.text;
         TransformComponent* transform = node.transform;
-
-        if ((node.sprite && (!node.sprite->owner || !node.sprite->owner->isActive())) ||
-            (node.text && (!node.text->owner || !node.text->owner->isActive()))) {
-            continue; 
-        }
 
         float renderX = transform->prevX + (transform->x - transform->prevX) * alpha;
         float renderY = transform->prevY + (transform->y - transform->prevY) * alpha;
@@ -123,30 +159,6 @@ void RenderSystem::render(Renderer& renderer, AssetManager& assets, float alpha)
                 renderer.drawTexture(*texture, { renderX, renderY, texture->getWidth(), texture->getHeight() });
             }
         }
-    }
-}
-
-void RenderSystem::registerEntity(Entity* entity)
-{
-    auto* transform = entity->getComponent<TransformComponent>();
-    if (!transform) return;
-
-    if (entity->hasComponent<CameraComponent>())
-    {
-        activeCamera_ = entity;
-    }
-
-    auto* sprite = entity->getComponent<SpriteComponent>();
-    auto* text = entity->getComponent<TextComponent>();
-
-    if (sprite)
-    {
-        nodes_.push_back({ transform, sprite, nullptr });
-    }
-
-    if (text)
-    {
-        nodes_.push_back({ transform, nullptr, text });
     }
 }
 
