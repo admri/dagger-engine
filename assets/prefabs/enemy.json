@@ -1,0 +1,26 @@
+{
+  "components": {
+    "TransformComponent": {
+      "x": 0.0,
+      "y": 0.0
+    },
+    "SpriteComponent": {
+      "texture": "enemy",
+      "zIndex": 9,
+      "width": 48.0,
+      "height": 48.0
+    },
+    "BoxColliderComponent": {
+      "width": 32.0,
+      "height": 32.0,
+      "offsetX": 8.0,
+      "offsetY": 16.0
+    },
+    "HealthComponent": {
+      "hp": 2,
+      "maxHp": 2
+    },
+    "VelocityComponent": {},
+    "EnemyAIComponent": {}
+  }
+}

@@ -2,6 +2,7 @@
 #define DELVE_COMPONENTS_PLAYER_INPUT_COMPONENT_H
 
 #include <dagger/core/Component.h>
+#include <dagger/core/Serialization.h>
 
 namespace delve
 {
@@ -10,6 +11,8 @@ struct PlayerInputComponent : dagger::Component
 {
     float speed = 500.0f;
 };
+
+DAGGER_SERIALIZE_COMPONENT(PlayerInputComponent, speed)
 
 } // namespace delve
 

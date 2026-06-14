@@ -1,0 +1,60 @@
+{
+  "components": {
+    "TransformComponent": {
+      "x": 0.0,
+      "y": 0.0
+    },
+    "SpriteComponent": {
+      "texture": "player_idle",
+      "zIndex": 10,
+      "hasSrcRect": true,
+      "srcX": 0.0,
+      "srcY": 0.0,
+      "srcWidth": 16.0,
+      "srcHeight": 28.0,
+      "width": 32.0,
+      "height": 56.0
+    },
+    "AnimationComponent": {
+      "currentSequence": 0,
+      "isPlaying": true,
+      "sequences": [
+        {
+          "texture": "player_idle",
+          "startFrame": 0,
+          "numFrames": 4,
+          "frameDuration": 0.2,
+          "isLooping": true
+        },
+        {
+          "texture": "player_run",
+          "startFrame": 0,
+          "numFrames": 4,
+          "frameDuration": 0.1,
+          "isLooping": true
+        },
+        {
+          "texture": "player_attack",
+          "startFrame": 0,
+          "numFrames": 2,
+          "frameDuration": 0.05,
+          "isLooping": false
+        }
+      ]
+    },
+    "BoxColliderComponent": {
+      "width": 16.0,
+      "height": 16.0,
+      "offsetX": 8.0,
+      "offsetY": 40.0
+    },
+    "HealthComponent": {
+      "hp": 3,
+      "maxHp": 3
+    },
+    "VelocityComponent": {},
+    "PlayerInputComponent": {},
+    "WeaponComponent": {},
+    "CameraTargetComponent": {}
+  }
+}

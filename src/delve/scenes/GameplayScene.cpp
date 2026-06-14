@@ -6,16 +6,14 @@
 #include <components/ProjectileComponent.h>
 #include <components/Tags.h>
 #include <components/WeaponComponent.h>
-#include <factories/CharacterFactory.h>
-#include <factories/UIFactory.h>
 #include <scenes/GameOverScene.h>
 
 #include <dagger/assets/AssetManager.h>
-#include <dagger/assets/AssetPreloader.h>
 #include <dagger/assets/Font.h>
 #include <dagger/assets/ResourceHandle.h>
 #include <dagger/core/Application.h>
 #include <dagger/core/Entity.h>
+#include <dagger/core/LevelLoader.h>
 #include <dagger/core/components/CameraComponent.h>
 #include <dagger/core/components/SpriteComponent.h>
 #include <dagger/core/components/TextComponent.h>
@@ -25,7 +23,6 @@
 #include <dagger/graphics/Texture.h>
 #include <dagger/input/Input.h>
 
-#include <cmath>
 #include <ctime>
 
 namespace delve
@@ -35,23 +32,15 @@ void GameplayScene::onInit(dagger::Application& app)
 {
     std::srand(static_cast<unsigned int>(std::time(nullptr)));
 
-    // Load assets
+    dagger::LevelLoader::load("levels/level_1.json", *this, app);
+
+    // Assets
     auto& assets = app.getAssets();
-    dagger::AssetPreloader::loadFromManifest("manifests/level1.json", assets);
-
-    auto uiFont = assets.get<dagger::Font>("ui");
-    auto enemyTexture = assets.get<dagger::Texture>("enemy");
-
     floorTex_ = assets.get<dagger::Texture>("floor");
-    wallTex_ = assets.get<dagger::Texture>("wall");
-    
-    // UI
-    UIFactory::createFPSDisplay(*this, uiFont, 20.0f, 20.0f);
-    UIFactory::createHealthDisplay(*this, uiFont, 20.0f, 50.0f);
+    wallTex_  = assets.get<dagger::Texture>("wall");
 
     // Map
     tileMap_ = std::make_unique<TileMap>(60, 60, 64.0f);
-
     auto spawnPoint = tileMap_->generateDungeon(15, 5, 10);
 
     for (int y = 20; y < 30; ++y)
@@ -62,20 +51,19 @@ void GameplayScene::onInit(dagger::Application& app)
         }
     }
 
-    // Camera
-    auto camera = createEntity();
-    camera->addComponent<dagger::TransformComponent>();
-    camera->addComponent<dagger::CameraComponent>();
-
     // Player
-    PlayerTextures playerTex;
-    playerTex.idle = assets.get<dagger::Texture>("player_idle");
-    playerTex.run = assets.get<dagger::Texture>("player_run");
-    playerTex.attack = assets.get<dagger::Texture>("player_idle");
-    CharacterFactory::createPlayer(*this, playerTex, spawnPoint.first, spawnPoint.second);
+    auto playerPrefab = assets.get<dagger::Prefab>("player");
+    auto* player = dagger::PrefabFactory::create(playerPrefab, *this, assets);
+
+    if (player && player->hasComponent<dagger::TransformComponent>())
+    {
+        player->getComponent<dagger::TransformComponent>()->setPosition(spawnPoint.first, spawnPoint.second);
+    }
 
     // Enemies
+    auto enemyPrefab = assets.get<dagger::Prefab>("enemy");
     int numberOfEnemies = 20;
+
     for (int i = 0; i < numberOfEnemies; ++i)
     {
         int tileX = 0;
@@ -96,7 +84,11 @@ void GameplayScene::onInit(dagger::Application& app)
         float spawnX = tileX * tileMap_->getTileSize();
         float spawnY = tileY * tileMap_->getTileSize();
 
-        CharacterFactory::createEnemy(*this, enemyTexture, spawnX, spawnY);
+        auto* enemy = dagger::PrefabFactory::create(enemyPrefab, *this, assets);
+        if (enemy && enemy->hasComponent<dagger::TransformComponent>())
+        {
+            enemy->getComponent<dagger::TransformComponent>()->setPosition(spawnX, spawnY);
+        }
     }
 }
 

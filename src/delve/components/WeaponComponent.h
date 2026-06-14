@@ -2,6 +2,7 @@
 #define DELVE_COMPONENTS_WEAPON_COMPONENT_H
 
 #include <dagger/core/Component.h>
+#include <dagger/core/Serialization.h>
 
 namespace delve
 {
@@ -17,6 +18,8 @@ struct WeaponComponent : public dagger::Component
     float targetX = 0.0f;
     float targetY = 0.0f;
 };
+
+DAGGER_SERIALIZE_COMPONENT(WeaponComponent, fireRate, projectileSpeed, damage)
 
 } // namespace delve
 

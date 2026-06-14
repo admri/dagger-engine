@@ -2,6 +2,7 @@
 #define DAGGER_CORE_COMPONENTS_TRANSFORM_COMPONENT_H
 
 #include <dagger/core/Component.h>
+#include <dagger/core/Serialization.h>
 
 namespace dagger
 {
@@ -20,6 +21,8 @@ struct TransformComponent : public Component
         prevX = newX; prevY = newY;
     }
 };
+
+DAGGER_SERIALIZE_COMPONENT(TransformComponent, x, y)
 
 } // namespace dagger
 

@@ -1,0 +1,9 @@
+{
+  "name": "Dungeon Crawler",
+  "required_manifest": "manifests/level1.json",
+  "entities": [
+    { "prefab": "camera", "x": 0, "y": 0 },
+    { "prefab": "ui_fps", "x": 20, "y": 20 },
+    { "prefab": "ui_health", "x": 20, "y": 50 }
+  ]
+}

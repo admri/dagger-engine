@@ -1,7 +1,14 @@
 #include <Game.h>
 
+#include <components/EnemyAIComponent.h>
+#include <components/HealthComponent.h>
+#include <components/PlayerInputComponent.h>
+#include <components/ProjectileComponent.h>
+#include <components/Tags.h>
+#include <components/WeaponComponent.h>
 #include <scenes/MainMenuScene.h>
 
+#include <dagger/assets/PrefabFactory.h>
 #include <dagger/core/GameEvent.h>
 #include <dagger/graphics/Renderer.h>
 #include <dagger/input/KeyCodes.h>
@@ -12,8 +19,21 @@ namespace delve
     
 using namespace dagger;
 
+void Game::registerGameComponents()
+{
+    PrefabFactory::registerComponent<EnemyAIComponent>("EnemyAIComponent");
+    PrefabFactory::registerComponent<HealthComponent>("HealthComponent");
+    PrefabFactory::registerComponent<PlayerInputComponent>("PlayerInputComponent");
+    PrefabFactory::registerComponent<ProjectileComponent>("ProjectileComponent");
+    PrefabFactory::registerComponent<WeaponComponent>("WeaponComponent");
+
+    PrefabFactory::registerTag<FPSCounterTag>("FPSCounterTag");
+    PrefabFactory::registerTag<HealthDisplayTag>("HealthDisplayTag");
+}
+
 bool Game::onInit()
 {
+    registerGameComponents();
     auto mainMenuScene = std::make_unique<MainMenuScene>();
     getSceneManager().replace(std::move(mainMenuScene));
     return true;

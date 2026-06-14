@@ -1,13 +1,20 @@
 {
   "textures": [
-    { "id": "player_idle", "path": "tileset/wizard_m_idle.png" },
-    { "id": "player_run", "path": "tileset/wizard_m_run.png" },
-    { "id": "enemy", "path": "crawl-tiles/dc-mon/orc_knight.png" },
-    { "id": "fireball", "path": "crawl-tiles/spells/conjuration/orb_of_destruction.png" },
-    { "id": "floor", "path": "crawl-tiles/dc-dngn/floor/pebble_brown0.png" },
-    { "id": "wall", "path": "crawl-tiles/dc-dngn/wall/lair1.png" }
+    { "id": "player_idle", "path": "textures/tileset/wizard_m_idle.png" },
+    { "id": "player_run", "path": "textures/tileset/wizard_m_run.png" },
+    { "id": "enemy", "path": "textures/crawl-tiles/dc-mon/orc_knight.png" },
+    { "id": "fireball", "path": "textures/crawl-tiles/spells/conjuration/orb_of_destruction.png" },
+    { "id": "floor", "path": "textures/crawl-tiles/dc-dngn/floor/pebble_brown0.png" },
+    { "id": "wall", "path": "textures/crawl-tiles/dc-dngn/wall/lair1.png" }
   ],
   "fonts": [
     { "id": "ui", "path": "fonts/RobotoMono-Regular.ttf", "size": 16 }
+  ],
+  "prefabs": [
+    { "id": "player", "path": "prefabs/player.json" },
+    { "id": "enemy", "path": "prefabs/enemy.json" },
+    { "id": "camera", "path": "prefabs/camera.json" },
+    { "id": "ui_fps", "path": "prefabs/ui_fps.json" },
+    { "id": "ui_health", "path": "prefabs/ui_health.json" }
   ]
 }

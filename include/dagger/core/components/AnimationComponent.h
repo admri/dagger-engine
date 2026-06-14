@@ -3,6 +3,7 @@
 
 #include <dagger/assets/ResourceHandle.h>
 #include <dagger/core/Component.h>
+#include <dagger/core/Serialization.h>
 
 #include <cstdint>
 #include <vector>
@@ -29,6 +30,8 @@ struct AnimationComponent : public Component
     float timer = 0.0f;
     bool isPlaying = false;
 };
+
+DAGGER_SERIALIZE_COMPONENT(AnimationComponent, currentSequence, isPlaying)
 
 } // namespace dagger
 

@@ -4,8 +4,6 @@ set(MAIN_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
 
 set(DELVE_SOURCES
     delve/Game.cpp
-    delve/factories/CharacterFactory.cpp
-    delve/factories/UIFactory.cpp
     delve/scenes/GameplayScene.cpp
     delve/systems/CombatSystem.cpp
     delve/systems/EnemyAISystem.cpp
@@ -22,8 +20,6 @@ set(DELVE_HEADERS
     delve/components/PlayerInputComponent.h
     delve/components/ProjectileComponent.h
     delve/components/WeaponComponent.h
-    delve/factories/CharacterFactory.h
-    delve/factories/UIFactory.h
     delve/scenes/GameOverScene.h
     delve/scenes/GameplayScene.h
     delve/scenes/MainMenuScene.h

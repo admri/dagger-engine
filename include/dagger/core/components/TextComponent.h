@@ -1,8 +1,10 @@
 #ifndef DAGGER_CORE_COMPONENTS_TEXT_COMPONENT_H
 #define DAGGER_CORE_COMPONENTS_TEXT_COMPONENT_H
 
+#include <dagger/assets/PrefabFactory.h>
 #include <dagger/assets/ResourceHandle.h>
 #include <dagger/core/Component.h>
+#include <dagger/core/Serialization.h>
 #include <dagger/graphics/Color.h>
 #include <dagger/graphics/Texture.h>
 
@@ -49,6 +51,8 @@ struct TextComponent : public Component
         }
     }
 };
+
+DAGGER_SERIALIZE_COMPONENT(TextComponent, text, color, zIndex)
 
 } // namespace dagger
 

@@ -1,6 +1,7 @@
 #include <core/Application.h>
 
 #include <assets/AssetManager.h>
+#include <assets/PrefabFactory.h>
 #include <audio/AudioSystem.h>
 #include <core/Constants.h>
 #include <core/Window.h>
@@ -100,6 +101,8 @@ bool Application::init(const AppConfig& config)
     }
 
     if (config.vsync) renderer_->toggleVSync();
+
+    PrefabFactory::registerCoreComponents();
 
     initialized_ = true;
 

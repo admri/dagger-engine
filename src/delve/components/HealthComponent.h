@@ -2,6 +2,7 @@
 #define DELVE_HEALTH_COMPONENT_H
 
 #include <dagger/core/Component.h>
+#include <dagger/core/Serialization.h>
 
 namespace delve
 {
@@ -12,6 +13,8 @@ struct HealthComponent : public dagger::Component
     int maxHp = 3;
     float invulnerabilityTimer = 0.0f;
 };
+
+DAGGER_SERIALIZE_COMPONENT(HealthComponent, hp, maxHp)
 
 } // namespace delve
 

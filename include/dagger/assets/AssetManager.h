@@ -2,6 +2,7 @@
 #define DAGGER_ASSETS_ASSET_MANAGER_H
 
 #include <dagger/assets/Font.h>
+#include <dagger/assets/Prefab.h>
 #include <dagger/assets/ResourceHandle.h>
 #include <dagger/assets/ResourceManager.h>
 #include <dagger/assets/ResourceTraits.h>
@@ -108,6 +109,7 @@ public:
         textures_.clear();
         fonts_.clear();
         sounds_.clear();
+        prefabs_.clear();
     }
 
 private:
@@ -119,6 +121,7 @@ private:
     ResourceManager<Texture, TextureHandle> textures_;
     ResourceManager<Font, FontHandle> fonts_;
     ResourceManager<Sound, SoundHandle> sounds_;
+    ResourceManager<Prefab, PrefabHandle> prefabs_;
 
     template <typename T>
     auto& getManager();
@@ -127,6 +130,7 @@ private:
 template <> inline auto& AssetManager::getManager<Texture>() { return textures_; }
 template <> inline auto& AssetManager::getManager<Font>() { return fonts_; }
 template <> inline auto& AssetManager::getManager<Sound>() { return sounds_; }
+template <> inline auto& AssetManager::getManager<Prefab>() { return prefabs_; }
 
 } // namespace dagger
 

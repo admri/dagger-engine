@@ -1,6 +1,8 @@
 #ifndef DAGGER_GRAPHICS_COLOR_H
 #define DAGGER_GRAPHICS_COLOR_H
 
+#include <dagger/core/Serialization.h>
+
 #include <cstdint>
 
 namespace dagger
@@ -8,7 +10,12 @@ namespace dagger
 
 struct Color
 {
-    uint8_t r, g, b, a;
+    uint8_t r = 255;
+    uint8_t g = 255;
+    uint8_t b = 255;
+    uint8_t a = 255;
+
+    Color() = default;
 
     Color(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255)
         : r(r), g(g), b(b), a(a)
@@ -37,6 +44,8 @@ namespace Colors
     inline Color Green{  0, 255,   0};
     inline Color Blue {  0,   0, 255};
 }
+
+DAGGER_SERIALIZE_COMPONENT(Color, r, g, b, a)
 
 } // namespace dagger
 

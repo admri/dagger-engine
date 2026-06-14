@@ -1,9 +1,13 @@
 set(DAGGER_SOURCES
     assets/AssetManager.cpp
+    assets/AssetPreloader.cpp
     assets/Font.cpp
+    assets/Prefab.cpp
+    assets/PrefabFactory.cpp
     audio/AudioSystem.cpp
     audio/Sound.cpp
     core/Application.cpp
+    core/LevelLoader.cpp
     core/SceneManager.cpp
     core/Window.cpp
     core/systems/AnimationSystem.cpp
@@ -33,6 +37,8 @@ set(DAGGER_HEADERS
     ${PROJECT_SOURCE_DIR}/include/dagger/assets/AssetManager.h
     ${PROJECT_SOURCE_DIR}/include/dagger/assets/AssetPreloader.h
     ${PROJECT_SOURCE_DIR}/include/dagger/assets/Font.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/assets/Prefab.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/assets/PrefabFactory.h
     ${PROJECT_SOURCE_DIR}/include/dagger/assets/ResourceHandle.h
     ${PROJECT_SOURCE_DIR}/include/dagger/assets/ResourceManager.h
     ${PROJECT_SOURCE_DIR}/include/dagger/assets/ResourceTraits.h
@@ -44,8 +50,10 @@ set(DAGGER_HEADERS
     ${PROJECT_SOURCE_DIR}/include/dagger/core/Constants.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/Entity.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/GameEvent.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/core/LevelLoader.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/Scene.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/SceneManager.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/core/Serialization.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/components/AnimationComponent.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/components/BoxColliderComponent.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/components/CameraComponent.h

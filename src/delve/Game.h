@@ -14,6 +14,9 @@ protected:
     void onRender() override;
     void onEvent(const dagger::GameEvent& event) override;
     void onShutdown() override;
+
+private:
+    void registerGameComponents();
 };
 
 } // namespace delve

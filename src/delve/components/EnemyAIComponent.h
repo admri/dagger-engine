@@ -1,7 +1,8 @@
-#ifndef DELVE_ENEMY_AI_COMPONENT_H
-#define DELVE_ENEMY_AI_COMPONENT_H
+#ifndef DELVE_COMPONENTS_ENEMY_AI_COMPONENT_H
+#define DELVE_COMPONENTS_ENEMY_AI_COMPONENT_H
 
 #include <dagger/core/Component.h>
+#include <dagger/core/Serialization.h>
 
 namespace delve
 {
@@ -12,6 +13,8 @@ struct EnemyAIComponent : public dagger::Component
     float detectionRadius = 400.0f;
 };
 
+DAGGER_SERIALIZE_COMPONENT(EnemyAIComponent, speed, detectionRadius)
+
 } // namespace delve
 
-#endif // DELVE_ENEMY_AI_COMPONENT_H
+#endif // DELVE_COMPONENTS_ENEMY_AI_COMPONENT_H

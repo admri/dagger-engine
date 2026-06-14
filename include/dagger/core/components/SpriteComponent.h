@@ -3,6 +3,7 @@
 
 #include <dagger/assets/ResourceHandle.h>
 #include <dagger/core/Component.h>
+#include <dagger/core/Serialization.h>
 #include <dagger/graphics/Texture.h>
 
 namespace dagger
@@ -24,6 +25,8 @@ struct SpriteComponent : public Component
     bool hasSrcRect = false;
     bool flipX = false;
 };
+
+DAGGER_SERIALIZE_COMPONENT(SpriteComponent, width, height, zIndex, srcX, srcY, srcWidth, srcHeight, hasSrcRect, flipX)
 
 } // namespace dagger
 

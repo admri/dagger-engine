@@ -1,6 +1,7 @@
 #ifndef DAGGER_ASSETS_RESOURCE_MANAGER_H
 #define DAGGER_ASSETS_RESOURCE_MANAGER_H
 
+#include <concepts>
 #include <cstdint>
 #include <string>
 #include <unordered_map>
@@ -9,7 +10,15 @@
 namespace dagger
 {
 
-template <typename T, typename HandleType>
+template <typename T>
+concept IsResourceHandle = requires(T handle)
+{
+    { handle.index } -> std::convertible_to<uint32_t>;
+    { handle.generation } -> std::convertible_to<uint32_t>;
+    { handle.isValid() } -> std::same_as<bool>;
+};
+
+template <typename T, IsResourceHandle HandleType>
 class ResourceManager
 {
 public:
