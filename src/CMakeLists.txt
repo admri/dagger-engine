@@ -36,6 +36,7 @@ set(DELVE_HEADERS
     delve/systems/PlayerInputSystem.h
     delve/systems/ShootingSystem.h
     delve/systems/UISystem.h
+    delve/types/PlayerAnim.h
     delve/world/TileMap.h
 )
 

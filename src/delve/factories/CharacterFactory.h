@@ -12,10 +12,17 @@ namespace dagger
 namespace delve
 {
 
+struct PlayerTextures
+{
+    dagger::TextureHandle idle;
+    dagger::TextureHandle run;
+    dagger::TextureHandle attack;
+};
+
 class CharacterFactory
 {
 public:
-    static dagger::Entity* createPlayer(dagger::Scene& scene, dagger::TextureHandle texture, float x, float y);
+    static dagger::Entity* createPlayer(dagger::Scene& scene, const PlayerTextures& textures, float x, float y);
     static dagger::Entity* createEnemy(dagger::Scene& scene, dagger::TextureHandle texture, float x, float y);
 };
 

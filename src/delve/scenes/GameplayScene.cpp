@@ -40,7 +40,6 @@ void GameplayScene::onInit(dagger::Application& app)
     dagger::AssetPreloader::loadFromManifest("manifests/level1.json", assets);
 
     auto uiFont = assets.get<dagger::Font>("ui");
-    auto playerTexture = assets.get<dagger::Texture>("player");
     auto enemyTexture = assets.get<dagger::Texture>("enemy");
 
     floorTex_ = assets.get<dagger::Texture>("floor");
@@ -69,7 +68,11 @@ void GameplayScene::onInit(dagger::Application& app)
     camera->addComponent<dagger::CameraComponent>();
 
     // Player
-    CharacterFactory::createPlayer(*this, playerTexture, spawnPoint.first, spawnPoint.second);
+    PlayerTextures playerTex;
+    playerTex.idle = assets.get<dagger::Texture>("player_idle");
+    playerTex.run = assets.get<dagger::Texture>("player_run");
+    playerTex.attack = assets.get<dagger::Texture>("player_idle");
+    CharacterFactory::createPlayer(*this, playerTex, spawnPoint.first, spawnPoint.second);
 
     // Enemies
     int numberOfEnemies = 20;
@@ -109,6 +112,8 @@ void GameplayScene::onFixedUpdate(float dt, dagger::Application& app)
 void GameplayScene::onUpdate(float dt, dagger::Application& app)
 {
     inputSystem_.update(app, *this);
+
+    animationSystem_.update(dt, *this);
 
     // UI - FPS
     uiSystem_.updateElement<FPSCounterTag>(*this, [&app]() {

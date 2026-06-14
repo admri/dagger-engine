@@ -7,6 +7,7 @@
 #include <SDL3/SDL_log.h>
 #include <SDL3/SDL_pixels.h>
 #include <SDL3/SDL_render.h>
+#include <SDL3/SDL_surface.h>
 
 namespace dagger
 {
@@ -67,7 +68,7 @@ void Renderer::present()
     SDL_RenderPresent(sdlRenderer_.get());
 }
 
-void Renderer::drawTexture(const Texture& texture, const Rect& dstRect, const Rect* srcRect)
+void Renderer::drawTexture(const Texture& texture, const Rect& dstRect, const Rect* srcRect, bool flipX)
 {
     if (!sdlRenderer_ || !texture.getSDLTexture())
     {
@@ -84,7 +85,9 @@ void Renderer::drawTexture(const Texture& texture, const Rect& dstRect, const Re
         pSrcRect = &sdlSrcRect;
     }
 
-    if (!SDL_RenderTexture(sdlRenderer_.get(), texture.getSDLTexture(), pSrcRect, &sdlDstRect))
+    SDL_FlipMode flipMode = flipX ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
+
+    if (!SDL_RenderTextureRotated(sdlRenderer_.get(), texture.getSDLTexture(), pSrcRect, &sdlDstRect, 0.0, nullptr, flipMode))
     {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to render texture: %s", SDL_GetError());
     }

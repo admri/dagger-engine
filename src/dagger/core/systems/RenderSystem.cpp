@@ -7,6 +7,7 @@
 #include <core/components/SpriteComponent.h>
 #include <core/components/TextComponent.h>
 #include <core/components/TransformComponent.h>
+#include <graphics/Rect.h>
 #include <graphics/Renderer.h>
 #include <graphics/Texture.h>
 
@@ -143,7 +144,17 @@ void RenderSystem::render(Renderer& renderer, AssetManager& assets, Scene& scene
             Texture* texture = assets.resolve<Texture, TextureHandle>(sprite->texture);
             if (texture)
             {
-                renderer.drawTexture(*texture, { screenX, screenY, sprite->width, sprite->height });
+                Rect dstRect = { screenX, screenY, sprite->width, sprite->height };
+
+                if (sprite->hasSrcRect)
+                {
+                    Rect srcRect = { sprite->srcX, sprite->srcY, sprite->srcWidth, sprite->srcHeight };
+                    renderer.drawTexture(*texture, dstRect, &srcRect, sprite->flipX);
+                }
+                else
+                {
+                    renderer.drawTexture(*texture, dstRect, nullptr, sprite->flipX);
+                }
             }
         }
         else if (text)

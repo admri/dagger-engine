@@ -6,6 +6,7 @@ set(DAGGER_SOURCES
     core/Application.cpp
     core/SceneManager.cpp
     core/Window.cpp
+    core/systems/AnimationSystem.cpp
     core/systems/CameraSystem.cpp
     core/systems/RenderSystem.cpp
     graphics/Renderer.cpp
@@ -44,12 +45,14 @@ set(DAGGER_HEADERS
     ${PROJECT_SOURCE_DIR}/include/dagger/core/GameEvent.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/Scene.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/SceneManager.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/core/components/AnimationComponent.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/components/CameraComponent.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/components/CameraTargetComponent.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/components/SpriteComponent.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/components/TextComponent.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/components/TransformComponent.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/components/VelocityComponent.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/core/systems/AnimationSystem.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/systems/CameraSystem.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/systems/RenderSystem.h
     ${PROJECT_SOURCE_DIR}/include/dagger/graphics/Color.h

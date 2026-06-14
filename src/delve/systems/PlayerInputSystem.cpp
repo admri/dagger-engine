@@ -3,11 +3,14 @@
 #include <components/PlayerInputComponent.h>
 #include <components/WeaponComponent.h>
 #include <scenes/PauseScene.h>
+#include <types/PlayerAnim.h>
 
 #include <dagger/core/Application.h>
 #include <dagger/core/Entity.h>
 #include <dagger/core/Scene.h>
+#include <dagger/core/components/AnimationComponent.h>
 #include <dagger/core/components/CameraComponent.h>
+#include <dagger/core/components/SpriteComponent.h>
 #include <dagger/core/components/TransformComponent.h>
 #include <dagger/core/components/VelocityComponent.h>
 #include <dagger/input/Input.h>
@@ -39,7 +42,7 @@ void PlayerInputSystem::update(dagger::Application& app, dagger::Scene& scene)
         if (input.isKeyDown(dagger::Key::A)) vel->vx -= pInput->speed;
         if (input.isKeyDown(dagger::Key::D)) vel->vx += pInput->speed;
         
-        // Normalizace diagonálního pohybu
+        // Normalize diagonal movement
         if (vel->vx != 0.0f && vel->vy != 0.0f)
         {
             float length = std::sqrt(vel->vx * vel->vx + vel->vy * vel->vy);
@@ -47,6 +50,44 @@ void PlayerInputSystem::update(dagger::Application& app, dagger::Scene& scene)
             vel->vy = (vel->vy / length) * pInput->speed;
         }
 
+        // Animation handling
+        auto* anim = player->getComponent<dagger::AnimationComponent>();
+        auto* sprite = player->getComponent<dagger::SpriteComponent>();
+
+        if (anim && sprite)
+        {
+            // Mirror the texture
+            if (vel->vx < 0.0f)
+            {
+                sprite->flipX = true;
+            }
+            else if (vel->vx > 0.0f)
+            {
+                sprite->flipX = false;
+            }
+
+            // Switch states
+            if (vel->vx != 0.0f || vel->vy != 0.0f)
+            {
+                if (anim->currentSequence != PlayerAnim::Run)
+                {
+                    anim->currentSequence = PlayerAnim::Run;
+                    anim->currentFrameIndex = 0;
+                    anim->timer = 0.0f;
+                }
+            }
+            else
+            {
+                if (anim->currentSequence != PlayerAnim::Idle)
+                {
+                    anim->currentSequence = PlayerAnim::Idle;
+                    anim->currentFrameIndex = 0;
+                    anim->timer = 0.0f;
+                }
+            }
+        }
+
+        // Pause key
         if (input.isKeyPressed(dagger::Key::P))
         {
             app.getSceneManager().push(std::make_unique<PauseScene>());

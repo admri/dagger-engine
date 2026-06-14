@@ -10,6 +10,7 @@
 #include <world/TileMap.h>
 
 #include <dagger/core/Scene.h>
+#include <dagger/core/systems/AnimationSystem.h>
 #include <dagger/core/systems/CameraSystem.h>
 
 #include <memory>
@@ -34,6 +35,7 @@ public:
 
 private:
     dagger::CameraSystem cameraSystem_;
+    dagger::AnimationSystem animationSystem_;
     UISystem uiSystem_;
     PlayerInputSystem inputSystem_;
     MovementSystem movementSystem_;
