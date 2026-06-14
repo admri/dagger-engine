@@ -16,7 +16,8 @@ class TileMap;
 class MovementSystem
 {
 public:
-    bool update(float dt, dagger::TransformComponent& transform, dagger::VelocityComponent& velocity, const TileMap& map, float w, float h);
+    bool update(float dt, dagger::TransformComponent& transform, dagger::VelocityComponent& velocity,
+                const TileMap& map, float w, float h, float offsetX, float offsetY);
     void updateAll(float dt, dagger::Scene& scene, TileMap& map);
 };
 

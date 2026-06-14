@@ -9,13 +9,10 @@ namespace dagger
 namespace delve
 {
 
-class MovementSystem;
-class TileMap;
-
 class EnemyAISystem
 {
 public:
-    void update(float dt, dagger::Scene& scene, MovementSystem& movementSystem, TileMap& tileMap);
+    void update(float dt, dagger::Scene& scene);
 };
 
 } // namespace delve

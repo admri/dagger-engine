@@ -103,8 +103,8 @@ void GameplayScene::onInit(dagger::Application& app)
 void GameplayScene::onFixedUpdate(float dt, dagger::Application& app)
 {
     shootingSystem_.update(dt, app, *this);
+    enemyAISystem_.update(dt, *this);
     movementSystem_.updateAll(dt, *this, *tileMap_);
-    enemyAISystem_.update(dt, *this, movementSystem_, *tileMap_);
     dagger::CollisionSystem::update(*this, frameCollisions_);
     combatSystem_.update(dt, app, *this, frameCollisions_);
     cameraSystem_.update(app, *this);

@@ -2,13 +2,10 @@
 
 #include <components/EnemyAIComponent.h>
 #include <components/PlayerInputComponent.h>
-#include <systems/MovementSystem.h>
-#include <world/TileMap.h>
 
 #include <dagger/core/Entity.h>
 #include <dagger/core/Scene.h>
 #include <dagger/core/components/BoxColliderComponent.h>
-#include <dagger/core/components/SpriteComponent.h>
 #include <dagger/core/components/TransformComponent.h>
 #include <dagger/core/components/VelocityComponent.h>
 
@@ -17,7 +14,7 @@
 namespace delve
 {
 
-void EnemyAISystem::update(float dt, dagger::Scene& scene, MovementSystem& movementSystem, TileMap& tileMap)
+void EnemyAISystem::update(float dt, dagger::Scene& scene)
 {
     auto* player = scene.getFirstEntityWith<dagger::TransformComponent, PlayerInputComponent, dagger::BoxColliderComponent>();
     if (!player) return;
@@ -28,13 +25,11 @@ void EnemyAISystem::update(float dt, dagger::Scene& scene, MovementSystem& movem
     float playerCenterX = pTransform->x + pCollider->offsetX + (pCollider->width / 2.0f);
     float playerCenterY = pTransform->y + pCollider->offsetY + (pCollider->height / 2.0f);
 
-    scene.forEachEntityWith<dagger::TransformComponent, dagger::VelocityComponent, dagger::SpriteComponent,
-                            EnemyAIComponent, dagger::BoxColliderComponent>(
+    scene.forEachEntityWith<dagger::TransformComponent, dagger::VelocityComponent, EnemyAIComponent, dagger::BoxColliderComponent>(
         [&](auto* enemy)
     {
         auto* eTransform = enemy->getComponent<dagger::TransformComponent>();
         auto* eVelocity = enemy->getComponent<dagger::VelocityComponent>();
-        auto* eSprite = enemy->getComponent<dagger::SpriteComponent>();
         auto* eAI = enemy->getComponent<EnemyAIComponent>();
         auto* eCollider = enemy->getComponent<dagger::BoxColliderComponent>();
 
@@ -43,7 +38,6 @@ void EnemyAISystem::update(float dt, dagger::Scene& scene, MovementSystem& movem
 
         float dirX = playerCenterX - enemyCenterX;
         float dirY = playerCenterY - enemyCenterY;
-        
         float distance = std::sqrt(dirX * dirX + dirY * dirY);
 
         if (distance > 0.0f && distance < eAI->detectionRadius)
@@ -58,8 +52,6 @@ void EnemyAISystem::update(float dt, dagger::Scene& scene, MovementSystem& movem
             eVelocity->vx = 0.0f;
             eVelocity->vy = 0.0f;
         }
-
-        movementSystem.update(dt, *eTransform, *eVelocity, tileMap, eSprite->width, eSprite->height);
     });
 }
 
