@@ -9,6 +9,7 @@
 #include <dagger/core/Entity.h>
 #include <dagger/core/Scene.h>
 #include <dagger/core/components/AnimationComponent.h>
+#include <dagger/core/components/BoxColliderComponent.h>
 #include <dagger/core/components/CameraTargetComponent.h>
 #include <dagger/core/components/SpriteComponent.h>
 #include <dagger/core/components/TransformComponent.h>
@@ -32,7 +33,7 @@ dagger::Entity* CharacterFactory::createPlayer(dagger::Scene& scene, const Playe
     sprite.srcX = 0.0f;
     sprite.srcY = 0.0f;
     sprite.srcWidth = 16.0f;
-    sprite.srcHeight = 28.0f;  
+    sprite.srcHeight = 28.0f;
 
     float scale = 2.0f; 
     sprite.width = 16.0f * scale;
@@ -45,6 +46,12 @@ dagger::Entity* CharacterFactory::createPlayer(dagger::Scene& scene, const Playe
     anim.sequences[PlayerAnim::Attack] = { textures.attack, 0, 2, 0.05f, false };
     anim.currentSequence = PlayerAnim::Idle;
     anim.isPlaying = true;
+
+    auto& pCollider = player->addComponent<dagger::BoxColliderComponent>();
+    pCollider.width = 16.0f;
+    pCollider.height = 16.0f;
+    pCollider.offsetX = 8.0f;
+    pCollider.offsetY = 40.0f;
 
     player->addComponent<dagger::VelocityComponent>();
     player->addComponent<PlayerInputComponent>();
@@ -70,6 +77,12 @@ dagger::Entity* CharacterFactory::createEnemy(dagger::Scene& scene, dagger::Text
     enemySprite.zIndex = 9;
     enemySprite.width = 48.0f;
     enemySprite.height = 48.0f;
+
+    auto& eCollider = enemy->addComponent<dagger::BoxColliderComponent>();
+    eCollider.width = 32.0f;
+    eCollider.height = 32.0f;
+    eCollider.offsetX = 8.0f;
+    eCollider.offsetY = 16.0f;
 
     enemy->addComponent<dagger::VelocityComponent>();
     enemy->addComponent<EnemyAIComponent>();

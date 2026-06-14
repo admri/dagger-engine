@@ -7,8 +7,9 @@
 #include <dagger/core/Application.h>
 #include <dagger/core/Scene.h>
 #include <dagger/core/Entity.h>
-#include <dagger/core/components/TransformComponent.h>
+#include <dagger/core/components/BoxColliderComponent.h>
 #include <dagger/core/components/SpriteComponent.h>
+#include <dagger/core/components/TransformComponent.h>
 #include <dagger/core/components/VelocityComponent.h>
 #include <dagger/graphics/Texture.h>
 #include <dagger/input/Input.h>
@@ -55,6 +56,10 @@ void ShootingSystem::update(float dt, dagger::Application& app, dagger::Scene& s
             auto& fSprite = fireball->addComponent<dagger::SpriteComponent>();
             fSprite.texture = app.getAssets().get<dagger::Texture>("fireball"); 
             fSprite.width = 16.0f; fSprite.height = 16.0f; fSprite.zIndex = 5;
+
+            auto& fCollider = fireball->addComponent<dagger::BoxColliderComponent>();
+            fCollider.width = 16.0f;
+            fCollider.height = 16.0f;
 
             auto& fVelocity = fireball->addComponent<dagger::VelocityComponent>();
             fVelocity.vx = dirX * weapon->projectileSpeed; 

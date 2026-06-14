@@ -12,6 +12,7 @@
 #include <dagger/core/Scene.h>
 #include <dagger/core/systems/AnimationSystem.h>
 #include <dagger/core/systems/CameraSystem.h>
+#include <dagger/core/systems/CollisionSystem.h>
 
 #include <memory>
 #include <vector>
@@ -46,6 +47,8 @@ private:
     std::unique_ptr<TileMap> tileMap_;
     dagger::TextureHandle floorTex_;
     dagger::TextureHandle wallTex_;
+
+    std::vector<dagger::CollisionEvent> frameCollisions_;
 };
 
 } // namespace delve

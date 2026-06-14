@@ -9,7 +9,6 @@
 #include <factories/CharacterFactory.h>
 #include <factories/UIFactory.h>
 #include <scenes/GameOverScene.h>
-#include <systems/CollisionSystem.h>
 
 #include <dagger/assets/AssetManager.h>
 #include <dagger/assets/AssetPreloader.h>
@@ -22,6 +21,7 @@
 #include <dagger/core/components/TextComponent.h>
 #include <dagger/core/components/TransformComponent.h>
 #include <dagger/core/components/VelocityComponent.h>
+#include <dagger/core/systems/CollisionSystem.h>
 #include <dagger/graphics/Texture.h>
 #include <dagger/input/Input.h>
 
@@ -105,7 +105,8 @@ void GameplayScene::onFixedUpdate(float dt, dagger::Application& app)
     shootingSystem_.update(dt, app, *this);
     movementSystem_.updateAll(dt, *this, *tileMap_);
     enemyAISystem_.update(dt, *this, movementSystem_, *tileMap_);
-    combatSystem_.update(dt, app, *this);
+    dagger::CollisionSystem::update(*this, frameCollisions_);
+    combatSystem_.update(dt, app, *this, frameCollisions_);
     cameraSystem_.update(app, *this);
 }
 

@@ -7,31 +7,43 @@
 
 #include <dagger/core/Entity.h>
 #include <dagger/core/Scene.h>
-#include <dagger/core/components/TransformComponent.h>
+#include <dagger/core/components/BoxColliderComponent.h>
 #include <dagger/core/components/SpriteComponent.h>
+#include <dagger/core/components/TransformComponent.h>
 #include <dagger/core/components/VelocityComponent.h>
+
+#include <cmath>
 
 namespace delve
 {
 
 void EnemyAISystem::update(float dt, dagger::Scene& scene, MovementSystem& movementSystem, TileMap& tileMap)
 {
-    auto* player = scene.getFirstEntityWith<dagger::TransformComponent, PlayerInputComponent>();
+    auto* player = scene.getFirstEntityWith<dagger::TransformComponent, PlayerInputComponent, dagger::BoxColliderComponent>();
     if (!player) return;
 
     auto* pTransform = player->getComponent<dagger::TransformComponent>();
-    if (!pTransform) return;
+    auto* pCollider = player->getComponent<dagger::BoxColliderComponent>();
 
-    scene.forEachEntityWith<dagger::TransformComponent, dagger::VelocityComponent, dagger::SpriteComponent, EnemyAIComponent>(
+    float playerCenterX = pTransform->x + pCollider->offsetX + (pCollider->width / 2.0f);
+    float playerCenterY = pTransform->y + pCollider->offsetY + (pCollider->height / 2.0f);
+
+    scene.forEachEntityWith<dagger::TransformComponent, dagger::VelocityComponent, dagger::SpriteComponent,
+                            EnemyAIComponent, dagger::BoxColliderComponent>(
         [&](auto* enemy)
     {
         auto* eTransform = enemy->getComponent<dagger::TransformComponent>();
         auto* eVelocity = enemy->getComponent<dagger::VelocityComponent>();
         auto* eSprite = enemy->getComponent<dagger::SpriteComponent>();
         auto* eAI = enemy->getComponent<EnemyAIComponent>();
+        auto* eCollider = enemy->getComponent<dagger::BoxColliderComponent>();
 
-        float dirX = pTransform->x - eTransform->x;
-        float dirY = pTransform->y - eTransform->y;
+        float enemyCenterX = eTransform->x + eCollider->offsetX + (eCollider->width / 2.0f);
+        float enemyCenterY = eTransform->y + eCollider->offsetY + (eCollider->height / 2.0f);
+
+        float dirX = playerCenterX - enemyCenterX;
+        float dirY = playerCenterY - enemyCenterY;
+        
         float distance = std::sqrt(dirX * dirX + dirY * dirY);
 
         if (distance > 0.0f && distance < eAI->detectionRadius)

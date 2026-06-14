@@ -7,7 +7,6 @@ set(DELVE_SOURCES
     delve/factories/CharacterFactory.cpp
     delve/factories/UIFactory.cpp
     delve/scenes/GameplayScene.cpp
-    delve/systems/CollisionSystem.cpp
     delve/systems/CombatSystem.cpp
     delve/systems/EnemyAISystem.cpp
     delve/systems/MovementSystem.cpp
@@ -29,7 +28,6 @@ set(DELVE_HEADERS
     delve/scenes/GameplayScene.h
     delve/scenes/MainMenuScene.h
     delve/scenes/PauseScene.h
-    delve/systems/CollisionSystem.h
     delve/systems/CombatSystem.h
     delve/systems/EnemyAISystem.h
     delve/systems/MovementSystem.h

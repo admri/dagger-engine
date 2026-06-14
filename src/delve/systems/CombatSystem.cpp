@@ -4,26 +4,20 @@
 #include <components/HealthComponent.h>
 #include <components/PlayerInputComponent.h>
 #include <components/ProjectileComponent.h>
-#include <systems/CollisionSystem.h>
 #include <scenes/GameOverScene.h>
 
 #include <dagger/core/Application.h>
 #include <dagger/core/Scene.h>
 #include <dagger/core/Entity.h>
-#include <dagger/core/components/TransformComponent.h>
-#include <dagger/core/components/SpriteComponent.h>
+#include <dagger/core/systems/CollisionSystem.h>
 
-namespace delve {
+namespace delve
+{
 
-void CombatSystem::update(float dt, dagger::Application& app, dagger::Scene& scene)
+void CombatSystem::update(float dt, dagger::Application& app, dagger::Scene& scene, const std::vector<dagger::CollisionEvent>& collisions)
 {
     auto* player = scene.getFirstEntityWith<dagger::TransformComponent, PlayerInputComponent>();
     if (!player) return;
-
-    auto* pTransform = player->getComponent<dagger::TransformComponent>();
-    auto* pSprite = player->getComponent<dagger::SpriteComponent>();
-
-    if (!pTransform || !pSprite) return;
 
     auto* pHealth = player->getComponent<HealthComponent>();
     if (pHealth && pHealth->invulnerabilityTimer > 0.0f)
@@ -33,60 +27,52 @@ void CombatSystem::update(float dt, dagger::Application& app, dagger::Scene& sce
 
     bool playerDied = false;
 
-    // ==================
-    // Player vs Enemies
-    // ==================
-    if (pHealth->invulnerabilityTimer <= 0.0f)
+    for (const auto& collision : collisions)
     {
-        scene.forEachEntityWith<dagger::TransformComponent, dagger::SpriteComponent, EnemyAIComponent, HealthComponent>(
-            [&](auto* enemy)
+        dagger::Entity* entA = collision.entityA;
+        dagger::Entity* entB = collision.entityB;
+
+        // ==================
+        // Player vs Enemy
+        // ==================
+        if (pHealth->invulnerabilityTimer <= 0.0f)
         {
-            if (playerDied || !enemy->isActive()) return;
+            bool isPlayerA = entA->hasComponent<PlayerInputComponent>();
+            bool isPlayerB = entB->hasComponent<PlayerInputComponent>();
+            bool isEnemyA = entA->hasComponent<EnemyAIComponent>();
+            bool isEnemyB = entB->hasComponent<EnemyAIComponent>();
 
-            auto* eTransform = enemy->getComponent<dagger::TransformComponent>();
-            auto* eSprite = enemy->getComponent<dagger::SpriteComponent>();
-
-            if (CollisionSystem::checkAABB(pTransform->x, pTransform->y, pSprite->width, pSprite->height,
-                                           eTransform->x, eTransform->y, eSprite->width, eSprite->height))
+            if ((isPlayerA && isEnemyB) || (isPlayerB && isEnemyA))
             {
                 pHealth->hp -= 1;
                 pHealth->invulnerabilityTimer = 1.0f;
 
-                if (pHealth->hp <= 0)
+                if (pHealth->hp <= 0 && !playerDied)
                 {
                     app.getSceneManager().replace(std::make_unique<GameOverScene>());
                     playerDied = true;
                 }
             }
-        });
-    }
+        }
 
-    if (playerDied) return;
+        // =======================
+        // Projectile vs Enemy
+        // =======================
+        bool isProjA = entA->hasComponent<ProjectileComponent>();
+        bool isProjB = entB->hasComponent<ProjectileComponent>();
+        bool isEnemyA = entA->hasComponent<EnemyAIComponent>();
+        bool isEnemyB = entB->hasComponent<EnemyAIComponent>();
 
-    // =======================
-    // Projectiles vs Enemies
-    // =======================
-    scene.forEachEntityWith<dagger::TransformComponent, dagger::SpriteComponent, ProjectileComponent>(
-        [&](auto* projectile)
-    {
-        if (!projectile->isActive()) return;
-
-        auto* projTransform = projectile->getComponent<dagger::TransformComponent>();
-        auto* projSprite = projectile->getComponent<dagger::SpriteComponent>();
-        auto* projData = projectile->getComponent<ProjectileComponent>();
-
-        scene.forEachEntityWith<dagger::TransformComponent, dagger::SpriteComponent, EnemyAIComponent, HealthComponent>(
-            [&](auto* enemy)
+        if ((isProjA && isEnemyB) || (isProjB && isEnemyA))
         {
-             if (!projectile->isActive() || !enemy->isActive()) return;
+            dagger::Entity* projectile = isProjA ? entA : entB;
+            dagger::Entity* enemy = isEnemyA ? entA : entB;
 
-            auto* eTransform = enemy->getComponent<dagger::TransformComponent>();
-            auto* eSprite = enemy->getComponent<dagger::SpriteComponent>();
-
-            if (CollisionSystem::checkAABB(projTransform->x, projTransform->y, projSprite->width, projSprite->height,
-                                           eTransform->x, eTransform->y, eSprite->width, eSprite->height))
+            if (projectile->isActive() && enemy->isActive())
             {
+                auto* projData = projectile->getComponent<ProjectileComponent>();
                 auto* eHealth = enemy->getComponent<HealthComponent>();
+
                 eHealth->hp -= projData->damage;
                 
                 if (eHealth->hp <= 0)
@@ -96,8 +82,8 @@ void CombatSystem::update(float dt, dagger::Application& app, dagger::Scene& sce
                 
                 projectile->setActive(false);
             }
-        });
-    });
+        }
+    }
 }
 
 } // namespace delve

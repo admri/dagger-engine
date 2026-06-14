@@ -8,6 +8,7 @@ set(DAGGER_SOURCES
     core/Window.cpp
     core/systems/AnimationSystem.cpp
     core/systems/CameraSystem.cpp
+    core/systems/CollisionSystem.cpp
     core/systems/RenderSystem.cpp
     graphics/Renderer.cpp
     graphics/Texture.cpp
@@ -46,6 +47,7 @@ set(DAGGER_HEADERS
     ${PROJECT_SOURCE_DIR}/include/dagger/core/Scene.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/SceneManager.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/components/AnimationComponent.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/core/components/BoxColliderComponent.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/components/CameraComponent.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/components/CameraTargetComponent.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/components/SpriteComponent.h
@@ -54,6 +56,7 @@ set(DAGGER_HEADERS
     ${PROJECT_SOURCE_DIR}/include/dagger/core/components/VelocityComponent.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/systems/AnimationSystem.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/systems/CameraSystem.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/core/systems/CollisionSystem.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/systems/RenderSystem.h
     ${PROJECT_SOURCE_DIR}/include/dagger/graphics/Color.h
     ${PROJECT_SOURCE_DIR}/include/dagger/graphics/Rect.h
