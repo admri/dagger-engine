@@ -3,6 +3,7 @@
 
 #include <systems/CombatSystem.h>
 #include <systems/EnemyAISystem.h>
+#include <systems/FOVSystem.h>
 #include <systems/MovementSystem.h>
 #include <systems/PlayerInputSystem.h>
 #include <systems/ShootingSystem.h>
@@ -13,6 +14,8 @@
 #include <dagger/core/systems/AnimationSystem.h>
 #include <dagger/core/systems/CameraSystem.h>
 #include <dagger/core/systems/CollisionSystem.h>
+#include <dagger/core/systems/SpriteRenderSystem.h>
+#include <dagger/core/systems/UIRenderSystem.h>
 
 #include <memory>
 #include <vector>
@@ -43,6 +46,9 @@ private:
     CombatSystem combatSystem_;
     EnemyAISystem enemyAISystem_;
     ShootingSystem shootingSystem_;
+    FOVSystem fovSystem_;
+    dagger::SpriteRenderSystem spriteRenderSystem_;
+    dagger::UIRenderSystem uiRenderSystem_;
     
     std::unique_ptr<TileMap> tileMap_;
     dagger::TextureHandle floorTex_;

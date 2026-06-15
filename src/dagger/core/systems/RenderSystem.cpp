@@ -90,23 +90,23 @@ void RenderSystem::render(Renderer& renderer, AssetManager& assets, Scene& scene
 
     // Retrieve all sprites
     scene.forEachEntityWith<TransformComponent, SpriteComponent>(
-        [&](auto* e)
+        [&](auto* e, auto& transform, auto& sprite)
     {
         nodes.push_back({
-            e->getComponent<TransformComponent>(),
-            e->getComponent<SpriteComponent>(),
+            &transform,
+            &sprite,
             nullptr
         });
     });
 
     // Retrieve all texts
     scene.forEachEntityWith<TransformComponent, TextComponent>(
-        [&](auto* e)
+        [&](auto* e, auto& transform, auto& text)
     {
         nodes.push_back({
-            e->getComponent<TransformComponent>(),
+            &transform,
             nullptr,
-            e->getComponent<TextComponent>()
+            &text
         });
     });
 

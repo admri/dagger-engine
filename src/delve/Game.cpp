@@ -1,6 +1,7 @@
 #include <Game.h>
 
 #include <components/EnemyAIComponent.h>
+#include <components/FOVComponent.h>
 #include <components/HealthComponent.h>
 #include <components/PlayerInputComponent.h>
 #include <components/ProjectileComponent.h>
@@ -22,6 +23,7 @@ using namespace dagger;
 void Game::registerGameComponents()
 {
     PrefabFactory::registerComponent<EnemyAIComponent>("EnemyAIComponent");
+    PrefabFactory::registerComponent<FOVComponent>("FOVComponent");
     PrefabFactory::registerComponent<HealthComponent>("HealthComponent");
     PrefabFactory::registerComponent<PlayerInputComponent>("PlayerInputComponent");
     PrefabFactory::registerComponent<ProjectileComponent>("ProjectileComponent");

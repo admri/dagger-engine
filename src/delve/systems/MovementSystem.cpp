@@ -55,26 +55,20 @@ void MovementSystem::updateAll(float dt, dagger::Scene& scene, TileMap& map)
 {
     // Player movement
     scene.forEachEntityWith<dagger::TransformComponent, dagger::VelocityComponent, dagger::BoxColliderComponent, PlayerInputComponent>(
-        [&](auto* player)
+        [&](auto* player, auto& transform, auto& velocity, auto& collider, auto&)
     {
-        auto* t = player->getComponent<dagger::TransformComponent>();
-        auto* v = player->getComponent<dagger::VelocityComponent>();
-        auto* c = player->getComponent<dagger::BoxColliderComponent>();
-        
-        update(dt, *t, *v, map, c->width, c->height, c->offsetX, c->offsetY);
+        update(dt, transform, velocity, map,
+               collider.width, collider.height, collider.offsetX, collider.offsetY);
     });
 
     // Projectile movement
     scene.forEachEntityWith<dagger::TransformComponent, dagger::VelocityComponent, dagger::BoxColliderComponent, ProjectileComponent>(
-        [&](auto* projectile)
+        [&](auto* projectile, auto& transform, auto& velocity, auto& collider, auto&)
     {
         if (!projectile->isActive()) return;
 
-        auto* t = projectile->getComponent<dagger::TransformComponent>();
-        auto* v = projectile->getComponent<dagger::VelocityComponent>();
-        auto* c = projectile->getComponent<dagger::BoxColliderComponent>();
-
-        bool didHit = update(dt, *t, *v, map, c->width, c->height, c->offsetX, c->offsetY);
+        bool didHit = update(dt, transform, velocity, map,
+                             collider.width, collider.height, collider.offsetX, collider.offsetY);
         
         if (didHit)
         {
@@ -84,13 +78,10 @@ void MovementSystem::updateAll(float dt, dagger::Scene& scene, TileMap& map)
 
     // Enemy movement
     scene.forEachEntityWith<dagger::TransformComponent, dagger::VelocityComponent, dagger::BoxColliderComponent, EnemyAIComponent>(
-        [&](auto* enemy)
+        [&](auto* enemy, auto& transform, auto& velocity, auto& collider, auto&)
     {
-        auto* t = enemy->getComponent<dagger::TransformComponent>();
-        auto* v = enemy->getComponent<dagger::VelocityComponent>();
-        auto* c = enemy->getComponent<dagger::BoxColliderComponent>();
-
-        update(dt, *t, *v, map, c->width, c->height, c->offsetX, c->offsetY);
+        update(dt, transform, velocity, map,
+               collider.width, collider.height, collider.offsetX, collider.offsetY);
     });
 }
 

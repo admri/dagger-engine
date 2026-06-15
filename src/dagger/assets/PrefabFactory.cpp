@@ -9,6 +9,7 @@
 #include <core/components/CameraComponent.h>
 #include <core/components/CameraTargetComponent.h>
 #include <core/components/SpriteComponent.h>
+#include <core/components/Tags.h>
 #include <core/components/TextComponent.h>
 #include <core/components/TransformComponent.h>
 #include <core/components/VelocityComponent.h>
@@ -134,6 +135,9 @@ void PrefabFactory::registerCoreComponents()
     });
     
     registerTag<CameraTargetComponent>("CameraTargetComponent");
+    registerTag<HiddenTag>("HiddenTag");
+    registerTag<ShadowTag>("ShadowTag");
+    registerTag<UIRenderTag>("UIRenderTag");
 }
 
 } // namespace dagger

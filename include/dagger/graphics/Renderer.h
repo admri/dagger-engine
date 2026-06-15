@@ -31,7 +31,7 @@ public:
     void clear(Color clearColor = Colors::Black);
     void present();
 
-    void drawTexture(const Texture& texture, const Rect& dstRect, const Rect* srcRect = nullptr, bool flipX = false);
+    void drawTexture(const Texture& texture, const Rect& dstRect, const Rect* srcRect = nullptr, bool flipX = false, Color tint = Colors::White);
 
     void toggleVSync();
 

@@ -68,11 +68,19 @@ void Renderer::present()
     SDL_RenderPresent(sdlRenderer_.get());
 }
 
-void Renderer::drawTexture(const Texture& texture, const Rect& dstRect, const Rect* srcRect, bool flipX)
+void Renderer::drawTexture(const Texture& texture, const Rect& dstRect, const Rect* srcRect, bool flipX, Color tint)
 {
+    SDL_Texture* sdlTex = texture.getSDLTexture();
+
     if (!sdlRenderer_ || !texture.getSDLTexture())
     {
         return;
+    }
+
+    if (tint != Colors::White)
+    {
+        SDL_SetTextureColorMod(sdlTex, tint.r, tint.g, tint.b);
+        SDL_SetTextureAlphaMod(sdlTex, tint.a);
     }
 
     SDL_FRect sdlDstRect = { dstRect.x, dstRect.y, dstRect.w, dstRect.h };
@@ -90,6 +98,12 @@ void Renderer::drawTexture(const Texture& texture, const Rect& dstRect, const Re
     if (!SDL_RenderTextureRotated(sdlRenderer_.get(), texture.getSDLTexture(), pSrcRect, &sdlDstRect, 0.0, nullptr, flipMode))
     {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to render texture: %s", SDL_GetError());
+    }
+
+    if (tint != Colors::White)
+    {
+        SDL_SetTextureColorMod(sdlTex, 255, 255, 255);
+        SDL_SetTextureAlphaMod(sdlTex, 255);
     }
 }
 

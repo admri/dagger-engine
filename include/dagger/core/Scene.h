@@ -3,9 +3,9 @@
 
 #include <dagger/assets/ResourceHandle.h>
 #include <dagger/core/Entity.h>
+#include <dagger/core/components/Tags.h>
 #include <dagger/core/components/TextComponent.h>
 #include <dagger/core/components/TransformComponent.h>
-#include <dagger/core/systems/RenderSystem.h>
 #include <dagger/graphics/Color.h>
 
 #include <algorithm>
@@ -28,10 +28,7 @@ public:
     virtual void onInit(Application& app) = 0;
     virtual void onFixedUpdate(float dt, Application& app) {}
     virtual void onUpdate(float dt, Application& app) {}
-    virtual void onRender(Renderer& renderer, AssetManager& assets, float alpha = 0.0f)
-    {
-        renderSystem_.render(renderer, assets, *this, alpha);
-    }
+    virtual void onRender(Renderer& renderer, AssetManager& assets, float alpha = 0.0f) {}
 
     Entity* createEntity()
     {
@@ -54,6 +51,8 @@ public:
         tText.setColor(color);
         tText.setText(text);
         tText.zIndex = 100;
+
+        entity->addComponent<UIRenderTag>();
 
         return entity;
     }
@@ -100,7 +99,7 @@ public:
         {
             if (entity->isActive() && (entity->hasComponent<Components>() && ...))
             {
-                action(entity.get());
+                action(entity.get(), *(entity->getComponent<Components>())...);
             }
         }
     }
@@ -126,8 +125,6 @@ public:
 protected:
     std::vector<std::unique_ptr<Entity>> entities_;
     std::vector<std::unique_ptr<Entity>> pendingEntities_;
-
-    RenderSystem renderSystem_;
 };
 
 } // namespace dagger

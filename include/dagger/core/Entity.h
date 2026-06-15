@@ -51,6 +51,12 @@ public:
         return components_.count(typeid(T).hash_code()) > 0;
     }
 
+    template <typename T>
+    bool removeComponent() 
+    {
+        return components_.erase(typeid(T).hash_code()) > 0;
+    }
+
     inline float getX() { return x_; }
     inline float getY() { return y_; }
     

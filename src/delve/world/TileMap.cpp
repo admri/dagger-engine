@@ -1,3 +1,4 @@
+#include <components/FOVComponent.h>
 #include <world/TileMap.h>
 
 #include <algorithm>
@@ -138,7 +139,7 @@ std::pair<float, float> TileMap::generateDungeon(int maxRooms, int minRoomSize, 
     return { tileSize_, tileSize_ };
 }
 
-void TileMap::render(dagger::Renderer& renderer, dagger::Texture& floorTex, dagger::Texture& wallTex, float camX, float camY)
+void TileMap::render(dagger::Renderer& renderer, dagger::Texture& floorTex, dagger::Texture& wallTex, float camX, float camY, const FOVComponent* playerFov)
 {
     for (int y = 0; y < height_; ++y)
     {
@@ -147,16 +148,35 @@ void TileMap::render(dagger::Renderer& renderer, dagger::Texture& floorTex, dagg
             TileType tile = getTile(x, y);
             if (tile == TileType::Empty) continue;
 
+            dagger::Color tileTint = dagger::Colors::White;
+
+            if (playerFov)
+            {
+                uint64_t tileKey = (static_cast<uint64_t>(x) << 32) | static_cast<uint32_t>(y);
+                
+                bool isVisible = playerFov->visibleTiles.count(tileKey) > 0;
+                bool isExplored = playerFov->exploredTiles.count(tileKey) > 0;
+
+                if (!isVisible && !isExplored)
+                {
+                    continue; 
+                }
+                else if (!isVisible && isExplored)
+                {
+                    tileTint = dagger::Color(140, 140, 140, 255); 
+                }
+            }
+
             float screenX = (x * tileSize_) - camX;
             float screenY = (y * tileSize_) - camY;
 
             if (tile == TileType::Wall)
             {
-                renderer.drawTexture(wallTex, { screenX, screenY, tileSize_, tileSize_ });
+                renderer.drawTexture(wallTex, { screenX, screenY, tileSize_, tileSize_ }, nullptr, false, tileTint);
             }
             else if (tile == TileType::Floor)
             {
-                renderer.drawTexture(floorTex, { screenX, screenY, tileSize_, tileSize_ });
+                renderer.drawTexture(floorTex, { screenX, screenY, tileSize_, tileSize_ }, nullptr, false, tileTint);
             }
         }
     }

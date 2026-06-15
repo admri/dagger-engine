@@ -13,7 +13,8 @@ set(DAGGER_SOURCES
     core/systems/AnimationSystem.cpp
     core/systems/CameraSystem.cpp
     core/systems/CollisionSystem.cpp
-    core/systems/RenderSystem.cpp
+    core/systems/SpriteRenderSystem.cpp
+    core/systems/UIRenderSystem.cpp
     graphics/Renderer.cpp
     graphics/Texture.cpp
     input/Input.cpp
@@ -59,13 +60,15 @@ set(DAGGER_HEADERS
     ${PROJECT_SOURCE_DIR}/include/dagger/core/components/CameraComponent.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/components/CameraTargetComponent.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/components/SpriteComponent.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/core/components/Tags.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/components/TextComponent.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/components/TransformComponent.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/components/VelocityComponent.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/systems/AnimationSystem.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/systems/CameraSystem.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/systems/CollisionSystem.h
-    ${PROJECT_SOURCE_DIR}/include/dagger/core/systems/RenderSystem.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/core/systems/SpriteRenderSystem.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/core/systems/UIRenderSystem.h
     ${PROJECT_SOURCE_DIR}/include/dagger/graphics/Color.h
     ${PROJECT_SOURCE_DIR}/include/dagger/graphics/Rect.h
     ${PROJECT_SOURCE_DIR}/include/dagger/graphics/Renderer.h

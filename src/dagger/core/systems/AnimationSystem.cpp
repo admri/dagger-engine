@@ -12,43 +12,38 @@ namespace dagger
 void AnimationSystem::update(float dt, Scene& scene)
 {
     scene.forEachEntityWith<AnimationComponent, SpriteComponent>(
-        [dt](auto* entity)
+        [dt](auto* entity, auto& anim, auto& sprite)
     {
-        auto* anim = entity->getComponent<AnimationComponent>();
-        auto* sprite = entity->getComponent<SpriteComponent>();
+        if (!anim.isPlaying) return;
+        if (anim.currentSequence >= anim.sequences.size()) return;
 
-        if (!anim->isPlaying) return;
+        anim.timer += dt;
 
-        if (anim->currentSequence >= anim->sequences.size()) return;
+        auto& sequence = anim.sequences[anim.currentSequence];
 
-        anim->timer += dt;
+        sprite.texture = sequence.texture;
 
-        auto& sequence = anim->sequences[anim->currentSequence];
-
-        sprite->texture = sequence.texture;
-
-        if (anim->timer >= sequence.frameDuration)
+        if (anim.timer >= sequence.frameDuration)
         {
-            anim->timer -= sequence.frameDuration; 
-            
-            anim->currentFrameIndex++;
+            anim.timer -= sequence.frameDuration; 
+            anim.currentFrameIndex++;
 
             // On animation end
-            if (anim->currentFrameIndex >= sequence.numFrames)
+            if (anim.currentFrameIndex >= sequence.numFrames)
             {
                 if (sequence.isLooping)
                 {
-                    anim->currentFrameIndex = 0;
+                    anim.currentFrameIndex = 0;
                 }
                 else
                 {
-                    anim->currentFrameIndex = sequence.numFrames - 1; // End on last frame
-                    anim->isPlaying = false;
+                    anim.currentFrameIndex = sequence.numFrames - 1; // End on last frame
+                    anim.isPlaying = false;
                 }
             }
 
             // Move source rect
-            sprite->srcX = (sequence.startFrame + anim->currentFrameIndex) * sprite->srcWidth;
+            sprite.srcX = (sequence.startFrame + anim.currentFrameIndex) * sprite.srcWidth;
         }
     });
 }

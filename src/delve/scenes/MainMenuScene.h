@@ -8,6 +8,8 @@
 #include <dagger/assets/AssetManager.h>
 #include <dagger/core/components/TextComponent.h>
 #include <dagger/core/components/TransformComponent.h>
+#include <dagger/core/systems/UIRenderSystem.h>
+#include <dagger/graphics/Renderer.h>
 #include <dagger/input/Input.h>
 #include <dagger/input/KeyCodes.h>
 
@@ -39,6 +41,14 @@ public:
             app.getSceneManager().replace(std::make_unique<GameplayScene>());
         }
     }
+
+    void onRender(dagger::Renderer& renderer, dagger::AssetManager& assets, float alpha = 0.0f) override
+    {
+        uiRenderSystem_.render(renderer, assets, *this, alpha);
+    }
+
+private:
+    dagger::UIRenderSystem uiRenderSystem_;
 };
 
 } // namespace delve

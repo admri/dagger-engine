@@ -26,28 +26,25 @@ void PlayerInputSystem::update(dagger::Application& app, dagger::Scene& scene)
     auto& input = app.getInput();
 
     scene.forEachEntityWith<PlayerInputComponent, dagger::VelocityComponent>(
-        [&](dagger::Entity* player)
+        [&](auto* player, auto& pInput, auto& vel)
     {
-        auto* vel = player->getComponent<dagger::VelocityComponent>();
-        auto* pInput = player->getComponent<PlayerInputComponent>();
-
         // =========
         // Keyboard
         // =========
-        vel->vx = 0.0f;
-        vel->vy = 0.0f;
+        vel.vx = 0.0f;
+        vel.vy = 0.0f;
 
-        if (input.isKeyDown(dagger::Key::W)) vel->vy -= pInput->speed;
-        if (input.isKeyDown(dagger::Key::S)) vel->vy += pInput->speed;
-        if (input.isKeyDown(dagger::Key::A)) vel->vx -= pInput->speed;
-        if (input.isKeyDown(dagger::Key::D)) vel->vx += pInput->speed;
+        if (input.isKeyDown(dagger::Key::W)) vel.vy -= pInput.speed;
+        if (input.isKeyDown(dagger::Key::S)) vel.vy += pInput.speed;
+        if (input.isKeyDown(dagger::Key::A)) vel.vx -= pInput.speed;
+        if (input.isKeyDown(dagger::Key::D)) vel.vx += pInput.speed;
         
         // Normalize diagonal movement
-        if (vel->vx != 0.0f && vel->vy != 0.0f)
+        if (vel.vx != 0.0f && vel.vy != 0.0f)
         {
-            float length = std::sqrt(vel->vx * vel->vx + vel->vy * vel->vy);
-            vel->vx = (vel->vx / length) * pInput->speed;
-            vel->vy = (vel->vy / length) * pInput->speed;
+            float length = std::sqrt(vel.vx * vel.vx + vel.vy * vel.vy);
+            vel.vx = (vel.vx / length) * pInput.speed;
+            vel.vy = (vel.vy / length) * pInput.speed;
         }
 
         // Animation handling
@@ -57,17 +54,17 @@ void PlayerInputSystem::update(dagger::Application& app, dagger::Scene& scene)
         if (anim && sprite)
         {
             // Mirror the texture
-            if (vel->vx < 0.0f)
+            if (vel.vx < 0.0f)
             {
                 sprite->flipX = true;
             }
-            else if (vel->vx > 0.0f)
+            else if (vel.vx > 0.0f)
             {
                 sprite->flipX = false;
             }
 
             // Switch states
-            if (vel->vx != 0.0f || vel->vy != 0.0f)
+            if (vel.vx != 0.0f || vel.vy != 0.0f)
             {
                 if (anim->currentSequence != PlayerAnim::Run)
                 {

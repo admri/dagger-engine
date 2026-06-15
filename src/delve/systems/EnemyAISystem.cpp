@@ -26,31 +26,26 @@ void EnemyAISystem::update(float dt, dagger::Scene& scene)
     float playerCenterY = pTransform->y + pCollider->offsetY + (pCollider->height / 2.0f);
 
     scene.forEachEntityWith<dagger::TransformComponent, dagger::VelocityComponent, EnemyAIComponent, dagger::BoxColliderComponent>(
-        [&](auto* enemy)
+        [&](auto* enemy, auto& transform, auto& velocity, auto& ai, auto& collider)
     {
-        auto* eTransform = enemy->getComponent<dagger::TransformComponent>();
-        auto* eVelocity = enemy->getComponent<dagger::VelocityComponent>();
-        auto* eAI = enemy->getComponent<EnemyAIComponent>();
-        auto* eCollider = enemy->getComponent<dagger::BoxColliderComponent>();
-
-        float enemyCenterX = eTransform->x + eCollider->offsetX + (eCollider->width / 2.0f);
-        float enemyCenterY = eTransform->y + eCollider->offsetY + (eCollider->height / 2.0f);
+        float enemyCenterX = transform.x + collider.offsetX + (collider.width / 2.0f);
+        float enemyCenterY = transform.y + collider.offsetY + (collider.height / 2.0f);
 
         float dirX = playerCenterX - enemyCenterX;
         float dirY = playerCenterY - enemyCenterY;
         float distance = std::sqrt(dirX * dirX + dirY * dirY);
 
-        if (distance > 0.0f && distance < eAI->detectionRadius)
+        if (distance > 0.0f && distance < ai.detectionRadius)
         {
             dirX /= distance;
             dirY /= distance;
-            eVelocity->vx = dirX * eAI->speed;
-            eVelocity->vy = dirY * eAI->speed;
+            velocity.vx = dirX * ai.speed;
+            velocity.vy = dirY * ai.speed;
         }
         else
         {
-            eVelocity->vx = 0.0f;
-            eVelocity->vy = 0.0f;
+            velocity.vx = 0.0f;
+            velocity.vy = 0.0f;
         }
     });
 }

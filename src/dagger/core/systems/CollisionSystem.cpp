@@ -22,13 +22,7 @@ void CollisionSystem::update(Scene& scene, std::vector<CollisionEvent>& outColli
     outCollisions.clear();
 
     static std::vector<Entity*> collidables;
-    collidables.clear();
-
-    scene.forEachEntityWith<TransformComponent, BoxColliderComponent>(
-        [&](auto* entity)
-    {
-        collidables.push_back(entity);
-    });
+    scene.getEntitiesWith<TransformComponent, BoxColliderComponent>(collidables);
 
     for (size_t i = 0; i < collidables.size(); ++i)
     {

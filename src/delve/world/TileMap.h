@@ -10,6 +10,8 @@
 namespace delve
 {
 
+struct FOVComponent;
+
 enum class TileType
 {
     Empty = 0,
@@ -46,7 +48,8 @@ public:
     void render(dagger::Renderer& renderer, 
                 dagger::Texture& floorTex, 
                 dagger::Texture& wallTex, 
-                float camX, float camY);
+                float camX, float camY,
+                const FOVComponent* playerFov = nullptr);
 
     int getWidth() const { return width_; }
     int getHeight() const { return height_; }

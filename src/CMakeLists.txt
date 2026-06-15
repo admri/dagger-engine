@@ -7,6 +7,7 @@ set(DELVE_SOURCES
     delve/scenes/GameplayScene.cpp
     delve/systems/CombatSystem.cpp
     delve/systems/EnemyAISystem.cpp
+    delve/systems/FOVSystem.cpp
     delve/systems/MovementSystem.cpp
     delve/systems/PlayerInputSystem.cpp
     delve/systems/ShootingSystem.cpp
@@ -16,6 +17,7 @@ set(DELVE_SOURCES
 set(DELVE_HEADERS
     delve/Game.h
     delve/components/EnemyAIComponent.h
+    delve/components/FOVComponent.h
     delve/components/HealthComponent.h
     delve/components/PlayerInputComponent.h
     delve/components/ProjectileComponent.h
@@ -26,6 +28,7 @@ set(DELVE_HEADERS
     delve/scenes/PauseScene.h
     delve/systems/CombatSystem.h
     delve/systems/EnemyAISystem.h
+    delve/systems/FOVSystem.h
     delve/systems/MovementSystem.h
     delve/systems/PlayerInputSystem.h
     delve/systems/ShootingSystem.h

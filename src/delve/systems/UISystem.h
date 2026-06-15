@@ -17,10 +17,9 @@ public:
         auto elements = scene.getEntitiesWith<dagger::TextComponent, Tag>();
 
         scene.forEachEntityWith<dagger::TextComponent, Tag>(
-            [&](auto* entity)
+            [&](auto* entity, auto& text, auto&)
         {
-            auto* textComp = entity->getComponent<dagger::TextComponent>();
-            textComp->setText(generator());
+            text.setText(generator());
         });
     }
 };

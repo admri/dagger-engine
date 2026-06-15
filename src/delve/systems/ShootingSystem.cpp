@@ -24,31 +24,27 @@ void ShootingSystem::update(float dt, dagger::Application& app, dagger::Scene& s
     auto shooters = scene.getEntitiesWith<dagger::TransformComponent, dagger::SpriteComponent, WeaponComponent>();
 
     scene.forEachEntityWith<dagger::TransformComponent, dagger::SpriteComponent, WeaponComponent>(
-        [&](auto* shooter)
+        [&](auto* shooter, auto& transform, auto& sprite, auto& weapon)
     {
-        auto* transform = shooter->getComponent<dagger::TransformComponent>();
-        auto* sprite = shooter->getComponent<dagger::SpriteComponent>();
-        auto* weapon = shooter->getComponent<WeaponComponent>();
-
-        if (weapon->cooldown > 0.0f)
+        if (weapon.cooldown > 0.0f)
         {
-            weapon->cooldown -= dt;
+            weapon.cooldown -= dt;
         }
 
-        if (weapon->isTriggerPulled && weapon->cooldown <= 0.0f)
+        if (weapon.isTriggerPulled && weapon.cooldown <= 0.0f)
         {
-            weapon->cooldown = weapon->fireRate;
+            weapon.cooldown = weapon.fireRate;
 
-            float startX = transform->x + (sprite->width / 2.0f);
-            float startY = transform->y + (sprite->height / 2.0f);
+            float startX = transform.x + (sprite.width / 2.0f);
+            float startY = transform.y + (sprite.height / 2.0f);
             
-            float dirX = weapon->targetX - startX;
-            float dirY = weapon->targetY - startY;
+            float dirX = weapon.targetX - startX;
+            float dirY = weapon.targetY - startY;
             float length = std::sqrt(dirX * dirX + dirY * dirY);
             if (length > 0) { dirX /= length; dirY /= length; }
 
             // Spawning projectiles
-            dagger::Entity* fireball = scene.createEntity();
+            auto* fireball = scene.createEntity();
 
             auto& fTransform = fireball->addComponent<dagger::TransformComponent>();
             fTransform.setPosition(startX - 8.0f, startY - 8.0f); 
@@ -62,11 +58,11 @@ void ShootingSystem::update(float dt, dagger::Application& app, dagger::Scene& s
             fCollider.height = 16.0f;
 
             auto& fVelocity = fireball->addComponent<dagger::VelocityComponent>();
-            fVelocity.vx = dirX * weapon->projectileSpeed; 
-            fVelocity.vy = dirY * weapon->projectileSpeed;
+            fVelocity.vx = dirX * weapon.projectileSpeed; 
+            fVelocity.vy = dirY * weapon.projectileSpeed;
             
             auto& fProjectile = fireball->addComponent<ProjectileComponent>();
-            fProjectile.damage = weapon->damage;
+            fProjectile.damage = weapon.damage;
         }
     });
 }

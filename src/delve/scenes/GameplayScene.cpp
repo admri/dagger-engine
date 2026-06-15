@@ -1,6 +1,7 @@
 #include <scenes/GameplayScene.h>
 
 #include <components/EnemyAIComponent.h>
+#include <components/FOVComponent.h>
 #include <components/HealthComponent.h>
 #include <components/PlayerInputComponent.h>
 #include <components/ProjectileComponent.h>
@@ -19,7 +20,6 @@
 #include <dagger/core/components/TextComponent.h>
 #include <dagger/core/components/TransformComponent.h>
 #include <dagger/core/components/VelocityComponent.h>
-#include <dagger/core/systems/CollisionSystem.h>
 #include <dagger/graphics/Texture.h>
 #include <dagger/input/Input.h>
 
@@ -99,6 +99,12 @@ void GameplayScene::onFixedUpdate(float dt, dagger::Application& app)
     movementSystem_.updateAll(dt, *this, *tileMap_);
     dagger::CollisionSystem::update(*this, frameCollisions_);
     combatSystem_.update(dt, app, *this, frameCollisions_);
+
+    if (tileMap_)
+    {
+        fovSystem_.update(dt, *this, *tileMap_);
+    }
+
     cameraSystem_.update(app, *this);
 }
 
@@ -146,13 +152,22 @@ void GameplayScene::onRender(dagger::Renderer &renderer, dagger::AssetManager &a
     {
         auto* floor = assets.resolve<dagger::Texture>(floorTex_);
         auto* wall = assets.resolve<dagger::Texture>(wallTex_);
+
+        const FOVComponent* playerFov = nullptr;
+        auto* player = getFirstEntityWith<FOVComponent, PlayerInputComponent>();
+        if (player)
+        {
+            playerFov = player->getComponent<FOVComponent>();
+        }
+
         if (floor && wall)
         {
-            tileMap_->render(renderer, *floor, *wall, camX, camY);
+            tileMap_->render(renderer, *floor, *wall, camX, camY, playerFov);
         }
     }
 
-    renderSystem_.render(renderer, assets, *this, alpha);
+    spriteRenderSystem_.render(renderer, assets, *this, alpha);
+    uiRenderSystem_.render(renderer, assets, *this, alpha);
 }
 
 } // namespace delve
