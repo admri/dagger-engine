@@ -17,9 +17,12 @@ namespace delve
 
 void FOVSystem::update(float dt, dagger::Scene& scene, TileMap& tileMap)
 {
+    FOVComponent* activeFov = nullptr;
+
     scene.forEachEntityWith<dagger::TransformComponent, FOVComponent>(
         [&](auto* entity, auto& transform, auto& fov) 
     {
+        activeFov = &fov;
         fov.visibleTiles.clear();
 
         for (int i = 0; i < fov.numRays; ++i)
@@ -49,8 +52,10 @@ void FOVSystem::update(float dt, dagger::Scene& scene, TileMap& tileMap)
         }
     });
 
-    scene.forEachEntityWith<dagger::TransformComponent, dagger::SpriteComponent, FOVComponent>(
-        [&](dagger::Entity* e, auto& transform, auto& sprite, auto& fov)
+    if (!activeFov) return;
+
+    scene.forEachEntityWith<dagger::TransformComponent, dagger::SpriteComponent>(
+        [&](dagger::Entity* e, auto& transform, auto& sprite)
     {
         if (e->hasComponent<PlayerInputComponent>()) return;
 
@@ -58,8 +63,8 @@ void FOVSystem::update(float dt, dagger::Scene& scene, TileMap& tileMap)
         int tileY = static_cast<int>(transform.y / tileMap.getTileSize());
         uint64_t tileKey = (static_cast<uint64_t>(tileX) << 32) | tileY;
 
-        bool isVisible = fov.visibleTiles.count(tileKey) > 0;
-        bool isExplored = fov.exploredTiles.count(tileKey) > 0;
+        bool isVisible = activeFov->visibleTiles.count(tileKey) > 0;
+        bool isExplored = activeFov->exploredTiles.count(tileKey) > 0;
 
         if (!isVisible && !isExplored)
         {

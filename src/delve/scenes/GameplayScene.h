@@ -7,6 +7,7 @@
 #include <systems/MovementSystem.h>
 #include <systems/PlayerInputSystem.h>
 #include <systems/ShootingSystem.h>
+#include <systems/TileMapRenderSystem.h>
 #include <systems/UISystem.h>
 #include <world/TileMap.h>
 
@@ -49,6 +50,7 @@ private:
     FOVSystem fovSystem_;
     dagger::SpriteRenderSystem spriteRenderSystem_;
     dagger::UIRenderSystem uiRenderSystem_;
+    TileMapRenderSystem tileMapRenderSystem_;
     
     std::unique_ptr<TileMap> tileMap_;
     dagger::TextureHandle floorTex_;

@@ -7,12 +7,12 @@ namespace dagger
 class Renderer;
 class AssetManager;
 class Scene;
-struct FOVComponent;
+struct Viewport;
 
 class SpriteRenderSystem
 {
 public:
-    void render(Renderer& renderer, AssetManager& assets, Scene& scene, float alpha);
+    void render(Renderer& renderer, AssetManager& assets, Scene& scene, const Viewport& viewport, float alpha);
 };
 
 } // namespace dagger

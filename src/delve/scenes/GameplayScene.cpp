@@ -1,28 +1,21 @@
 #include <scenes/GameplayScene.h>
 
-#include <components/EnemyAIComponent.h>
 #include <components/FOVComponent.h>
 #include <components/HealthComponent.h>
 #include <components/PlayerInputComponent.h>
-#include <components/ProjectileComponent.h>
 #include <components/Tags.h>
-#include <components/WeaponComponent.h>
-#include <scenes/GameOverScene.h>
 
 #include <dagger/assets/AssetManager.h>
-#include <dagger/assets/Font.h>
 #include <dagger/assets/ResourceHandle.h>
 #include <dagger/core/Application.h>
 #include <dagger/core/Entity.h>
 #include <dagger/core/LevelLoader.h>
 #include <dagger/core/components/CameraComponent.h>
-#include <dagger/core/components/SpriteComponent.h>
-#include <dagger/core/components/TextComponent.h>
 #include <dagger/core/components/TransformComponent.h>
-#include <dagger/core/components/VelocityComponent.h>
 #include <dagger/graphics/Texture.h>
-#include <dagger/input/Input.h>
+#include <dagger/graphics/Viewport.h>
 
+#include <cstdlib>
 #include <ctime>
 
 namespace delve
@@ -134,18 +127,24 @@ void GameplayScene::onUpdate(float dt, dagger::Application& app)
 
 void GameplayScene::onRender(dagger::Renderer &renderer, dagger::AssetManager &assets, float alpha)
 {
-    float camX = 0.0f;
-    float camY = 0.0f;
+    dagger::Viewport viewport;
+    
+    viewport.windowWidth = renderer.getWidth();
+    viewport.windowHeight = renderer.getHeight();
 
     auto* camera = getFirstEntityWith<dagger::TransformComponent, dagger::CameraComponent>();
     if (camera)
     {
         auto* camTransform = camera->getComponent<dagger::TransformComponent>();
-        if (camTransform)
-        {
-            camX = camTransform->prevX + (camTransform->x - camTransform->prevX) * alpha;
-            camY = camTransform->prevY + (camTransform->y - camTransform->prevY) * alpha;
-        }
+        viewport.camX = camTransform->prevX + (camTransform->x - camTransform->prevX) * alpha;
+        viewport.camY = camTransform->prevY + (camTransform->y - camTransform->prevY) * alpha;
+    }
+
+    const FOVComponent* playerFov = nullptr;
+    auto* player = getFirstEntityWith<FOVComponent, PlayerInputComponent>();
+    if (player)
+    {
+        playerFov = player->getComponent<FOVComponent>();
     }
 
     if (tileMap_)
@@ -153,20 +152,13 @@ void GameplayScene::onRender(dagger::Renderer &renderer, dagger::AssetManager &a
         auto* floor = assets.resolve<dagger::Texture>(floorTex_);
         auto* wall = assets.resolve<dagger::Texture>(wallTex_);
 
-        const FOVComponent* playerFov = nullptr;
-        auto* player = getFirstEntityWith<FOVComponent, PlayerInputComponent>();
-        if (player)
-        {
-            playerFov = player->getComponent<FOVComponent>();
-        }
-
         if (floor && wall)
         {
-            tileMap_->render(renderer, *floor, *wall, camX, camY, playerFov);
+            tileMapRenderSystem_.render(renderer, *tileMap_, *floor, *wall, viewport, playerFov);
         }
     }
 
-    spriteRenderSystem_.render(renderer, assets, *this, alpha);
+    spriteRenderSystem_.render(renderer, assets, *this, viewport, alpha);
     uiRenderSystem_.render(renderer, assets, *this, alpha);
 }
 

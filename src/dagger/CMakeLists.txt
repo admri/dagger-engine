@@ -73,6 +73,7 @@ set(DAGGER_HEADERS
     ${PROJECT_SOURCE_DIR}/include/dagger/graphics/Rect.h
     ${PROJECT_SOURCE_DIR}/include/dagger/graphics/Renderer.h
     ${PROJECT_SOURCE_DIR}/include/dagger/graphics/Texture.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/graphics/Viewport.h
     ${PROJECT_SOURCE_DIR}/include/dagger/input/Input.h
     ${PROJECT_SOURCE_DIR}/include/dagger/input/KeyCodes.h
     core/Window.h

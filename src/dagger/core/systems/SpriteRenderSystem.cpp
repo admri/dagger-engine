@@ -11,6 +11,7 @@
 #include <graphics/Color.h>
 #include <graphics/Renderer.h>
 #include <graphics/Texture.h>
+#include <graphics/Viewport.h>
 
 #include <algorithm>
 #include <vector>
@@ -25,7 +26,7 @@ struct SpriteNode
     Color tint; 
 };
 
-void SpriteRenderSystem::render(Renderer& renderer, AssetManager& assets, Scene& scene, float alpha)
+void SpriteRenderSystem::render(Renderer& renderer, AssetManager& assets, Scene& scene, const Viewport& viewport, float alpha)
 {
     static std::vector<SpriteNode> nodes;
     nodes.clear();
@@ -48,23 +49,13 @@ void SpriteRenderSystem::render(Renderer& renderer, AssetManager& assets, Scene&
         return a.sprite->zIndex < b.sprite->zIndex;
     });
 
-    float camX = 0.0f;
-    float camY = 0.0f;
-    auto* camera = scene.getFirstEntityWith<TransformComponent, CameraComponent>();
-    if (camera)
-    {
-        auto* camTransform = camera->getComponent<TransformComponent>();
-        camX = camTransform->prevX + (camTransform->x - camTransform->prevX) * alpha;
-        camY = camTransform->prevY + (camTransform->y - camTransform->prevY) * alpha;
-    }
-
     for (auto& node : nodes)
     {
         float renderX = node.transform->prevX + (node.transform->x - node.transform->prevX) * alpha;
         float renderY = node.transform->prevY + (node.transform->y - node.transform->prevY) * alpha;
 
-        float screenX = renderX - camX;
-        float screenY = renderY - camY;
+        float screenX = renderX - viewport.camX;
+        float screenY = renderY - viewport.camY;
 
         Texture* texture = assets.resolve<Texture, TextureHandle>(node.sprite->texture);
         if (texture)

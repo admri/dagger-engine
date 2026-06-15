@@ -11,6 +11,7 @@ set(DELVE_SOURCES
     delve/systems/MovementSystem.cpp
     delve/systems/PlayerInputSystem.cpp
     delve/systems/ShootingSystem.cpp
+    delve/systems/TileMapRenderSystem.cpp
     delve/world/TileMap.cpp
 )
 
@@ -32,6 +33,7 @@ set(DELVE_HEADERS
     delve/systems/MovementSystem.h
     delve/systems/PlayerInputSystem.h
     delve/systems/ShootingSystem.h
+    delve/systems/TileMapRenderSystem.h
     delve/systems/UISystem.h
     delve/types/PlayerAnim.h
     delve/world/TileMap.h

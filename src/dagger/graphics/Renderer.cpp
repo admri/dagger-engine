@@ -120,4 +120,18 @@ void Renderer::toggleVSync()
     SDL_SetRenderVSync(sdlRenderer_.get(), vsync ? SDL_RENDERER_VSYNC_DISABLED : 1);
 }
 
+int Renderer::getWidth() const
+{
+    int w, h;
+    SDL_GetRenderOutputSize(sdlRenderer_.get(), &w, &h);
+    return w;
+}
+
+int Renderer::getHeight() const
+{
+    int w, h;
+    SDL_GetRenderOutputSize(sdlRenderer_.get(), &w, &h);
+    return h;
+}
+
 } // namespace dagger
