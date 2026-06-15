@@ -14,8 +14,13 @@
 #include <core/components/TransformComponent.h>
 #include <core/components/VelocityComponent.h>
 #include <graphics/Texture.h>
+#include <utils/StringHash.h>
+
+#include <SDL3/SDL_log.h>
 
 #include <nlohmann/json.hpp>
+
+#include <string>
 
 namespace dagger
 {
@@ -53,12 +58,23 @@ Entity* PrefabFactory::create(PrefabHandle handle, Scene& scene, AssetManager& a
     auto* prefab = assets.resolve<Prefab>(handle);
     if (!prefab) return nullptr;
 
-    auto entity = scene.createEntity();
+    auto* entity = scene.createEntity();
     
-    for (const auto& buildFn : prefab->compiledBuilders)
+    try 
     {
-        buildFn(entity, assets);
+        for (const auto& buildFn : prefab->compiledBuilders)
+        {
+            buildFn(entity, assets);
+        }
     }
+    catch (const nlohmann::json::exception& e)
+    {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to create entity from prefab. JSON Error: %s", e.what());
+        
+        entity->setActive(false); 
+        return nullptr;
+    }
+
     return entity;
 }
 
@@ -71,13 +87,27 @@ void PrefabFactory::registerCoreComponents()
     registerComponent("AnimationComponent", [](Entity* e, const nlohmann::json& j, AssetManager& a) 
     {
         auto& comp = e->addComponent<AnimationComponent>();
-        j.get_to(comp); 
+        j.get_to(comp);
+
+        if (j.contains("defaultSequence"))
+        {
+            std::string defName = j["defaultSequence"];
+            comp.currentSequenceHash = dagger::hashString(defName.c_str(), defName.length());
+        }
 
         if (j.contains("sequences") && j["sequences"].is_array()) 
         {
             for (const auto& seqJson : j["sequences"]) 
             {
-                AnimationComponent::AnimationSequence seq;
+                AnimationComponent::Sequence seq;
+
+                std::string name = seqJson["name"];
+                seq.nameHash = dagger::hashString(name.c_str(), name.length());
+                
+                if (comp.currentSequenceHash == 0 && comp.sequences.empty())
+                {
+                    comp.currentSequenceHash = seq.nameHash;
+                }
                 
                 seq.startFrame = seqJson.value("startFrame", 0);
                 seq.numFrames = seqJson.value("numFrames", 1);

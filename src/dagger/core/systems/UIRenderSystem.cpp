@@ -2,9 +2,7 @@
 
 #include <assets/AssetManager.h>
 #include <core/Scene.h>
-#include <core/components/SpriteComponent.h>
 #include <core/components/Tags.h>
-#include <core/components/TextComponent.h>
 #include <core/components/TransformComponent.h>
 #include <graphics/Color.h>
 #include <graphics/Rect.h>
@@ -14,6 +12,8 @@
 #include <SDL3/SDL_error.h>
 #include <SDL3/SDL_pixels.h>
 #include <SDL3_ttf/SDL_ttf.h>
+
+#include <algorithm>
 
 namespace dagger
 {
@@ -64,59 +64,51 @@ namespace
     }
 }
 
-struct UINode
-{
-    TransformComponent* transform;
-    SpriteComponent* sprite = nullptr;
-    TextComponent* text = nullptr;
-
-    inline int getZIndex() const
-    {
-        if (sprite) return sprite->zIndex;
-        if (text) return text->zIndex;
-        return 0;
-    }
-};
-
 void UIRenderSystem::render(Renderer& renderer, AssetManager& assets, Scene& scene, float alpha)
 {
-    static std::vector<UINode> nodes;
-    nodes.clear();
+    nodes_.clear();
 
     // Retrieve all UI sprites
     scene.forEachEntityWith<TransformComponent, SpriteComponent, UIRenderTag>(
         [&](auto* e, auto& transform, auto& sprite, auto& tag)
     {
-        nodes.push_back({ &transform, &sprite, nullptr });
+        float screenX = transform.prevX + (transform.x - transform.prevX) * alpha;
+        float screenY = transform.prevY + (transform.y - transform.prevY) * alpha;
+        nodes_.push_back({ &sprite, nullptr, screenX, screenY });
     });
 
     // Retrieve all UI texts
     scene.forEachEntityWith<TransformComponent, TextComponent, UIRenderTag>(
         [&](auto* e, auto& transform, auto& text, auto& tag)
     {
-        nodes.push_back({ &transform, nullptr, &text });
+        float screenX = transform.prevX + (transform.x - transform.prevX) * alpha;
+        float screenY = transform.prevY + (transform.y - transform.prevY) * alpha;
+        nodes_.push_back({ nullptr, &text, screenX, screenY });
     });
 
-    // Sort all by zIndex
-    std::sort(nodes.begin(), nodes.end(), [](const UINode& a, const UINode& b) {
+    // Sort nodes by zIndex
+    std::stable_sort(nodes_.begin(), nodes_.end(), [](const UINode& a, const UINode& b) {
         return a.getZIndex() < b.getZIndex();
     });
 
-    // Render
-    for (auto& node : nodes)
+    // Render nodes
+    for (auto& node : nodes_)
     {
-        float screenX = node.transform->prevX + (node.transform->x - node.transform->prevX) * alpha;
-        float screenY = node.transform->prevY + (node.transform->y - node.transform->prevY) * alpha;
-
         if (node.sprite)
         {
             Texture* texture = assets.resolve<Texture, TextureHandle>(node.sprite->texture);
             if (texture)
             {
-                Rect dstRect = { screenX, screenY, node.sprite->width, node.sprite->height };
+                Rect dstRect = {
+                    node.screenX, node.screenY,
+                    node.sprite->width, node.sprite->height
+                };
                 if (node.sprite->hasSrcRect)
                 {
-                    Rect srcRect = { node.sprite->srcX, node.sprite->srcY, node.sprite->srcWidth, node.sprite->srcHeight };
+                    Rect srcRect = {
+                        node.sprite->srcX, node.sprite->srcY,
+                        node.sprite->srcWidth, node.sprite->srcHeight
+                    };
                     renderer.drawTexture(*texture, dstRect, &srcRect, node.sprite->flipX);
                 }
                 else
@@ -131,7 +123,10 @@ void UIRenderSystem::render(Renderer& renderer, AssetManager& assets, Scene& sce
 
             if (node.text->cachedTexture.isValid())
             {
-                renderer.drawTexture(node.text->cachedTexture, { screenX, screenY, node.text->cachedTexture.getWidth(), node.text->cachedTexture.getHeight() });
+                renderer.drawTexture(node.text->cachedTexture, {
+                    node.screenX, node.screenY,
+                    node.text->cachedTexture.getWidth(), node.text->cachedTexture.getHeight()
+                });
             }
         }
     }

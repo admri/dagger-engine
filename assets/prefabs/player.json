@@ -16,17 +16,18 @@
       "height": 56.0
     },
     "AnimationComponent": {
-      "currentSequence": 0,
       "isPlaying": true,
+      "defaultSequence": "idle",
       "sequences": [
         {
+          "name": "idle",
           "texture": "player_idle",
-          "startFrame": 0,
           "numFrames": 4,
           "frameDuration": 0.2,
           "isLooping": true
         },
         {
+          "name": "run",
           "texture": "player_run",
           "startFrame": 0,
           "numFrames": 4,
@@ -34,8 +35,8 @@
           "isLooping": true
         },
         {
+          "name": "attack",
           "texture": "player_attack",
-          "startFrame": 0,
           "numFrames": 2,
           "frameDuration": 0.05,
           "isLooping": false

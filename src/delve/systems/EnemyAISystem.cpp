@@ -5,11 +5,16 @@
 
 #include <dagger/core/Entity.h>
 #include <dagger/core/Scene.h>
+#include <dagger/core/components/AnimationComponent.h>
 #include <dagger/core/components/BoxColliderComponent.h>
+#include <dagger/core/components/SpriteComponent.h>
 #include <dagger/core/components/TransformComponent.h>
 #include <dagger/core/components/VelocityComponent.h>
+#include <dagger/utils/StringHash.h>
 
 #include <cmath>
+
+using namespace dagger::literals;
 
 namespace delve
 {
@@ -35,6 +40,7 @@ void EnemyAISystem::update(float dt, dagger::Scene& scene)
         float dirY = playerCenterY - enemyCenterY;
         float distance = std::sqrt(dirX * dirX + dirY * dirY);
 
+        // Movement logic
         if (distance > 0.0f && distance < ai.detectionRadius)
         {
             dirX /= distance;
@@ -46,6 +52,33 @@ void EnemyAISystem::update(float dt, dagger::Scene& scene)
         {
             velocity.vx = 0.0f;
             velocity.vy = 0.0f;
+        }
+
+        // Visual logic
+        auto* anim = enemy->getComponent<dagger::AnimationComponent>();
+        auto* sprite = enemy->getComponent<dagger::SpriteComponent>();
+
+        if (anim && sprite)
+        {
+            // Flip texture
+            if (velocity.vx < 0.0f)
+            {
+                sprite->flipX = true;
+            }
+            else if (velocity.vx > 0.0f)
+            {
+                sprite->flipX = false;
+            }
+
+            // Change animation state
+            if (velocity.vx != 0.0f || velocity.vy != 0.0f)
+            {
+                anim->play("run"_hash);
+            }
+            else
+            {
+                anim->play("idle"_hash);
+            }
         }
     });
 }

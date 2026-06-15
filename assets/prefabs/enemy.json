@@ -16,10 +16,11 @@
       "height": 56.0
     },
     "AnimationComponent": {
-      "currentSequence": 0,
       "isPlaying": true,
+      "defaultSequence": "idle",
       "sequences": [
         {
+          "name": "idle",
           "texture": "orc_warrior_idle",
           "startFrame": 0,
           "numFrames": 4,
@@ -27,6 +28,7 @@
           "isLooping": true
         },
         {
+          "name": "run",
           "texture": "orc_warrior_run",
           "startFrame": 0,
           "numFrames": 4,
@@ -34,6 +36,7 @@
           "isLooping": true
         },
         {
+          "name": "attack",
           "texture": "orc_warrior_attack",
           "startFrame": 0,
           "numFrames": 2,

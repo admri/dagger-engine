@@ -15,35 +15,44 @@ void AnimationSystem::update(float dt, Scene& scene)
         [dt](auto* entity, auto& anim, auto& sprite)
     {
         if (!anim.isPlaying) return;
-        if (anim.currentSequence >= anim.sequences.size()) return;
 
         anim.timer += dt;
 
-        auto& sequence = anim.sequences[anim.currentSequence];
-
-        sprite.texture = sequence.texture;
-
-        if (anim.timer >= sequence.frameDuration)
+        AnimationComponent::Sequence* activeSeq = nullptr;
+        for (auto& seq : anim.sequences)
         {
-            anim.timer -= sequence.frameDuration; 
+            if (seq.nameHash == anim.currentSequenceHash)
+            {
+                activeSeq = &seq;
+                break;
+            }
+        }
+
+        if (!activeSeq || activeSeq->numFrames == 0) return;
+
+        sprite.texture = activeSeq->texture;
+
+        if (anim.timer >= activeSeq->frameDuration)
+        {
+            anim.timer -= activeSeq->frameDuration; 
             anim.currentFrameIndex++;
 
             // On animation end
-            if (anim.currentFrameIndex >= sequence.numFrames)
+            if (anim.currentFrameIndex >= activeSeq->numFrames)
             {
-                if (sequence.isLooping)
+                if (activeSeq->isLooping)
                 {
                     anim.currentFrameIndex = 0;
                 }
                 else
                 {
-                    anim.currentFrameIndex = sequence.numFrames - 1; // End on last frame
+                    anim.currentFrameIndex = activeSeq->numFrames - 1; // End on last frame
                     anim.isPlaying = false;
                 }
             }
 
             // Move source rect
-            sprite.srcX = (sequence.startFrame + anim.currentFrameIndex) * sprite.srcWidth;
+            sprite.srcX = (activeSeq->startFrame + anim.currentFrameIndex) * sprite.srcWidth;
         }
     });
 }

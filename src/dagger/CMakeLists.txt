@@ -77,6 +77,7 @@ set(DAGGER_HEADERS
     ${PROJECT_SOURCE_DIR}/include/dagger/graphics/Viewport.h
     ${PROJECT_SOURCE_DIR}/include/dagger/input/Input.h
     ${PROJECT_SOURCE_DIR}/include/dagger/input/KeyCodes.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/utils/StringHash.h
     core/Window.h
     graphics/MacHacks.h
 )

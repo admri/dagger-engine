@@ -15,8 +15,11 @@
 #include <dagger/core/components/VelocityComponent.h>
 #include <dagger/input/Input.h>
 #include <dagger/input/KeyCodes.h>
+#include <dagger/utils/StringHash.h>
 
 #include <cmath>
+
+using namespace dagger::literals;
 
 namespace delve
 {
@@ -66,21 +69,11 @@ void PlayerInputSystem::update(dagger::Application& app, dagger::Scene& scene)
             // Switch states
             if (vel.vx != 0.0f || vel.vy != 0.0f)
             {
-                if (anim->currentSequence != PlayerAnim::Run)
-                {
-                    anim->currentSequence = PlayerAnim::Run;
-                    anim->currentFrameIndex = 0;
-                    anim->timer = 0.0f;
-                }
+                anim->play("run"_hash);
             }
             else
             {
-                if (anim->currentSequence != PlayerAnim::Idle)
-                {
-                    anim->currentSequence = PlayerAnim::Idle;
-                    anim->currentFrameIndex = 0;
-                    anim->timer = 0.0f;
-                }
+                anim->play("idle"_hash);
             }
         }
 

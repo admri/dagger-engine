@@ -4,6 +4,8 @@
 #include <iostream>
 #include <stdexcept>
 
+#include <SDL3/SDL_log.h>
+
 int main(int argc, char* argv[])
 {
     delve::Game game;
@@ -23,11 +25,11 @@ int main(int argc, char* argv[])
     }
     catch (const std::exception& e)
     {
-        std::cerr << "Fatal Error: " << e.what() << '\n';
+        SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "Fatal Error: ", e.what());
     }
     catch (...)
     {
-        std::cerr << "An unknown error occurred.\n";
+        SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "An unknown error occurred.");
     }
 
     return 0;

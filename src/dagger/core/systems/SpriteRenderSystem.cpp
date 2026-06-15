@@ -8,33 +8,34 @@
 #include <core/components/SpriteComponent.h>
 #include <core/components/Tags.h>
 #include <core/components/TransformComponent.h>
-#include <graphics/Color.h>
 #include <graphics/Renderer.h>
 #include <graphics/Texture.h>
 #include <graphics/Viewport.h>
 
 #include <algorithm>
-#include <vector>
 
 namespace dagger
 {
 
-struct SpriteNode
-{
-    TransformComponent* transform;
-    SpriteComponent* sprite;
-    Color tint; 
-};
-
 void SpriteRenderSystem::render(Renderer& renderer, AssetManager& assets, Scene& scene, const Viewport& viewport, float alpha)
 {
-    static std::vector<SpriteNode> nodes;
-    nodes.clear();
+    nodes_.clear();
 
     scene.forEachEntityWith<TransformComponent, SpriteComponent>(
         [&](auto* e, auto& transform, auto& sprite)
     {
         if (e->hasComponent<HiddenTag>() || e->hasComponent<UIRenderTag>()) return;
+
+        float renderX = transform.prevX + (transform.x - transform.prevX) * alpha;
+        float renderY = transform.prevY + (transform.y - transform.prevY) * alpha;
+        float screenX = renderX - viewport.camX;
+        float screenY = renderY - viewport.camY;
+
+        if (screenX + sprite.width  < 0 || screenX > viewport.windowWidth ||
+            screenY + sprite.height < 0 || screenY > viewport.windowHeight)
+        {
+            return;
+        }
 
         Color nodeTint = Colors::White;
         if (e->hasComponent<ShadowTag>())
@@ -42,25 +43,19 @@ void SpriteRenderSystem::render(Renderer& renderer, AssetManager& assets, Scene&
             nodeTint = Color(140, 140, 140, 255);
         }
 
-        nodes.push_back({ &transform, &sprite, nodeTint });
+        nodes_.push_back({ &sprite, nodeTint, screenX, screenY });
     });
 
-    std::sort(nodes.begin(), nodes.end(), [](const SpriteNode& a, const SpriteNode& b) {
+    std::stable_sort(nodes_.begin(), nodes_.end(), [](const SpriteNode& a, const SpriteNode& b) {
         return a.sprite->zIndex < b.sprite->zIndex;
     });
 
-    for (auto& node : nodes)
+    for (auto& node : nodes_)
     {
-        float renderX = node.transform->prevX + (node.transform->x - node.transform->prevX) * alpha;
-        float renderY = node.transform->prevY + (node.transform->y - node.transform->prevY) * alpha;
-
-        float screenX = renderX - viewport.camX;
-        float screenY = renderY - viewport.camY;
-
         Texture* texture = assets.resolve<Texture, TextureHandle>(node.sprite->texture);
         if (texture)
         {
-            Rect dstRect = { screenX, screenY, node.sprite->width, node.sprite->height };
+            Rect dstRect = { node.screenX, node.screenY, node.sprite->width, node.sprite->height };
             Rect* pSrcRect = nullptr;
             Rect srcRect;
 
