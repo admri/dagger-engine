@@ -5,16 +5,48 @@
       "y": 0.0
     },
     "SpriteComponent": {
-      "texture": "enemy",
+      "texture": "orc_warrior_idle",
       "zIndex": 9,
-      "width": 48.0,
-      "height": 48.0
+      "hasSrcRect": true,
+      "srcX": 0.0,
+      "srcY": 0.0,
+      "srcWidth": 16.0,
+      "srcHeight": 28.0,
+      "width": 32.0,
+      "height": 56.0
+    },
+    "AnimationComponent": {
+      "currentSequence": 0,
+      "isPlaying": true,
+      "sequences": [
+        {
+          "texture": "orc_warrior_idle",
+          "startFrame": 0,
+          "numFrames": 4,
+          "frameDuration": 0.2,
+          "isLooping": true
+        },
+        {
+          "texture": "orc_warrior_run",
+          "startFrame": 0,
+          "numFrames": 4,
+          "frameDuration": 0.1,
+          "isLooping": true
+        },
+        {
+          "texture": "orc_warrior_attack",
+          "startFrame": 0,
+          "numFrames": 2,
+          "frameDuration": 0.05,
+          "isLooping": false
+        }
+      ]
     },
     "BoxColliderComponent": {
-      "width": 32.0,
-      "height": 32.0,
+      "width": 16.0,
+      "height": 28.0,
       "offsetX": 8.0,
-      "offsetY": 16.0
+      "offsetY": 32.0
     },
     "HealthComponent": {
       "hp": 2,

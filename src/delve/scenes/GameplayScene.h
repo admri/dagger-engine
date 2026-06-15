@@ -15,6 +15,7 @@
 #include <dagger/core/systems/AnimationSystem.h>
 #include <dagger/core/systems/CameraSystem.h>
 #include <dagger/core/systems/CollisionSystem.h>
+#include <dagger/core/systems/DebugRenderSystem.h>
 #include <dagger/core/systems/SpriteRenderSystem.h>
 #include <dagger/core/systems/UIRenderSystem.h>
 
@@ -57,6 +58,9 @@ private:
     dagger::TextureHandle wallTex_;
 
     std::vector<dagger::CollisionEvent> frameCollisions_;
+
+    dagger::DebugRenderSystem debugRenderSystem_;
+    bool renderDebugHitboxes_ = false;
 };
 
 } // namespace delve

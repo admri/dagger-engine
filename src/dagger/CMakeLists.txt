@@ -67,6 +67,7 @@ set(DAGGER_HEADERS
     ${PROJECT_SOURCE_DIR}/include/dagger/core/systems/AnimationSystem.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/systems/CameraSystem.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/systems/CollisionSystem.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/core/systems/DebugRenderSystem.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/systems/SpriteRenderSystem.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/systems/UIRenderSystem.h
     ${PROJECT_SOURCE_DIR}/include/dagger/graphics/Color.h

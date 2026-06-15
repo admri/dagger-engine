@@ -71,6 +71,19 @@ static SDL_Scancode mapKey(Key key)
         case Key::LAlt:   return SDL_SCANCODE_LALT;
         case Key::RAlt:   return SDL_SCANCODE_RALT;
 
+        case Key::F1:  return SDL_SCANCODE_F1;
+        case Key::F2:  return SDL_SCANCODE_F2;
+        case Key::F3:  return SDL_SCANCODE_F3;
+        case Key::F4:  return SDL_SCANCODE_F4;
+        case Key::F5:  return SDL_SCANCODE_F5;
+        case Key::F6:  return SDL_SCANCODE_F6;
+        case Key::F7:  return SDL_SCANCODE_F7;
+        case Key::F8:  return SDL_SCANCODE_F8;
+        case Key::F9:  return SDL_SCANCODE_F9;
+        case Key::F10: return SDL_SCANCODE_F10;
+        case Key::F11: return SDL_SCANCODE_F11;
+        case Key::F12: return SDL_SCANCODE_F12;
+
         default: return SDL_SCANCODE_UNKNOWN;
     }
 }

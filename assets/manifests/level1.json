@@ -2,6 +2,8 @@
   "textures": [
     { "id": "player_idle", "path": "textures/tileset/wizard_m_idle.png" },
     { "id": "player_run", "path": "textures/tileset/wizard_m_run.png" },
+    { "id": "orc_warrior_idle", "path": "textures/tileset/orc_warrior_idle.png" },
+    { "id": "orc_warrior_run", "path": "textures/tileset/orc_warrior_run.png" },
     { "id": "enemy", "path": "textures/crawl-tiles/dc-mon/orc_knight.png" },
     { "id": "fireball", "path": "textures/crawl-tiles/spells/conjuration/orb_of_destruction.png" },
     { "id": "floor", "path": "textures/crawl-tiles/dc-dngn/floor/pebble_brown0.png" },

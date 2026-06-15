@@ -20,7 +20,10 @@ enum class Key
     Right, Left, Down, Up,
 
     // Modifiers
-    LShift, RShift, LCtrl, RCtrl, LAlt, RAlt
+    LShift, RShift, LCtrl, RCtrl, LAlt, RAlt,
+
+    // Function keys
+    F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12
 };
 
 } // namespace dagger

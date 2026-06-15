@@ -14,6 +14,8 @@
 #include <dagger/core/components/TransformComponent.h>
 #include <dagger/graphics/Texture.h>
 #include <dagger/graphics/Viewport.h>
+#include <dagger/input/Input.h>
+#include <dagger/input/KeyCodes.h>
 
 #include <cstdlib>
 #include <ctime>
@@ -123,6 +125,11 @@ void GameplayScene::onUpdate(float dt, dagger::Application& app)
     uiSystem_.updateElement<HealthDisplayTag>(*this, [playerHealth]() {
         return "HP: " + std::to_string(playerHealth);
     });
+
+    if (app.getInput().isKeyPressed(dagger::Key::F3))
+    {
+        renderDebugHitboxes_ = !renderDebugHitboxes_;
+    }
 }
 
 void GameplayScene::onRender(dagger::Renderer &renderer, dagger::AssetManager &assets, float alpha)
@@ -159,6 +166,12 @@ void GameplayScene::onRender(dagger::Renderer &renderer, dagger::AssetManager &a
     }
 
     spriteRenderSystem_.render(renderer, assets, *this, viewport, alpha);
+
+    if (renderDebugHitboxes_)
+    {
+        debugRenderSystem_.render(renderer, *this, viewport);
+    }
+
     uiRenderSystem_.render(renderer, assets, *this, alpha);
 }
 

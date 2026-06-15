@@ -107,6 +107,23 @@ void Renderer::drawTexture(const Texture& texture, const Rect& dstRect, const Re
     }
 }
 
+void Renderer::drawRect(const Rect& rect, Color color)
+{
+    if (!sdlRenderer_) return;
+
+    // Store old color
+    SDL_Color oldColor;
+    SDL_GetRenderDrawColor(sdlRenderer_.get(), &oldColor.r, &oldColor.g, &oldColor.b, &oldColor.a);
+
+    // Render rect with new color
+    SDL_SetRenderDrawColor(sdlRenderer_.get(), color.r, color.g, color.b, color.a);
+    SDL_FRect sdlRect = { rect.x, rect.y, rect.w, rect.h };
+    SDL_RenderRect(sdlRenderer_.get(), &sdlRect);
+
+    // Revert to old color
+    SDL_SetRenderDrawColor(sdlRenderer_.get(), oldColor.r, oldColor.g, oldColor.b, oldColor.a);
+}
+
 void Renderer::toggleVSync()
 {
     if (!sdlRenderer_)
