@@ -5,5 +5,6 @@ namespace delve
 
 struct FPSCounterTag : public dagger::Component {};
 struct HealthDisplayTag : public dagger::Component {};
+struct WorldObserverTag : public dagger::Component {};
 
 } // namespace delve

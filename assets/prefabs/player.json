@@ -57,6 +57,7 @@
     "VelocityComponent": {},
     "PlayerInputComponent": {},
     "WeaponComponent": {},
-    "CameraTargetComponent": {}
+    "CameraTargetComponent": {},
+    "WorldObserverTag": {}
   }
 }

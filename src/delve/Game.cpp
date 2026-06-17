@@ -31,6 +31,7 @@ void Game::registerGameComponents()
 
     PrefabFactory::registerTag<FPSCounterTag>("FPSCounterTag");
     PrefabFactory::registerTag<HealthDisplayTag>("HealthDisplayTag");
+    PrefabFactory::registerTag<WorldObserverTag>("WorldObserverTag");
 }
 
 bool Game::onInit()

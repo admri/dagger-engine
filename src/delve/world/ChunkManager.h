@@ -1,8 +1,15 @@
 #ifndef DELVE_WORLD_CHUNK_MANAGER_H
 #define DELVE_WORLD_CHUNK_MANAGER_H
 
+#include <dagger/core/Entity.h>
+
 #include <unordered_map>
 #include <vector>
+
+namespace dagger
+{
+    class Scene;
+}
 
 namespace delve
 {
@@ -21,6 +28,8 @@ struct ChunkPos
 
 namespace std
 {
+    // Implement the std::hash function for ChunkPos
+    // to allow for unordered map with ChunkPos as keys
     template <>
     struct hash<delve::ChunkPos>
     {
@@ -38,6 +47,7 @@ struct Chunk
 {
     ChunkPos position;
     bool isGenerated = false;
+    std::vector<dagger::Entity*> activeEntities;
 };
 
 class ChunkManager
@@ -46,7 +56,7 @@ public:
     static constexpr int CHUNK_SIZE = 16;
     static constexpr float TILE_SIZE = 64.0f;
 
-    void update(float playerWorldX, float playerWorldY);
+    void update(dagger::Scene& scene);
 
 private:
     std::unordered_map<ChunkPos, Chunk> chunks_;
