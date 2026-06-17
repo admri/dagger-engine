@@ -8,6 +8,7 @@ set(DAGGER_SOURCES
     audio/Sound.cpp
     core/Application.cpp
     core/LevelLoader.cpp
+    core/Logger.cpp
     core/SceneManager.cpp
     core/Window.cpp
     core/systems/AnimationSystem.cpp
@@ -52,6 +53,7 @@ set(DAGGER_HEADERS
     ${PROJECT_SOURCE_DIR}/include/dagger/core/Entity.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/GameEvent.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/LevelLoader.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/core/Logger.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/Scene.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/SceneManager.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/Serialization.h
