@@ -89,6 +89,12 @@ void GameplayScene::onInit(dagger::Application& app)
 
 void GameplayScene::onFixedUpdate(float dt, dagger::Application& app)
 {
+    auto* player = getFirstEntityWith<PlayerInputComponent>();
+    if (player)
+    {
+        auto pTransform = player->getComponent<dagger::TransformComponent>();
+        chunkManager_.update(pTransform->x, pTransform->y);
+    }
     shootingSystem_.update(dt, app, *this);
     enemyAISystem_.update(dt, *this);
     movementSystem_.updateAll(dt, *this, *tileMap_);

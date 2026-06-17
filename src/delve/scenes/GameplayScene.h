@@ -9,6 +9,7 @@
 #include <systems/ShootingSystem.h>
 #include <systems/TileMapRenderSystem.h>
 #include <systems/UISystem.h>
+#include <world/ChunkManager.h>
 #include <world/TileMap.h>
 
 #include <dagger/core/Scene.h>
@@ -53,6 +54,7 @@ private:
     dagger::UIRenderSystem uiRenderSystem_;
     TileMapRenderSystem tileMapRenderSystem_;
     
+    ChunkManager chunkManager_;
     std::unique_ptr<TileMap> tileMap_;
     dagger::TextureHandle floorTex_;
     dagger::TextureHandle wallTex_;
