@@ -29,7 +29,7 @@ void PlayerInputSystem::update(dagger::Application& app, dagger::Scene& scene)
     auto& input = app.getInput();
 
     scene.forEachEntityWith<PlayerInputComponent, dagger::VelocityComponent>(
-        [&](auto* player, auto& pInput, auto& vel)
+        [&](dagger::Entity* player, auto& pInput, auto& vel)
     {
         // =========
         // Keyboard

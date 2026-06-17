@@ -22,7 +22,7 @@ set(DAGGER_SOURCES
 
 if(APPLE)
     set(MAC_SOURCES
-        core/graphics/MacHacks.mm
+        graphics/MacHacks.mm
     )
     list(APPEND DAGGER_SOURCES ${MAC_SOURCES})
 endif()

@@ -31,7 +31,7 @@ void EnemyAISystem::update(float dt, dagger::Scene& scene)
     float playerCenterY = pTransform->y + pCollider->offsetY + (pCollider->height / 2.0f);
 
     scene.forEachEntityWith<dagger::TransformComponent, dagger::VelocityComponent, EnemyAIComponent, dagger::BoxColliderComponent>(
-        [&](auto* enemy, auto& transform, auto& velocity, auto& ai, auto& collider)
+        [&](dagger::Entity* enemy, auto& transform, auto& velocity, auto& ai, auto& collider)
     {
         float enemyCenterX = transform.x + collider.offsetX + (collider.width / 2.0f);
         float enemyCenterY = transform.y + collider.offsetY + (collider.height / 2.0f);

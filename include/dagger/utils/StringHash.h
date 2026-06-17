@@ -7,13 +7,20 @@
 namespace dagger
 {
 
+namespace detail
+{
+    constexpr uint32_t FNV_OFFSET_BASIS = 2166136261u;
+    constexpr uint32_t FNV_PRIME = 16777619u;
+}
+
+// FNV-1a hash algorithm for fast string hashing (32-bits)
 constexpr uint32_t hashString(const char* str, std::size_t length)
 {
-    uint32_t hash = 2166136261u;
+    uint32_t hash = detail::FNV_OFFSET_BASIS;
     for (std::size_t i = 0; i < length; ++i)
     {
         hash ^= static_cast<uint32_t>(str[i]);
-        hash *= 16777619u;
+        hash *= detail::FNV_PRIME;
     }
     return hash;
 }

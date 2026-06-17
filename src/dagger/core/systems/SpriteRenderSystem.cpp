@@ -22,7 +22,7 @@ void SpriteRenderSystem::render(Renderer& renderer, AssetManager& assets, Scene&
     nodes_.clear();
 
     scene.forEachEntityWith<TransformComponent, SpriteComponent>(
-        [&](auto* e, auto& transform, auto& sprite)
+        [&](dagger::Entity* e, auto& transform, auto& sprite)
     {
         if (e->hasComponent<HiddenTag>() || e->hasComponent<UIRenderTag>()) return;
 
