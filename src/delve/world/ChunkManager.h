@@ -43,11 +43,14 @@ namespace std
 namespace delve
 {
 
+class WorldGenerator;
+class TileMap;
+
 struct Chunk
 {
     ChunkPos position;
     bool isGenerated = false;
-    std::vector<dagger::Entity*> activeEntities;
+    std::vector<dagger::EntityHandle> activeEntities;
 };
 
 class ChunkManager
@@ -56,7 +59,7 @@ public:
     static constexpr int CHUNK_SIZE = 16;
     static constexpr float TILE_SIZE = 64.0f;
 
-    void update(dagger::Scene& scene);
+    void update(dagger::Scene& scene, WorldGenerator& generator, TileMap& tileMap);
 
 private:
     std::unordered_map<ChunkPos, Chunk> chunks_;

@@ -1,6 +1,7 @@
 #ifndef DAGGER_CORE_ENTITY_H
 #define DAGGER_CORE_ENTITY_H
 
+#include <dagger/assets/ResourceHandle.h>
 #include <dagger/core/Component.h>
 
 #include <memory>
@@ -12,6 +13,8 @@
 
 namespace dagger
 {
+
+using EntityHandle = ResourceHandle<Entity>;
 
 class Entity
 {

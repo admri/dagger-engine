@@ -22,7 +22,7 @@ using ComponentBuilderFn = std::function<void(Entity*, const nlohmann::json&, As
 class PrefabFactory
 {
 public:
-    static Entity* create(PrefabHandle handle, Scene& scene, AssetManager& assets);
+    static EntityHandle create(PrefabHandle handle, Scene& scene, AssetManager& assets);
 
     static void registerComponent(const std::string& name, ComponentBuilderFn builder);
 

@@ -22,6 +22,7 @@ namespace delve
 void ShootingSystem::update(float dt, dagger::Application& app, dagger::Scene& scene)
 {
     auto shooters = scene.getEntitiesWith<dagger::TransformComponent, dagger::SpriteComponent, WeaponComponent>();
+    auto fireballPrefab = app.getAssets().get<dagger::Prefab>("fireball");
 
     scene.forEachEntityWith<dagger::TransformComponent, dagger::SpriteComponent, WeaponComponent>(
         [&](auto* shooter, auto& transform, auto& sprite, auto& weapon)
@@ -44,25 +45,27 @@ void ShootingSystem::update(float dt, dagger::Application& app, dagger::Scene& s
             if (length > 0) { dirX /= length; dirY /= length; }
 
             // Spawning projectiles
-            auto* fireball = scene.createEntity();
+            auto fireballHandle = dagger::PrefabFactory::create(fireballPrefab, scene, app.getAssets());
+            auto* fireball = scene.getEntity(fireballHandle);
 
-            auto& fTransform = fireball->addComponent<dagger::TransformComponent>();
-            fTransform.setPosition(startX - 8.0f, startY - 8.0f); 
+            auto* fTransform = fireball->getComponent<dagger::TransformComponent>();
+            if (fTransform)
+            {
+                fTransform->setPosition(startX - 8.0f, startY - 8.0f); 
+            }
 
-            auto& fSprite = fireball->addComponent<dagger::SpriteComponent>();
-            fSprite.texture = app.getAssets().get<dagger::Texture>("fireball"); 
-            fSprite.width = 16.0f; fSprite.height = 16.0f; fSprite.zIndex = 5;
+            auto* fVelocity = fireball->getComponent<dagger::VelocityComponent>();
+            if (fVelocity)
+            {
+                fVelocity->vx = dirX * weapon.projectileSpeed; 
+                fVelocity->vy = dirY * weapon.projectileSpeed;
+            }
 
-            auto& fCollider = fireball->addComponent<dagger::BoxColliderComponent>();
-            fCollider.width = 16.0f;
-            fCollider.height = 16.0f;
-
-            auto& fVelocity = fireball->addComponent<dagger::VelocityComponent>();
-            fVelocity.vx = dirX * weapon.projectileSpeed; 
-            fVelocity.vy = dirY * weapon.projectileSpeed;
-            
-            auto& fProjectile = fireball->addComponent<ProjectileComponent>();
-            fProjectile.damage = weapon.damage;
+            auto* fProjectile = fireball->getComponent<ProjectileComponent>();
+            if (fProjectile)
+            {
+                fProjectile->damage = weapon.damage;
+            }
         }
     });
 }

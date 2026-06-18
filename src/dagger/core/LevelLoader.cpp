@@ -41,7 +41,8 @@ bool LevelLoader::load(const std::string& filepath, Scene& scene, Application& a
             
             auto prefabHandle = assets.get<Prefab>(prefabId);
             
-            Entity* entity = PrefabFactory::create(prefabHandle, scene, assets);
+            EntityHandle entityHandle = PrefabFactory::create(prefabHandle, scene, assets);
+            Entity* entity = scene.getEntity(entityHandle);
 
             if (entity && entityData.contains("x") && entityData.contains("y"))
             {

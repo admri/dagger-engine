@@ -22,7 +22,8 @@ public:
     {
         auto uiFont = app.getAssets().load<dagger::Font>("ui", "fonts/RobotoMono-Regular.ttf", 24);
 
-        dagger::Entity* title = createEntity();
+        auto titleHandle = createEntity();
+        auto* title = getEntity(titleHandle);
         auto& tTransform = title->addComponent<dagger::TransformComponent>();
         tTransform.setPosition(250.0f, 250.0f);
         

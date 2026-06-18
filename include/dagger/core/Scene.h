@@ -30,18 +30,33 @@ public:
     virtual void onUpdate(float dt, Application& app) {}
     virtual void onRender(Renderer& renderer, AssetManager& assets, float alpha = 0.0f) {}
 
-    Entity* createEntity()
+    EntityHandle createEntity()
     {
-        auto entity = std::make_unique<Entity>();
-        Entity* ptr = entity.get();
-        pendingEntities_.push_back(std::move(entity));
-        return ptr;
+        uint32_t index = 0;
+        if (!freeSlots_.empty())
+        {
+            index = freeSlots_.back();
+            freeSlots_.pop_back();
+        }
+        else
+        {
+            index = static_cast<uint32_t>(entities_.size());
+            entities_.push_back(EntitySlot{});
+        }
+
+        EntitySlot& slot = entities_[index];
+        slot.entity = std::make_unique<Entity>();
+        slot.generation++;
+        slot.active = true;
+
+        return EntityHandle{ index, slot.generation };
     }
 
-    Entity* createText(const std::string& text, float x, float y, 
-                       FontHandle font, Color color = Colors::White)
+    EntityHandle createText(const std::string& text, float x, float y, 
+                            FontHandle font, Color color = Colors::White)
     {
-        Entity* entity = createEntity();
+        EntityHandle handle = createEntity();
+        Entity* entity = getEntity(handle);
         
         auto& tTransform = entity->addComponent<TransformComponent>();
         tTransform.setPosition(x, y);
@@ -54,17 +69,47 @@ public:
 
         entity->addComponent<UIRenderTag>();
 
-        return entity;
+        return handle;
+    }
+
+    void destroyEntity(EntityHandle handle)
+    {
+         if (!handle.isValid() || handle.index >= entities_.size()) return;
+
+         EntitySlot& slot = entities_[handle.index];
+         if (slot.active && slot.generation == handle.generation)
+         {
+             slot.active = false;
+             if (slot.entity) slot.entity->setActive(false); 
+         }
+    }
+
+    Entity* getEntity(EntityHandle handle) const
+    {
+        if (!handle.isValid() || handle.index >= entities_.size())
+        {
+            return nullptr;
+        }
+
+        const EntitySlot& slot = entities_[handle.index];
+        
+        if (slot.active && slot.generation == handle.generation)
+        {
+            return slot.entity.get();
+        }
+
+        return nullptr;
     }
     
     template <typename... Components>
     Entity* getFirstEntityWith()
     {
-        for (const auto& entity : entities_)
+        for (const auto& slot : entities_)
         {
-            if (entity->isActive() && (entity->hasComponent<Components>() && ...))
+            if (slot.active && slot.entity && slot.entity->isActive() && 
+               (slot.entity->hasComponent<Components>() && ...))
             {
-                return entity.get();
+                return slot.entity.get();
             }
         }
         return nullptr;
@@ -75,11 +120,12 @@ public:
     {
         outEntities.clear();
 
-        for (const auto& entity : entities_)
+        for (const auto& slot : entities_)
         {
-            if (entity->isActive() && (entity->hasComponent<Components>() && ...))
+            if (slot.active && slot.entity && slot.entity->isActive() && 
+               (slot.entity->hasComponent<Components>() && ...))
             {
-                outEntities.push_back(entity.get());
+                outEntities.push_back(slot.entity.get());
             }
         }
     }
@@ -95,36 +141,49 @@ public:
     template <typename... Components, typename Func>
     void forEachEntityWith(Func action)
     {
-        for (const auto& entity : entities_)
+        size_t count = entities_.size();
+
+        for (size_t i = 0; i < count; ++i)
         {
-            if (entity->isActive() && (entity->hasComponent<Components>() && ...))
+            EntitySlot& slot = entities_[i];
+
+            if (slot.active && slot.entity && slot.entity->isActive() && 
+               (slot.entity->hasComponent<Components>() && ...))
             {
-                action(entity.get(), *(entity->getComponent<Components>())...);
+                action(slot.entity.get(), *(slot.entity->getComponent<Components>())...);
             }
         }
     }
 
     void cleanup()
     {
-        if (!pendingEntities_.empty())
+        for (uint32_t i = 0; i < entities_.size(); ++i)
         {
-            for (auto& newEntity : pendingEntities_)
+            EntitySlot& slot = entities_[i];
+            
+            if (slot.active && slot.entity && !slot.entity->isActive())
             {
-                entities_.push_back(std::move(newEntity));
+                slot.active = false;
             }
-            pendingEntities_.clear();
-        }
 
-        entities_.erase(std::remove_if(entities_.begin(), entities_.end(),
-            [](const std::unique_ptr<Entity>& entity) {
-                return !entity->isActive();
-            }), entities_.end()
-        );
+            if (!slot.active && slot.entity != nullptr)
+            {
+                slot.entity.reset();
+                freeSlots_.push_back(i);
+            }
+        }
     }
 
 protected:
-    std::vector<std::unique_ptr<Entity>> entities_;
-    std::vector<std::unique_ptr<Entity>> pendingEntities_;
+    struct EntitySlot
+    {
+        std::unique_ptr<Entity> entity;
+        uint32_t generation = 0;
+        bool active = false;
+    };
+
+    std::vector<EntitySlot> entities_;
+    std::vector<uint32_t> freeSlots_;
 };
 
 } // namespace dagger

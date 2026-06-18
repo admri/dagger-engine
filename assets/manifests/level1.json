@@ -15,6 +15,7 @@
   "prefabs": [
     { "id": "player", "path": "prefabs/player.json" },
     { "id": "enemy", "path": "prefabs/enemy.json" },
+    { "id": "fireball", "path": "prefabs/fireball.json" },
     { "id": "camera", "path": "prefabs/camera.json" },
     { "id": "ui_fps", "path": "prefabs/ui_fps.json" },
     { "id": "ui_health", "path": "prefabs/ui_health.json" }

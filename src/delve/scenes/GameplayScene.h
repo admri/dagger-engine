@@ -11,6 +11,7 @@
 #include <systems/UISystem.h>
 #include <world/ChunkManager.h>
 #include <world/TileMap.h>
+#include <world/WorldGenerator.h>
 
 #include <dagger/core/Scene.h>
 #include <dagger/core/systems/AnimationSystem.h>
@@ -56,6 +57,7 @@ private:
     
     ChunkManager chunkManager_;
     std::unique_ptr<TileMap> tileMap_;
+    std::unique_ptr<WorldGenerator> worldGenerator_;
     dagger::TextureHandle floorTex_;
     dagger::TextureHandle wallTex_;
 

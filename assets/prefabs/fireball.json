@@ -1,0 +1,20 @@
+{
+  "components": {
+    "TransformComponent": {
+      "x": 0.0,
+      "y": 0.0
+    },
+    "SpriteComponent": {
+      "texture": "fireball",
+      "zIndex": 5,
+      "width": 16.0,
+      "height": 16.0
+    },
+    "BoxColliderComponent": {
+      "width": 16.0,
+      "height": 16.0
+    },
+    "VelocityComponent": {},
+    "ProjectileComponent": {}
+  }
+}

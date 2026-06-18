@@ -1,6 +1,8 @@
 #include <world/ChunkManager.h>
 
 #include <components/Tags.h>
+#include <world/TileMap.h>
+#include <world/WorldGenerator.h>
 
 #include <dagger/core/Logger.h>
 #include <dagger/core/Scene.h>
@@ -9,6 +11,7 @@
 #include <algorithm>
 #include <cmath>
 #include <unordered_set>
+#include <utility>
 
 namespace delve
 {
@@ -23,7 +26,7 @@ ChunkPos ChunkManager::worldToChunkPos(float worldX, float worldY)
     return ChunkPos{ cx, cy };
 }
 
-void ChunkManager::update(dagger::Scene& scene)
+void ChunkManager::update(dagger::Scene& scene, WorldGenerator& generator, TileMap& tileMap)
 {
     std::unordered_set<ChunkPos> requiredChunks;
 
@@ -50,8 +53,9 @@ void ChunkManager::update(dagger::Scene& scene)
             //dagger::Logger::info("Unloading chunk at [{},{}]", oldPos.x, oldPos.y);
 
             Chunk& chunkToKill = chunks_[oldPos];
-            for (auto* entity : chunkToKill.activeEntities)
+            for (auto handle : chunkToKill.activeEntities)
             {
+                dagger::Entity* entity = scene.getEntity(handle);
                 if (entity)
                 {
                     entity->setActive(false);
@@ -68,10 +72,14 @@ void ChunkManager::update(dagger::Scene& scene)
         if (chunks_.find(reqPos) == chunks_.end())
         {
             //dagger::Logger::info("Generating new chunk at [{},{}]", reqPos.x, reqPos.y);
-            chunks_[reqPos] = {
+            Chunk newChunk = {
                 .position = reqPos,
                 .isGenerated = true
             };
+
+            generator.generateChunk(newChunk, scene, tileMap);
+
+            chunks_[reqPos] = std::move(newChunk);
         }
     }
 

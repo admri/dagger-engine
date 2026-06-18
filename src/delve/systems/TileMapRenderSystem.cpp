@@ -20,18 +20,12 @@ void TileMapRenderSystem::render(dagger::Renderer& renderer, const TileMap& tile
     float tileSize = tileMap.getTileSize();
 
     // Frustum Culling
-    int startX = static_cast<int>(viewport.camX / tileSize);
-    int startY = static_cast<int>(viewport.camY / tileSize);
+    int startX = static_cast<int>(viewport.camX / tileSize) - 1;
+    int startY = static_cast<int>(viewport.camY / tileSize) - 1;
     
     int endX = startX + static_cast<int>(viewport.windowWidth / tileSize) + 2;
     int endY = startY + static_cast<int>(viewport.windowHeight / tileSize) + 2;
 
-    startX = std::max(0, startX);
-    startY = std::max(0, startY);
-    endX = std::min(tileMap.getWidth(), endX);
-    endY = std::min(tileMap.getHeight(), endY);
-
-    // Render what's on the screen
     for (int y = startY; y < endY; ++y)
     {
         for (int x = startX; x < endX; ++x)
@@ -43,7 +37,7 @@ void TileMapRenderSystem::render(dagger::Renderer& renderer, const TileMap& tile
 
             if (playerFov)
             {
-                uint64_t tileKey = (static_cast<uint64_t>(x) << 32) | static_cast<uint32_t>(y);
+                uint64_t tileKey = TileMap::getKey(x, y);
                 
                 bool isVisible = playerFov->visibleTiles.count(tileKey) > 0;
                 bool isExplored = playerFov->exploredTiles.count(tileKey) > 0;

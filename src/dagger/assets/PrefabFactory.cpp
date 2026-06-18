@@ -53,12 +53,15 @@ void PrefabFactory::compile(Prefab& prefab, const nlohmann::json& data)
     }
 }
 
-Entity* PrefabFactory::create(PrefabHandle handle, Scene& scene, AssetManager& assets)
+EntityHandle PrefabFactory::create(PrefabHandle handle, Scene& scene, AssetManager& assets)
 {
     auto* prefab = assets.resolve<Prefab>(handle);
-    if (!prefab) return nullptr;
+    if (!prefab) return EntityHandle{};
 
-    auto* entity = scene.createEntity();
+    EntityHandle entityHandle = scene.createEntity();
+    Entity* entity = scene.getEntity(entityHandle);
+
+    if (!entity) return EntityHandle{};
     
     try 
     {
@@ -71,11 +74,11 @@ Entity* PrefabFactory::create(PrefabHandle handle, Scene& scene, AssetManager& a
     {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to create entity from prefab. JSON Error: %s", e.what());
         
-        entity->setActive(false); 
-        return nullptr;
+        scene.destroyEntity(entityHandle); 
+        return EntityHandle{};
     }
 
-    return entity;
+    return entityHandle;
 }
 
 void PrefabFactory::registerCoreComponents()

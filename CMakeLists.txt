@@ -45,6 +45,11 @@ else()
     # add_compile_options("$<$<CONFIG:Release>:-march=native>")
 endif()
 
+if(APPLE OR UNIX)
+    add_compile_options("$<$<CONFIG:Debug>:-fsanitize=address>" "$<$<CONFIG:Debug>:-fno-omit-frame-pointer>")
+    add_link_options("$<$<CONFIG:Debug>:-fsanitize=address>")
+endif()
+
 add_subdirectory(external)
 add_subdirectory(src/dagger)
 add_subdirectory(src)

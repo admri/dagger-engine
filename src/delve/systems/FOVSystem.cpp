@@ -9,6 +9,7 @@
 #include <dagger/core/components/Tags.h>
 #include <dagger/core/components/TransformComponent.h>
 
+#include <cmath>
 #include <cstdint>
 #include <numbers>
 
@@ -36,10 +37,9 @@ void FOVSystem::update(float dt, dagger::Scene& scene, TileMap& tileMap)
                 float rayX = transform.x + dx * currentDist;
                 float rayY = transform.y + dy * currentDist;
                 
-                int tileX = static_cast<int>(rayX / tileMap.getTileSize());
-                int tileY = static_cast<int>(rayY / tileMap.getTileSize());
-
-                uint64_t tileKey = (static_cast<uint64_t>(tileX) << 32) | tileY;
+                int tileX = static_cast<int>(std::floor(rayX / tileMap.getTileSize()));
+                int tileY = static_cast<int>(std::floor(rayY / tileMap.getTileSize()));
+                uint64_t tileKey = TileMap::getKey(tileX, tileY);
                 
                 fov.visibleTiles.insert(tileKey);
                 fov.exploredTiles.insert(tileKey);
@@ -59,9 +59,9 @@ void FOVSystem::update(float dt, dagger::Scene& scene, TileMap& tileMap)
     {
         if (e->hasComponent<PlayerInputComponent>()) return;
 
-        int tileX = static_cast<int>(transform.x / tileMap.getTileSize());
-        int tileY = static_cast<int>(transform.y / tileMap.getTileSize());
-        uint64_t tileKey = (static_cast<uint64_t>(tileX) << 32) | tileY;
+        int tileX = static_cast<int>(std::floor(transform.x / tileMap.getTileSize()));
+        int tileY = static_cast<int>(std::floor(transform.y / tileMap.getTileSize()));
+        uint64_t tileKey = TileMap::getKey(tileX, tileY);
 
         bool isVisible = activeFov->visibleTiles.count(tileKey) > 0;
         bool isExplored = activeFov->exploredTiles.count(tileKey) > 0;
