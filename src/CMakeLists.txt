@@ -14,6 +14,7 @@ set(DELVE_SOURCES
     delve/systems/TileMapRenderSystem.cpp
     delve/world/ChunkManager.cpp
     delve/world/TileMap.cpp
+    delve/world/WorldGenerator.cpp
 )
 
 set(DELVE_HEADERS
@@ -39,6 +40,7 @@ set(DELVE_HEADERS
     delve/types/PlayerAnim.h
     delve/world/ChunkManager.h
     delve/world/TileMap.h
+    delve/world/WorldGenerator.h
 )
 
 add_executable(${PROJECT_NAME} ${MAIN_SOURCE} ${DELVE_SOURCES} ${DELVE_HEADERS})
