@@ -10,6 +10,7 @@
 #include <dagger/graphics/Viewport.h>
 
 #include <algorithm>
+#include <cmath>
 
 namespace delve
 {
@@ -20,13 +21,13 @@ void TileMapRenderSystem::render(dagger::Renderer& renderer, const TileMap& tile
     float tileSize = tileMap.getTileSize();
 
     // Frustum Culling
-    int startX = static_cast<int>(viewport.camX / tileSize) - 1;
-    int startY = static_cast<int>(viewport.camY / tileSize) - 1;
+    int startX = static_cast<int>(std::floor(viewport.camX / tileSize));
+    int startY = static_cast<int>(std::floor(viewport.camY / tileSize));
     
-    int endX = startX + static_cast<int>(viewport.windowWidth / tileSize) + 2;
-    int endY = startY + static_cast<int>(viewport.windowHeight / tileSize) + 2;
+    int endX = static_cast<int>(std::floor((viewport.camX + viewport.windowWidth) / tileSize)) + 1;
+    int endY = static_cast<int>(std::floor((viewport.camY + viewport.windowHeight) / tileSize)) + 1;
 
-    for (int y = startY; y < endY; ++y)
+    for (int y = startY; y <= endY; ++y)
     {
         for (int x = startX; x < endX; ++x)
         {
@@ -34,23 +35,6 @@ void TileMapRenderSystem::render(dagger::Renderer& renderer, const TileMap& tile
             if (tile == TileType::Empty) continue;
 
             dagger::Color tileTint = dagger::Colors::White;
-
-            if (playerFov)
-            {
-                uint64_t tileKey = TileMap::getKey(x, y);
-                
-                bool isVisible = playerFov->visibleTiles.count(tileKey) > 0;
-                bool isExplored = playerFov->exploredTiles.count(tileKey) > 0;
-
-                if (!isVisible && !isExplored)
-                {
-                    continue;
-                }
-                else if (!isVisible && isExplored)
-                {
-                    tileTint = dagger::Color(140, 140, 140, 255); // Fog of war
-                }
-            }
 
             float screenX = (x * tileSize) - viewport.camX;
             float screenY = (y * tileSize) - viewport.camY;
