@@ -17,6 +17,9 @@ function(setup_shader_compilation TARGET_NAME)
 
         set(COMPILED_SHADERS "")
 
+        set(OUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/compiled_shaders")
+        file(MAKE_DIRECTORY ${OUT_DIR})
+
         # Compile each shader
         foreach(SHADER_FILE ${SHADER_SOURCES})
             get_filename_component(FILE_NAME ${SHADER_FILE} NAME)
@@ -33,9 +36,9 @@ function(setup_shader_compilation TARGET_NAME)
                 set(SHADER_STAGE "fragment") # Fallback
             endif()
             
-            set(SPV_FILE "${CMAKE_SOURCE_DIR}/assets/shaders/${BASE_NAME}.spv")
-            set(DXIL_FILE "${CMAKE_SOURCE_DIR}/assets/shaders/${BASE_NAME}.dxil")
-            set(MSL_FILE "${CMAKE_SOURCE_DIR}/assets/shaders/${BASE_NAME}.msl")
+            set(SPV_FILE "${OUT_DIR}/${BASE_NAME}.spv")
+            set(DXIL_FILE "${OUT_DIR}/${BASE_NAME}.dxil")
+            set(MSL_FILE "${OUT_DIR}/${BASE_NAME}.msl")
 
             # Compile GLSL shader for Vulkan (SPIR-V) with glslc
             add_custom_command(
@@ -68,6 +71,13 @@ function(setup_shader_compilation TARGET_NAME)
         add_custom_target(${SHADER_TARGET} ALL DEPENDS ${COMPILED_SHADERS})
         
         add_dependencies(${TARGET_NAME} ${SHADER_TARGET})
+
+        add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different
+                "${OUT_DIR}"
+                "$<TARGET_FILE_DIR:${TARGET_NAME}>/assets/shaders"
+            COMMENT "Copying compiled shaders to output directory..."
+        )
 
     else()
         message(WARNING "Shader tools not found. Shaders will not be rebuilt. (GLSLC: ${GLSLC}, SHADERCROSS: ${SHADERCROSS})")
