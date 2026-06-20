@@ -2,25 +2,24 @@
 set -e
 set -o pipefail
 
-pushd "$(dirname "$0")/.." > /dev/null || { echo "ERROR: Cannot change to project root"; exit 1; }
+echo ">>> Starting Release Build Process..."
+"$(dirname "$0")/build-release.sh" || { echo "ERROR: Build step failed!"; exit 1; }
 
-if [ ! -d build ]; then
-    echo "Creating build directory and configuring CMake for Release build..."
-    mkdir build || { echo "ERROR: Failed to create build directory!"; popd > /dev/null; exit 1; }
-    cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -Wno-dev || { echo "ERROR: CMake configuration failed!"; popd > /dev/null; exit 1; }
-fi
+pushd "$(dirname "$0")/.." > /dev/null || exit 1
 
-echo "Building project using ($NUMBER_OF_PROCESSORS) threads..."
-cmake --build build --config Release --parallel || { echo "ERROR: Build failed!"; popd > /dev/null; exit 1; }
+BUILD_DIR="build-release"
 
-if [ -d "build/Release" ]; then
-    OUTPUT_DIR="build/Release"
+if [ -d "$BUILD_DIR/Release" ]; then
+    OUTPUT_DIR="$BUILD_DIR/Release"
+elif [ -d "$BUILD_DIR/src/Release" ]; then
+    OUTPUT_DIR="$BUILD_DIR/src/Release"
+elif [ -f "$BUILD_DIR/src/DungeonCrawler" ]; then
+    OUTPUT_DIR="$BUILD_DIR/src"
 else
-    OUTPUT_DIR="build"
+    OUTPUT_DIR="$BUILD_DIR"
 fi
 
-echo
-echo "Build succeeded! Running the program..."
+echo ">>> Running the program..."
 echo
 
 pushd "$OUTPUT_DIR" > /dev/null

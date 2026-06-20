@@ -37,14 +37,6 @@ else()
     message(STATUS "LTO / IPO optimalization: NOT SUPPORTED (${error})")
 endif()
 
-if(MSVC)
-    add_compile_options("$<$<CONFIG:Release>:/O2;/Oi;/fp:fast>")
-else()
-    add_compile_options("$<$<CONFIG:Release>:-O3;-ffast-math>")
-    
-    # add_compile_options("$<$<CONFIG:Release>:-march=native>")
-endif()
-
 if(APPLE OR UNIX)
     add_compile_options("$<$<CONFIG:Debug>:-fsanitize=address>" "$<$<CONFIG:Debug>:-fno-omit-frame-pointer>")
     add_link_options("$<$<CONFIG:Debug>:-fsanitize=address>")

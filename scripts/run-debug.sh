@@ -4,19 +4,32 @@ set -o pipefail
 
 pushd "$(dirname "$0")/.." > /dev/null || { echo "ERROR: Cannot change to project root"; exit 1; }
 
-if [ ! -d build ]; then
+BUILD_DIR="build"
+
+if [ ! -d "$BUILD_DIR" ]; then
     echo "Creating build directory and configuring CMake for Debug build..."
-    mkdir build || { echo "ERROR: Failed to create build directory!"; popd > /dev/null; exit 1; }
-    cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -Wno-dev || { echo "ERROR: CMake configuration failed!"; popd > /dev/null; exit 1; }
+    mkdir "$BUILD_DIR" || { echo "ERROR: Failed to create build directory!"; popd > /dev/null; exit 1; }
+    cmake -S . -B "$BUILD_DIR" -DCMAKE_BUILD_TYPE=Debug -Wno-dev || { echo "ERROR: CMake configuration failed!"; popd > /dev/null; exit 1; }
 fi
 
-echo "Building project using ($NUMBER_OF_PROCESSORS) threads..."
-cmake --build build --config Debug --parallel || { echo "ERROR: Build failed!"; popd > /dev/null; exit 1; }
+THREADS=1
+if command -v nproc > /dev/null; then
+    THREADS=$(nproc)
+elif command -v sysctl > /dev/null; then
+    THREADS=$(sysctl -n hw.ncpu)
+fi
 
-if [ -d "build/Debug" ]; then
-    OUTPUT_DIR="build/Debug"
+echo "Building project using ($THREADS) threads..."
+cmake --build "$BUILD_DIR" --config Debug --parallel "$THREADS" || { echo "ERROR: Build failed!"; popd > /dev/null; exit 1; }
+
+if [ -d "$BUILD_DIR/Debug" ]; then
+    OUTPUT_DIR="$BUILD_DIR/Debug"
+elif [ -d "$BUILD_DIR/src/Debug" ]; then
+    OUTPUT_DIR="$BUILD_DIR/src/Debug"
+elif [ -f "$BUILD_DIR/src/DungeonCrawler" ]; then
+    OUTPUT_DIR="$BUILD_DIR/src"
 else
-    OUTPUT_DIR="build"
+    OUTPUT_DIR="$BUILD_DIR"
 fi
 
 echo

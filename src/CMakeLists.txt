@@ -46,8 +46,17 @@ set(DELVE_HEADERS
 )
 
 add_executable(${PROJECT_NAME} ${MAIN_SOURCE} ${DELVE_SOURCES} ${DELVE_HEADERS})
+
 if(ipo_supported)
     set_target_properties(${PROJECT_NAME} PROPERTIES INTERPROCEDURAL_OPTIMIZATION TRUE)
+endif()
+
+if(MSVC)
+    target_compile_options(${PROJECT_NAME} PRIVATE "$<$<CONFIG:Release>:/O2;/Oi;/fp:fast>")
+else()
+    target_compile_options(${PROJECT_NAME} PRIVATE "$<$<CONFIG:Release>:-O3;-ffast-math>")
+    
+    # add_compile_options("$<$<CONFIG:Release>:-march=native>")
 endif()
 
 # Recompile shaders
