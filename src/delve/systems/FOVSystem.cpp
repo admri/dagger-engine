@@ -59,8 +59,11 @@ void FOVSystem::update(float dt, dagger::Scene& scene, TileMap& tileMap)
     {
         if (e->hasComponent<PlayerInputComponent>()) return;
 
-        int tileX = static_cast<int>(std::floor(transform.x / tileMap.getTileSize()));
-        int tileY = static_cast<int>(std::floor(transform.y / tileMap.getTileSize()));
+        float centerX = transform.x + (tileMap.getTileSize() * 0.5f);
+        float centerY = transform.y + (tileMap.getTileSize() * 0.5f);
+
+        int tileX = static_cast<int>(std::floor(centerX / tileMap.getTileSize()));
+        int tileY = static_cast<int>(std::floor(centerY / tileMap.getTileSize()));
         uint64_t tileKey = TileMap::getKey(tileX, tileY);
 
         bool isVisible = activeFov->visibleTiles.count(tileKey) > 0;

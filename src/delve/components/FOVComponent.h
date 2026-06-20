@@ -12,7 +12,7 @@ namespace delve
 
 struct FOVComponent : public dagger::Component
 {
-    float radius = 400.0f;
+    float radius = 800.0f;
     float fovAngle = 360.0f;
     int numRays = 360;
     float stepSize = 16.0f;

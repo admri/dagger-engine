@@ -50,6 +50,8 @@ void GameplayScene::onInit(dagger::Application& app)
         player->getComponent<dagger::TransformComponent>()
             ->setPosition(spawnX, spawnY);
     }
+
+    lightingRenderSystem_.init(app);
 }
 
 void GameplayScene::onFixedUpdate(float dt, dagger::Application& app)
@@ -146,8 +148,12 @@ void GameplayScene::onRender(dagger::Renderer &renderer, dagger::AssetManager &a
             tileMapRenderSystem_.render(renderer, *tileMap_, *floor, *wall, viewport, playerFov);
         }
     }
-
     spriteRenderSystem_.render(renderer, assets, *this, viewport, alpha);
+
+    if (tileMap_)
+    {
+        lightingRenderSystem_.render(renderer, *this, *tileMap_, viewport);
+    }
 
     if (renderDebugHitboxes_)
     {

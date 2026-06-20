@@ -4,6 +4,7 @@
 #include <systems/CombatSystem.h>
 #include <systems/EnemyAISystem.h>
 #include <systems/FOVSystem.h>
+#include <systems/LightingRenderSystem.h>
 #include <systems/MovementSystem.h>
 #include <systems/PlayerInputSystem.h>
 #include <systems/ShootingSystem.h>
@@ -54,6 +55,7 @@ private:
     dagger::SpriteRenderSystem spriteRenderSystem_;
     dagger::UIRenderSystem uiRenderSystem_;
     TileMapRenderSystem tileMapRenderSystem_;
+    LightingRenderSystem lightingRenderSystem_;
     
     ChunkManager chunkManager_;
     std::unique_ptr<TileMap> tileMap_;
