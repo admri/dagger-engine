@@ -88,7 +88,7 @@ bool Application::init(const AppConfig& config)
         return false;
     }
 #ifdef __APPLE__
-    ApplyMetalOptimizations(renderer_->get());
+    //ApplyMetalOptimizations(renderer_->get());
 #endif
 
     input_->init();
