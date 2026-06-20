@@ -8,12 +8,14 @@ function(setup_shader_compilation TARGET_NAME)
         HINTS "${CMAKE_SOURCE_DIR}/tools"
     )
 
+    set(SHADER_SOURCES
+        "${CMAKE_SOURCE_DIR}/assets/shaders/lighting.frag"
+    )
+
+    set(TARGET_ASSET_DIR "$<TARGET_FILE_DIR:${TARGET_NAME}>/assets/shaders")
+
     if (GLSLC AND SHADERCROSS)
         message(STATUS "Shader tools found! Setting up auto-compilation for target: ${TARGET_NAME}")
-        
-        set(SHADER_SOURCES
-            "${CMAKE_SOURCE_DIR}/assets/shaders/lighting.frag"
-        )
 
         set(COMPILED_SHADERS "")
 
@@ -75,11 +77,24 @@ function(setup_shader_compilation TARGET_NAME)
         add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different
                 "${OUT_DIR}"
-                "$<TARGET_FILE_DIR:${TARGET_NAME}>/assets/shaders"
+                "${TARGET_ASSET_DIR}"
             COMMENT "Copying compiled shaders to output directory..."
         )
 
     else()
-        message(WARNING "Shader tools not found. Shaders will not be rebuilt. (GLSLC: ${GLSLC}, SHADERCROSS: ${SHADERCROSS})")
+        message(WARNING "Shader tools not found! Using PRECOMPILED shaders...")
+        
+        set(PRECOMPILED_DIR "${CMAKE_SOURCE_DIR}/assets/shaders/precompiled")
+        
+        if(NOT EXISTS "${PRECOMPILED_DIR}")
+            file(MAKE_DIRECTORY "${PRECOMPILED_DIR}")
+        endif()
+
+        add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different
+                "${PRECOMPILED_DIR}"
+                "${TARGET_ASSET_DIR}"
+            COMMENT "Copying PRECOMPILED shaders for ${TARGET_NAME}..."
+        )
     endif()
 endfunction()
