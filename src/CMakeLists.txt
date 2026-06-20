@@ -8,6 +8,7 @@ set(DELVE_SOURCES
     delve/systems/CombatSystem.cpp
     delve/systems/EnemyAISystem.cpp
     delve/systems/FOVSystem.cpp
+    delve/systems/LightingRenderSystem.cpp
     delve/systems/MovementSystem.cpp
     delve/systems/PlayerInputSystem.cpp
     delve/systems/ShootingSystem.cpp
@@ -32,6 +33,7 @@ set(DELVE_HEADERS
     delve/systems/CombatSystem.h
     delve/systems/EnemyAISystem.h
     delve/systems/FOVSystem.h
+    delve/systems/LightingRenderSystem.h
     delve/systems/MovementSystem.h
     delve/systems/PlayerInputSystem.h
     delve/systems/ShootingSystem.h
@@ -47,6 +49,11 @@ add_executable(${PROJECT_NAME} ${MAIN_SOURCE} ${DELVE_SOURCES} ${DELVE_HEADERS})
 if(ipo_supported)
     set_target_properties(${PROJECT_NAME} PROPERTIES INTERPROCEDURAL_OPTIMIZATION TRUE)
 endif()
+
+# Recompile shaders
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+include(CompileShaders)
+setup_shader_compilation(${PROJECT_NAME})
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
     dagger
