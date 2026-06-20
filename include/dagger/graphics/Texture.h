@@ -22,7 +22,15 @@ class Texture
     friend class Renderer;
 
 public:
+    Texture() = default;
+    Texture(Texture&& other) noexcept = default;
+    Texture& operator=(Texture&& other) noexcept = default;
+
+    Texture(const Texture&) = delete;
+    Texture& operator=(const Texture&) = delete;
+
     bool createFromSurface(const Renderer& renderer, SDL_Surface& surface);
+    bool createRenderTarget(Renderer& renderer, int width, int height);
     bool load(const Renderer& renderer, const std::string& path);
     void destroy();
 

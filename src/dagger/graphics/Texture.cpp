@@ -18,7 +18,7 @@ void SDLTextureDeleter::operator()(SDL_Texture *texture) const
 
 bool Texture::createFromSurface(const Renderer& renderer, SDL_Surface& surface)
 {
-    sdlTexture_.reset();
+    destroy();
 
     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer.get(), &surface);
     if (!texture)
@@ -31,6 +31,34 @@ bool Texture::createFromSurface(const Renderer& renderer, SDL_Surface& surface)
 
     sdlTexture_.reset(texture);
     SDL_GetTextureSize(sdlTexture_.get(), &width_, &height_);
+
+    return true;
+}
+
+bool Texture::createRenderTarget(Renderer& renderer, int width, int height)
+{
+    destroy(); 
+
+    SDL_Texture* texture = SDL_CreateTexture(
+        renderer.get(),
+        SDL_PIXELFORMAT_RGBA8888,
+        SDL_TEXTUREACCESS_TARGET,
+        width, 
+        height
+    );
+
+    if (!texture)
+    {
+        SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Failed to create render target: %s", SDL_GetError());
+        return false;
+    }
+
+    SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
+    SDL_SetTextureScaleMode(texture, SDL_SCALEMODE_NEAREST);
+
+    sdlTexture_.reset(texture); 
+    width_ = width;
+    height_ = height;
 
     return true;
 }
@@ -58,7 +86,6 @@ bool Texture::load(const Renderer& renderer, const std::string& path)
 void Texture::destroy()
 {
     if (!sdlTexture_) return;
-
     sdlTexture_.reset();
 }
 
