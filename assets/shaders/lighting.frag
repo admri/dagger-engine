@@ -21,56 +21,61 @@ void main()
     vec2 lightPos = vec2(ubo.lightX, ubo.lightY); // Light source position
     vec2 aspectVec = vec2(ubo.aspectRatio, 1.0); // Screen aspect ratio
 
-    float dist = length((lightPos - pos) * aspectVec); // Distance from light source
-    float attenuation = smoothstep(ubo.lightRadius, ubo.lightRadius * 0.05, dist); // Smooth light fading
+    // Get squared values
+    vec2 delta = (lightPos - pos) * aspectVec;
+    float distSq = dot(delta, delta);
+    float radiusSq = ubo.lightRadius * ubo.lightRadius;
 
     // Skip calculations if pixel is farther away than the light can reach
-    if (dist > ubo.lightRadius)
+    if (distSq > radiusSq)
     {
         outColor = vec4(0.0, 0.0, 0.0, 0.65); // Return dimmed black filter
         return;
     }
 
+    float dist = sqrt(distSq); // Distance from light source
+    float attenuation = 1.0 - smoothstep(ubo.lightRadius*0.05, ubo.lightRadius, dist); // Smooth light fading
+
     // Check if pixel is wall
-    float targetIsWall = texture(occlusionMap, pos).r;
+    float targetIsWall = textureLod(occlusionMap, pos, 0.0).r;
 
     // Algorithm step count, and single-step direction and size
-    int steps = clamp(int(dist * 800.0), 30, 300);
-    vec2 dir = pos - lightPos;
+    vec2 dir = lightPos - pos;
+
+    // Calculate steps from the texel span
+    ivec2 texSize = textureSize(occlusionMap, 0);
+    vec2 texelSpan = abs(dir) * vec2(texSize); // How many texels this ray crosses
+    int steps = clamp(int(max(texelSpan.x, texelSpan.y)), 16, 96);
+    
     vec2 stepVec = dir / float(steps);
+    
+    bool isShadow = false; // Pixel is lit up by default
 
-    float shadow = 1.0; // Pixel is lit up by default
-
-    // Cast a ray from the pixel to the light source and trace it by steps
-    for (int i = 0; i < steps; ++i) 
+    // Keep pixel lit if it's a wall
+    if (targetIsWall <= 0.5) 
     {
-        // Calculate current ray position
-        vec2 samplePos = lightPos + stepVec * float(i);
-
-        // Check for obstacle at ray position
-        float obstacle = texture(occlusionMap, samplePos).r; 
-        
-        // Obstacle hit
-        if (obstacle > 0.5)
+        // Cast a ray from the pixel to the light source and trace it by steps
+        for (int i = 0; i < steps; ++i) 
         {
-            if (targetIsWall > 0.5)
-            {
-                // Keep pixel fully lit if it's also wall 
-                shadow = 1.0;
-            }
-            else
-            {
-                // Throw a shadow if it's floor blocked by a wall
-                shadow = 0.0;
-            }
+            // Calculate current ray position
+            vec2 samplePos = pos + stepVec * float(i);
 
-            // Stop the ray after we have hit an obstacle
-            break;
+            // Check for obstacle at ray position
+            float obstacle = textureLod(occlusionMap, samplePos, 0.0).r; 
+            
+            // Obstacle hit
+            if (obstacle > 0.5)
+            {
+                isShadow = true;
+                break;
+            }
         }
     }
 
+    float lightVisibility = isShadow ? 0.0 : 1.0;
+
     // Base darkness minus the light that reaches the pixel
-    float finalAlpha = 0.65 - (attenuation * shadow * 0.65);
+    float finalAlpha = 0.65 - (attenuation * lightVisibility * 0.65);
 
     // Set the output to black filter with applied alpha (clamped final alpha)
     outColor = vec4(0.0, 0.0, 0.0, clamp(finalAlpha, 0.0, 0.65));

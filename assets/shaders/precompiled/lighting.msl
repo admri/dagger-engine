@@ -27,36 +27,38 @@ fragment main0_out main0(main0_in in [[stage_in]], constant LightData& ubo [[buf
     float2 pos = in.inTexCoord;
     float2 lightPos = float2(ubo.lightX, ubo.lightY);
     float2 aspectVec = float2(ubo.aspectRatio, 1.0);
-    float dist = length((lightPos - pos) * aspectVec);
-    float attenuation = smoothstep(ubo.lightRadius, ubo.lightRadius * 0.0500000007450580596923828125, dist);
-    if (dist > ubo.lightRadius)
+    float2 delta = (lightPos - pos) * aspectVec;
+    float distSq = dot(delta, delta);
+    float radiusSq = ubo.lightRadius * ubo.lightRadius;
+    if (distSq > radiusSq)
     {
         out.outColor = float4(0.0, 0.0, 0.0, 0.64999997615814208984375);
         return out;
     }
-    float targetIsWall = occlusionMap.sample(occlusionMapSmplr, pos).x;
-    int steps = clamp(int(dist * 800.0), 30, 300);
-    float2 dir = pos - lightPos;
+    float dist = sqrt(distSq);
+    float attenuation = 1.0 - smoothstep(ubo.lightRadius * 0.0500000007450580596923828125, ubo.lightRadius, dist);
+    float targetIsWall = occlusionMap.sample(occlusionMapSmplr, pos, level(0.0)).x;
+    float2 dir = lightPos - pos;
+    int2 texSize = int2(occlusionMap.get_width(), occlusionMap.get_height());
+    float2 texelSpan = abs(dir) * float2(texSize);
+    int steps = clamp(int(fast::max(texelSpan.x, texelSpan.y)), 16, 96);
     float2 stepVec = dir / float2(float(steps));
-    float shadow = 1.0;
-    for (int i = 0; i < steps; i++)
+    bool isShadow = false;
+    if (targetIsWall <= 0.5)
     {
-        float2 samplePos = lightPos + (stepVec * float(i));
-        float obstacle = occlusionMap.sample(occlusionMapSmplr, samplePos).x;
-        if (obstacle > 0.5)
+        for (int i = 0; i < steps; i++)
         {
-            if (targetIsWall > 0.5)
+            float2 samplePos = pos + (stepVec * float(i));
+            float obstacle = occlusionMap.sample(occlusionMapSmplr, samplePos, level(0.0)).x;
+            if (obstacle > 0.5)
             {
-                shadow = 1.0;
+                isShadow = true;
+                break;
             }
-            else
-            {
-                shadow = 0.0;
-            }
-            break;
         }
     }
-    float finalAlpha = 0.64999997615814208984375 - ((attenuation * shadow) * 0.64999997615814208984375);
+    float lightVisibility = isShadow ? 0.0 : 1.0;
+    float finalAlpha = 0.64999997615814208984375 - ((attenuation * lightVisibility) * 0.64999997615814208984375);
     out.outColor = float4(0.0, 0.0, 0.0, fast::clamp(finalAlpha, 0.0, 0.64999997615814208984375));
     return out;
 }
