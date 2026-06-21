@@ -12,6 +12,9 @@
   "fonts": [
     { "id": "ui", "path": "fonts/RobotoMono-Regular.ttf", "size": 16 }
   ],
+  "music": [
+    { "id": "dungeon_theme", "path": "music/cave themeb4.ogg" }
+  ],
   "prefabs": [
     { "id": "player", "path": "prefabs/player.json" },
     { "id": "enemy", "path": "prefabs/enemy.json" },

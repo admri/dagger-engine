@@ -6,7 +6,7 @@
 namespace dagger
 {
 
-AssetManager::AssetManager(Renderer& renderer, AudioSystem& audio)
+AssetManager::AssetManager(Renderer& renderer, AudioManager& audio)
     : renderer_(renderer)
     , audio_(audio)
 {

@@ -11,6 +11,7 @@ namespace dagger
 class Texture;
 class Font;
 class Sound;
+class Music;
 struct Prefab;
 
 constexpr uint32_t INVALID_INDEX = 0xFFFFFFFF;
@@ -27,6 +28,7 @@ struct ResourceHandle
 using TextureHandle = ResourceHandle<Texture>;
 using FontHandle = ResourceHandle<Font>;
 using SoundHandle = ResourceHandle<Sound>;
+using MusicHandle = ResourceHandle<Music>;
 using PrefabHandle = ResourceHandle<Prefab>;
 
 } // namespace dagger

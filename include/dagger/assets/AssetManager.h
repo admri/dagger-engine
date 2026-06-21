@@ -6,8 +6,8 @@
 #include <dagger/assets/ResourceHandle.h>
 #include <dagger/assets/ResourceManager.h>
 #include <dagger/assets/ResourceTraits.h>
-#include <dagger/audio/AudioSystem.h>
-#include <dagger/audio/Sound.h>
+#include <dagger/audio/AudioManager.h>
+#include <dagger/audio/AudioResource.h>
 #include <dagger/graphics/Texture.h>
 
 #include <memory>
@@ -22,7 +22,7 @@ class Renderer;
 class AssetManager
 {
 public:
-    AssetManager(Renderer& renderer, AudioSystem& audio);
+    AssetManager(Renderer& renderer, AudioManager& audio);
     AssetManager(const AssetManager&) = delete;
     AssetManager& operator=(const AssetManager&) = delete;
 
@@ -109,18 +109,20 @@ public:
         textures_.clear();
         fonts_.clear();
         sounds_.clear();
+        music_.clear();
         prefabs_.clear();
     }
 
 private:
     Renderer& renderer_;
-    AudioSystem& audio_;
+    AudioManager& audio_;
 
     std::string basePath_;
 
     ResourceManager<Texture, TextureHandle> textures_;
     ResourceManager<Font, FontHandle> fonts_;
     ResourceManager<Sound, SoundHandle> sounds_;
+    ResourceManager<Music, MusicHandle> music_;
     ResourceManager<Prefab, PrefabHandle> prefabs_;
 
     template <typename T>
@@ -130,6 +132,7 @@ private:
 template <> inline auto& AssetManager::getManager<Texture>() { return textures_; }
 template <> inline auto& AssetManager::getManager<Font>() { return fonts_; }
 template <> inline auto& AssetManager::getManager<Sound>() { return sounds_; }
+template <> inline auto& AssetManager::getManager<Music>() { return music_; }
 template <> inline auto& AssetManager::getManager<Prefab>() { return prefabs_; }
 
 } // namespace dagger

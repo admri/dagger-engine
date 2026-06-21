@@ -52,6 +52,14 @@ void GameplayScene::onInit(dagger::Application& app)
     }
 
     lightingRenderSystem_.init(app);
+
+    auto& audio = app.getAudio();
+    auto musicHandle = assets.get<dagger::Music>("dungeon_theme");
+    
+    if (dagger::Music* bgm = assets.resolve<dagger::Music>(musicHandle))
+    {
+        audio.play(*bgm, -1, 0.5f);
+    }
 }
 
 void GameplayScene::onFixedUpdate(float dt, dagger::Application& app)

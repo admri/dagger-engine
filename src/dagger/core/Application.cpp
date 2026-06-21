@@ -2,7 +2,7 @@
 
 #include <assets/AssetManager.h>
 #include <assets/PrefabFactory.h>
-#include <audio/AudioSystem.h>
+#include <audio/AudioManager.h>
 #include <core/Constants.h>
 #include <core/Window.h>
 #include <graphics/Renderer.h>
@@ -71,8 +71,8 @@ bool Application::init(const AppConfig& config)
     window_ = std::make_unique<Window>();
     renderer_ = std::make_unique<Renderer>();
     input_ = std::make_unique<Input>();
-    audioSystem_ = std::make_unique<AudioSystem>();
-    assets_ = std::make_unique<AssetManager>(*renderer_, *audioSystem_);
+    audioManager_ = std::make_unique<AudioManager>();
+    assets_ = std::make_unique<AssetManager>(*renderer_, *audioManager_);
 
     if (!window_->create(config.title, config.width, config.height, config.flags))
     {
@@ -93,9 +93,9 @@ bool Application::init(const AppConfig& config)
 
     input_->init();
 
-    if (!audioSystem_->init())
+    if (!audioManager_->init())
     {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to initialize audio system.\n");
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to initialize audio manager.\n");
         quit();
         return false;
     }
@@ -240,7 +240,7 @@ void Application::cleanup()
     
     sceneManager_.clear();
     assets_.reset();
-    audioSystem_.reset();
+    audioManager_.reset();
     input_.reset();
     renderer_.reset();
     window_.reset();

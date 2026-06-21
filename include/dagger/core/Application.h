@@ -18,7 +18,7 @@ namespace dagger
 class Window;
 class Renderer;
 class Input;
-class AudioSystem;
+class AudioManager;
 class AssetManager;
 
 class Application
@@ -33,11 +33,11 @@ public:
     void run(const AppConfig& config = {});
     void quit();
 
-    inline Window& getWindow()           { assert(window_      != nullptr && "Window accessed before Application::init()!");        return *window_; }
-    inline Renderer& getRenderer()       { assert(renderer_    != nullptr && "Renderer accessed before Application::init()!");      return *renderer_; }
-    inline Input& getInput()             { assert(input_       != nullptr && "Input accessed before Application::init()!");         return *input_; }
-    inline AudioSystem& getAudioSystem() { assert(audioSystem_ != nullptr && "Audio system accessed before Application::init()!");  return *audioSystem_; }
-    inline AssetManager& getAssets()     { assert(assets_      != nullptr && "Asset manager accessed before Application::init()!"); return *assets_; }
+    inline Window& getWindow()            { assert(window_       != nullptr && "Window accessed before Application::init()!");         return *window_; }
+    inline Renderer& getRenderer()        { assert(renderer_     != nullptr && "Renderer accessed before Application::init()!");       return *renderer_; }
+    inline Input& getInput()              { assert(input_        != nullptr && "Input accessed before Application::init()!");          return *input_; }
+    inline AudioManager& getAudio()       { assert(audioManager_ != nullptr && "Audio manager accessed before Application::init()!");  return *audioManager_; }
+    inline AssetManager& getAssets()      { assert(assets_       != nullptr && "Asset manager accessed before Application::init()!");  return *assets_; }
     inline SceneManager& getSceneManager() { return sceneManager_; }
 
     inline int getFPS() const { return currentFPS_; }
@@ -69,7 +69,7 @@ private:
     std::unique_ptr<Window> window_;
     std::unique_ptr<Renderer> renderer_;
     std::unique_ptr<Input> input_;
-    std::unique_ptr<AudioSystem> audioSystem_;
+    std::unique_ptr<AudioManager> audioManager_;
     std::unique_ptr<AssetManager> assets_;
     SceneManager sceneManager_;
 

@@ -4,8 +4,8 @@ set(DAGGER_SOURCES
     assets/Font.cpp
     assets/Prefab.cpp
     assets/PrefabFactory.cpp
-    audio/AudioSystem.cpp
-    audio/Sound.cpp
+    audio/AudioManager.cpp
+    audio/AudioResource.cpp
     core/Application.cpp
     core/LevelLoader.cpp
     core/Logger.cpp
@@ -44,8 +44,8 @@ set(DAGGER_HEADERS
     ${PROJECT_SOURCE_DIR}/include/dagger/assets/ResourceHandle.h
     ${PROJECT_SOURCE_DIR}/include/dagger/assets/ResourceManager.h
     ${PROJECT_SOURCE_DIR}/include/dagger/assets/ResourceTraits.h
-    ${PROJECT_SOURCE_DIR}/include/dagger/audio/AudioSystem.h
-    ${PROJECT_SOURCE_DIR}/include/dagger/audio/Sound.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/audio/AudioManager.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/audio/AudioResource.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/AppConfig.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/Application.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/Component.h

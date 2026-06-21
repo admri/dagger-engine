@@ -6,6 +6,7 @@ namespace dagger
 
 class Texture;
 class Sound;
+class Music;
 
 template <typename T>
 struct ResourceTraits
@@ -23,6 +24,13 @@ struct ResourceTraits<Texture>
 
 template <>
 struct ResourceTraits<Sound>
+{
+    static constexpr bool needsRenderer = false;
+    static constexpr bool needsMixer = true;
+};
+
+template <>
+struct ResourceTraits<Music>
 {
     static constexpr bool needsRenderer = false;
     static constexpr bool needsMixer = true;

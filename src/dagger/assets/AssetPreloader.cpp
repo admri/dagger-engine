@@ -3,6 +3,7 @@
 #include <dagger/assets/AssetManager.h>
 #include <dagger/assets/Font.h>
 #include <dagger/assets/Prefab.h>
+#include <dagger/audio/AudioResource.h>
 #include <dagger/graphics/Texture.h>
 
 #include <nlohmann/json.hpp>
@@ -44,6 +45,28 @@ void AssetPreloader::loadFromManifest(const std::string& manifestPath, AssetMana
                 font["id"].get<std::string>(),
                 font["path"].get<std::string>(),
                 font["size"].get<int>()
+            );
+        }
+    }
+
+    if (manifest.contains("sounds"))
+    {
+        for (const auto& sound : manifest["sounds"])
+        {
+            assets.load<Sound>(
+                sound["id"].get<std::string>(),
+                sound["path"].get<std::string>()
+            );
+        }
+    }
+
+    if (manifest.contains("music"))
+    {
+        for (const auto& m : manifest["music"])
+        {
+            assets.load<Music>(
+                m["id"].get<std::string>(),
+                m["path"].get<std::string>()
             );
         }
     }
