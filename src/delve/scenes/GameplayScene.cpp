@@ -69,7 +69,7 @@ void GameplayScene::onFixedUpdate(float dt, dagger::Application& app)
         chunkManager_.update(*this, *worldGenerator_, *tileMap_);
     }
     shootingSystem_.update(dt, app, *this);
-    enemyAISystem_.update(dt, *this);
+    enemyAISystem_.update(dt, *this, *tileMap_);
     movementSystem_.updateAll(dt, *this, *tileMap_);
     dagger::CollisionSystem::update(*this, frameCollisions_);
     combatSystem_.update(dt, app, *this, frameCollisions_);
