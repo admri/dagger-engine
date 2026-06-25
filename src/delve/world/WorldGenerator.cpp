@@ -32,7 +32,7 @@ void WorldGenerator::generateChunk(Chunk& chunk, dagger::Scene& scene, TileMap& 
     float startTileX = chunk.position.x * ChunkManager::CHUNK_SIZE;
     float startTileY = chunk.position.y * ChunkManager::CHUNK_SIZE;
 
-    dagger::PerlinNoise noiseGenerator(globalSeed_);
+    dagger::math::PerlinNoise noiseGenerator(globalSeed_);
 
     float scale = 0.05f;       // Zoom level (smaller = larger cave structures)
     float tunnelWidth = 0.06f; // Threshold for carving out floors vs walls

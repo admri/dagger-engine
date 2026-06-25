@@ -8,6 +8,8 @@
 
 namespace dagger
 {
+namespace math
+{
 
 class PerlinNoise
 {
@@ -107,6 +109,7 @@ private:
     }
 };
 
+} // namespace math
 } // namespace dagger
 
 #endif // DAGGER_MATH_PERLIN_NOISE_H
