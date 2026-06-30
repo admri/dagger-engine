@@ -95,7 +95,7 @@ void PrefabFactory::registerCoreComponents()
         if (j.contains("defaultSequence"))
         {
             std::string defName = j["defaultSequence"];
-            comp.currentSequenceHash = dagger::hashString(defName.c_str(), defName.length());
+            comp.currentSequenceHash = hashString(defName);
         }
 
         if (j.contains("sequences") && j["sequences"].is_array()) 
@@ -105,9 +105,9 @@ void PrefabFactory::registerCoreComponents()
                 AnimationComponent::Sequence seq;
 
                 std::string name = seqJson["name"];
-                seq.nameHash = dagger::hashString(name.c_str(), name.length());
+                seq.nameHash = hashString(name);
                 
-                if (comp.currentSequenceHash == 0 && comp.sequences.empty())
+                if (comp.currentSequenceHash.value == StringHash::INVALID_VALUE && comp.sequences.empty())
                 {
                     comp.currentSequenceHash = seq.nameHash;
                 }

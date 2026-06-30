@@ -4,6 +4,7 @@
 #include <dagger/assets/ResourceHandle.h>
 #include <dagger/core/Component.h>
 #include <dagger/core/Serialization.h>
+#include <dagger/utils/StringHash.h>
 
 #include <cstdint>
 #include <vector>
@@ -15,7 +16,7 @@ struct AnimationComponent : public Component
 {
     struct Sequence
     {
-        uint32_t nameHash;
+        StringHash nameHash;
         TextureHandle texture;
         int startFrame;
         int numFrames;
@@ -26,12 +27,12 @@ struct AnimationComponent : public Component
     std::vector<Sequence> sequences;
 
     // Current state
-    uint32_t currentSequenceHash = 0;
+    StringHash currentSequenceHash;
     int currentFrameIndex = 0;
     float timer = 0.0f;
     bool isPlaying = true;
 
-    void play(uint32_t targetHash)
+    void play(StringHash targetHash)
     {
         if (currentSequenceHash == targetHash) return;
 

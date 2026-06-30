@@ -51,6 +51,7 @@ set(DAGGER_HEADERS
     ${PROJECT_SOURCE_DIR}/include/dagger/core/Component.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/Constants.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/Entity.h
+    ${PROJECT_SOURCE_DIR}/include/dagger/core/EventBus.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/GameEvent.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/LevelLoader.h
     ${PROJECT_SOURCE_DIR}/include/dagger/core/Logger.h

@@ -2,8 +2,11 @@
 
 #include <components/ProjectileComponent.h>
 #include <components/WeaponComponent.h>
+#include <events/GameplayEvents.h>
 
 #include <dagger/assets/AssetManager.h>
+#include <dagger/audio/AudioManager.h>
+#include <dagger/audio/AudioResource.h>
 #include <dagger/core/Application.h>
 #include <dagger/core/Scene.h>
 #include <dagger/core/Entity.h>
@@ -65,6 +68,12 @@ void ShootingSystem::update(float dt, dagger::Application& app, dagger::Scene& s
             if (fProjectile)
             {
                 fProjectile->damage = weapon.damage;
+            }
+
+            auto* shootSound = app.getAssets().resolve<dagger::Sound>(weapon.shootSound);
+            if (shootSound)
+            {
+                app.getAudio().play(*shootSound, 0, 0.2f);
             }
         }
     });

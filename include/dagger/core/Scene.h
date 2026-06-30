@@ -3,6 +3,7 @@
 
 #include <dagger/assets/ResourceHandle.h>
 #include <dagger/core/Entity.h>
+#include <dagger/core/EventBus.h>
 #include <dagger/core/components/Tags.h>
 #include <dagger/core/components/TextComponent.h>
 #include <dagger/core/components/TransformComponent.h>
@@ -29,6 +30,8 @@ public:
     virtual void onFixedUpdate(float dt, Application& app) {}
     virtual void onUpdate(float dt, Application& app) {}
     virtual void onRender(Renderer& renderer, AssetManager& assets, float alpha = 0.0f) {}
+
+    EventBus& getEventBus() { return eventBus_; }
 
     EntityHandle createEntity()
     {
@@ -174,7 +177,9 @@ public:
         }
     }
 
-protected:
+private:
+    EventBus eventBus_;
+
     struct EntitySlot
     {
         std::unique_ptr<Entity> entity;
