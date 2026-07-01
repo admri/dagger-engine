@@ -7,6 +7,7 @@
 #include <dagger/assets/AssetManager.h>
 #include <dagger/core/Application.h>
 #include <dagger/core/Scene.h>
+#include <dagger/core/components/BoxColliderComponent.h>
 #include <dagger/core/components/TransformComponent.h>
 #include <dagger/graphics/Renderer.h>
 #include <dagger/graphics/Viewport.h>
@@ -97,12 +98,16 @@ void LightingRenderSystem::render(dagger::Renderer& renderer, dagger::Scene& sce
     if (player)
     {
         auto* transform = player->getComponent<dagger::TransformComponent>();
-        float screenX = transform->x - viewport.camX;
-        float screenY = transform->y - viewport.camY;
+        auto* collider = player->getComponent<dagger::BoxColliderComponent>();
+        
+        float offsetX = collider ? collider->offsetX + (collider->width / 2.0f) : 0.0f;
+        float offsetY = collider ? collider->offsetY + (collider->height / 2.0f) : 0.0f;
+
+        float screenX = (transform->x + offsetX) - viewport.camX;
+        float screenY = (transform->y + offsetY) - viewport.camY;
         
         lightData.lightX = screenX / static_cast<float>(viewport.windowWidth);
         lightData.lightY = screenY / static_cast<float>(viewport.windowHeight);
-
         if (playerFov) 
         {
             // Make the light radius a bit smaller to give CPU time to render in enemies

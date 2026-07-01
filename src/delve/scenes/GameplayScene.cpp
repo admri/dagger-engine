@@ -58,7 +58,7 @@ void GameplayScene::onInit(dagger::Application& app)
     
     if (dagger::Music* bgm = assets.resolve<dagger::Music>(musicHandle))
     {
-        audio.play(*bgm, -1, 0.5f);
+        audio.play(*bgm, -1, 0.2f);
     }
 }
 

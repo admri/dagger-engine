@@ -7,10 +7,12 @@
 #include <dagger/assets/PrefabFactory.h>
 #include <dagger/assets/ResourceHandle.h>
 #include <dagger/core/Scene.h>
+#include <dagger/core/components/BoxColliderComponent.h>
 #include <dagger/core/components/TransformComponent.h>
 #include <dagger/math/PerlinNoise.h>
 
 #include <random>
+#include <utility>
 
 namespace delve
 {
@@ -37,6 +39,9 @@ void WorldGenerator::generateChunk(Chunk& chunk, dagger::Scene& scene, TileMap& 
     float scale = 0.05f;       // Zoom level (smaller = larger cave structures)
     float tunnelWidth = 0.06f; // Threshold for carving out floors vs walls
 
+    // List of safe tiles for spawning enemies
+    std::vector<std::pair<int, int>> validFloorTiles;
+
     for (int y = 0; y < ChunkManager::CHUNK_SIZE; ++y)
     {
         for (int x = 0; x < ChunkManager::CHUNK_SIZE; ++x)
@@ -58,30 +63,62 @@ void WorldGenerator::generateChunk(Chunk& chunk, dagger::Scene& scene, TileMap& 
             }
 
             tileMap.setTile(globalTileX, globalTileY, type);
+
+            // If we have a floor, add it as a potential enemy spawn position (avoiding player spawn position)
+            if (type == TileType::Floor && !(globalTileX >= -5 && globalTileX <= 5 && globalTileY >= -5 && globalTileY <= 5))
+            {
+                validFloorTiles.push_back({globalTileX, globalTileY});
+            }
         }
     }
 
-    // Enemy spawning
-    float chunkPixelSize = ChunkManager::CHUNK_SIZE * ChunkManager::TILE_SIZE;
-    float startPixelX = chunk.position.x * chunkPixelSize;
-    float startPixelY = chunk.position.y * chunkPixelSize;
+    // End chunk generation if there is no place to spawn enemies
+    if (validFloorTiles.empty()) return;
 
-    std::uniform_real_distribution<float> posDist(0.0f, chunkPixelSize);
-
+    // Enemy spawning;
     int enemiesToSpawn = enemyCountDist(rng);
+
+    // Clamp if there are too many enemies
+    if (enemiesToSpawn > validFloorTiles.size())
+    {
+        enemiesToSpawn = validFloorTiles.size();
+    }
+
     auto enemyPrefab = assets_.get<dagger::Prefab>("enemy");
+
+    std::uniform_int_distribution<size_t> tileDist(0, validFloorTiles.size() - 1);
 
     for (int i = 0; i < enemiesToSpawn; ++i)
     {
-        float randomX = startPixelX + posDist(rng);
-        float randomY = startPixelY + posDist(rng);
+        // Choose random floor tile
+        size_t randomIndex = tileDist(rng);
+        auto [tileX, tileY] = validFloorTiles[randomIndex];
+
+        // Remove the tile from the list to avoid spawning two enemies on top of each other
+        validFloorTiles[randomIndex] = validFloorTiles.back();
+        validFloorTiles.pop_back();
+        
+        // Update distribution
+        if (!validFloorTiles.empty())
+        {
+            tileDist = std::uniform_int_distribution<size_t>(0, validFloorTiles.size() - 1);
+        }
 
         dagger::ResourceHandle<dagger::Entity> enemyHandle = dagger::PrefabFactory::create(enemyPrefab, scene, assets_);
         dagger::Entity* enemy = scene.getEntity(enemyHandle);
 
         if (enemy && enemy->hasComponent<dagger::TransformComponent>())
         {
-            enemy->getComponent<dagger::TransformComponent>()->setPosition(randomX, randomY);
+            float spawnX = tileX * ChunkManager::TILE_SIZE;
+            float spawnY = tileY * ChunkManager::TILE_SIZE;
+
+            if (auto* collider = enemy->getComponent<dagger::BoxColliderComponent>())
+            {
+                spawnX += (ChunkManager::TILE_SIZE - collider->width) / 2.0f;
+                spawnY += (ChunkManager::TILE_SIZE - collider->height) / 2.0f;
+            }
+
+            enemy->getComponent<dagger::TransformComponent>()->setPosition(spawnX, spawnY);
             chunk.activeEntities.push_back(enemyHandle);
         }
     }
