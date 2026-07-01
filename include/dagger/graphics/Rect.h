@@ -4,6 +4,7 @@
 namespace dagger
 {
 
+/// @brief A basic 2D rectangle structure used for rendering destinations and source crops.
 struct Rect
 {
     float x;

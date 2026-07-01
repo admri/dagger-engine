@@ -15,6 +15,7 @@ struct MIXAudioDeleter
     void operator()(MIX_Audio* audio) const;
 };
 
+/// @brief Base wrapper class for an audio file loaded into memory.
 class AudioResource
 {
 public:
@@ -36,7 +37,7 @@ protected:
     std::unique_ptr<MIX_Audio, MIXAudioDeleter> audio_;
 };
 
-// Short sounds, e.g. SFX, fully decoded into RAM
+/// @brief A short audio file (e.g., SFX) fully decoded into RAM for low-latency playback.
 class Sound : public AudioResource
 {
 public:
@@ -46,7 +47,7 @@ public:
     }
 };
 
-// Long sounds, e.g. music, streamed
+/// @brief A long audio file (e.g., BGM) streamed directly from disk to save RAM.
 class Music : public AudioResource
 {
 public:

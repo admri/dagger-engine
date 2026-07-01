@@ -10,9 +10,12 @@
 namespace dagger
 {
 
+/// @brief A local Publisher/Subscriber message bus.
+/// Facilitates decoupled communication between game systems without requiring direct references.
 class EventBus
 {
 public:
+    /// @brief Registers a callback to be executed when an event of EventType is emitted.
     template <typename EventType>
     void subscribe(std::function<void(const EventType&)> callback)
     {
@@ -29,6 +32,7 @@ public:
         handler->callbacks.push_back(std::move(callback));
     }
 
+    /// @brief Broadcasts an event to all registered subscribers immediately.
     template <typename EventType, typename... Args>
     void emit(Args&&... args)
     {
@@ -51,6 +55,7 @@ public:
         }
     }
 
+    /// @brief Removes all registered event handlers.
     void clear()
     {
         handlers_.clear();

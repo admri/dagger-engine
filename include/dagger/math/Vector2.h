@@ -10,6 +10,7 @@ namespace dagger
 namespace math
 {
 
+/// @brief A templated 2D mathematical vector used for positions, directions, and velocities.
 template <typename T>
 requires std::integral<T> || std::floating_point<T>
 struct Vector2

@@ -8,21 +8,25 @@
 namespace dagger
 {
 
+/// @brief A simple thread-safe logging utility supporting std::format syntax.
 class Logger
 {
 public:
+    /// @brief Logs a standard informational message.
     template <typename... Args>
     static void info(std::format_string<Args...> fmt, Args&&... args)
     {
         logInternal(LogLevel::Info, std::format(fmt, std::forward<Args>(args)...));
     }
 
+    /// @brief Logs a warning message.
     template <typename... Args>
     static void warn(std::format_string<Args...> fmt, Args&&... args)
     {
         logInternal(LogLevel::Warn, std::format(fmt, std::forward<Args>(args)...));
     }
 
+    /// @brief Logs an error message.
     template <typename... Args>
     static void error(std::format_string<Args...> fmt, Args&&... args)
     {

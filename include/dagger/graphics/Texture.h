@@ -17,6 +17,7 @@ struct SDLTextureDeleter
     void operator()(SDL_Texture* texture) const;
 };
 
+/// @brief Wrapper for a hardware-accelerated 2D image living in GPU memory.
 class Texture
 {
     friend class Renderer;
@@ -29,9 +30,15 @@ public:
     Texture(const Texture&) = delete;
     Texture& operator=(const Texture&) = delete;
 
+    /// @brief Converts a software surface (RAM) into a hardware texture (VRAM).
     bool createFromSurface(const Renderer& renderer, SDL_Surface& surface);
+    
+    /// @brief Creates an empty texture that can be rendered to (used for post-processing).
     bool createRenderTarget(Renderer& renderer, int width, int height);
+    
+    /// @brief Loads an image directly from disk into GPU memory.
     bool load(const Renderer& renderer, const std::string& path);
+    
     void destroy();
 
     inline float getWidth() const { return width_; }

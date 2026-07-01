@@ -35,6 +35,7 @@ struct AppConfig
     WindowFlags flags = WindowFlags::Resizable;
     bool showFPS = true;
     bool vsync = true;
+    double tps = 60;
 };
 
 } // namespace dagger

@@ -21,19 +21,32 @@ struct SDLRendererDeleter
     void operator()(SDL_Renderer* renderer) const;
 };
 
+/// @brief Core hardware service wrapping the graphics backend.
+/// Handles draw calls, texture rendering, and shader pipeline management.
 class Renderer
 {
     friend class Texture;
     friend class Application;
 
 public:
+    /// @brief Initializes the rendering context for the given window.
     bool create(const Window& window);
     void destroy();
 
+    /// @brief Clears the backbuffer with a solid color. Called at the start of the frame.
     void clear(Color clearColor = Colors::Black);
+    
+    /// @brief Swaps the backbuffer to the screen. Called at the end of the frame.
     void present();
 
+    /// @brief Renders a texture to the screen.
+    /// @param texture The loaded texture to draw.
+    /// @param dstRect Position and scale on the screen.
+    /// @param srcRect Optional crop area of the texture (used for spritesheets).
+    /// @param flipX Whether to horizontally mirror the texture.
+    /// @param tint Color multiplier to apply to the texture.
     void drawTexture(const Texture& texture, const Rect& dstRect, const Rect* srcRect = nullptr, bool flipX = false, Color tint = Colors::White);
+    
     void drawRect(const Rect& rect, Color color);
     void fillRect(const Rect& rect, Color color);
 
@@ -41,6 +54,7 @@ public:
     int getWidth() const;
     int getHeight() const;
 
+    /// @brief Redirects all subsequent draw calls to a specific texture instead of the screen.
     void setRenderTarget(Texture* target);
 
     // Shader management

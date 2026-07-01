@@ -18,15 +18,18 @@ concept IsResourceHandle = requires(T handle)
     { handle.isValid() } -> std::same_as<bool>;
 };
 
+/// @brief Internal container managing the lifecycle, storage, and generational indices of a specific resource type.
 template <typename T, IsResourceHandle HandleType>
 class ResourceManager
 {
 public:
+    /// @brief Checks if a resource with the given string ID is currently loaded.
     bool has(const std::string& id) const
     {
         return nameToHandle_.find(id) != nameToHandle_.end();
     }
 
+    /// @brief Retrieves the generational handle associated with a string ID.
     HandleType getHandle(const std::string& id)
     {
         auto it = nameToHandle_.find(id);
@@ -37,6 +40,7 @@ public:
         return HandleType{};
     }
 
+    /// @brief Takes ownership of a newly loaded resource and issues a handle for it.
     HandleType add(const std::string& id, T resource)
     {
         // Check if resource already exists
@@ -58,6 +62,7 @@ public:
         return handle;
     }
 
+    /// @brief Replaces the resource data at a specific ID, keeping existing handles valid.
     void replace(const std::string& id, T newResource)
     {
         auto it = nameToHandle_.find(id);
@@ -69,6 +74,7 @@ public:
         }
     }
 
+    /// @brief Safely translates a handle into a raw pointer. Returns nullptr if generations mismatch.
     T* resolve(HandleType handle)
     {
         if (!handle.isValid() || handle.index >= slots_.size())
@@ -85,6 +91,7 @@ public:
         return nullptr;
     }
 
+    /// @brief Destroys the resource and marks its slot as free, invalidating all existing handles to it.
     void release(HandleType handle)
     {
         if (!handle.isValid() || handle.index >= slots_.size()) return;
@@ -106,6 +113,7 @@ public:
         }
     }
 
+    /// @brief Destroys all managed resources and clears the registry.
     void clear()
     {
         for (auto& slot : slots_)

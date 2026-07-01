@@ -21,18 +21,30 @@ class Renderer;
 class AssetManager;
 class Input;
 
+/// @brief Represents a distinct game state (e.g., Level, Main Menu).
+/// Acts as the main ECS registry, owning all entities, components, and the local EventBus.
 class Scene
 {
 public:
     virtual ~Scene() = default;
 
+    /// @brief Called when the scene is loaded. Initialize systems and load level data here.
     virtual void onInit(Application& app) = 0;
+
+    /// @brief Called at a fixed interval (e.g., 60 times a second). Ideal for physics updates.
     virtual void onFixedUpdate(float dt, Application& app) {}
+
+    /// @brief Called every frame. Ideal for input handling and rendering interpolation.
     virtual void onUpdate(float dt, Application& app) {}
+
+    /// @brief Called during the rendering phase.
     virtual void onRender(Renderer& renderer, AssetManager& assets, float alpha = 0.0f) {}
 
+    /// @brief Retrieves the local message bus used for inter-system communication in this scene.
     EventBus& getEventBus() { return eventBus_; }
 
+    /// @brief Allocates a new empty entity in the scene.
+    /// @return A generational handle used to safely reference the entity.
     EntityHandle createEntity()
     {
         uint32_t index = 0;
@@ -55,6 +67,7 @@ public:
         return EntityHandle{ index, slot.generation };
     }
 
+    /// @brief Helper method to quickly instantiate a UI text element.
     EntityHandle createText(const std::string& text, float x, float y, 
                             FontHandle font, Color color = Colors::White)
     {
@@ -75,6 +88,7 @@ public:
         return handle;
     }
 
+    /// @brief Marks an entity for destruction. It will be safely cleaned up at the end of the frame.
     void destroyEntity(EntityHandle handle)
     {
          if (!handle.isValid() || handle.index >= entities_.size()) return;
@@ -87,6 +101,8 @@ public:
          }
     }
 
+    /// @brief Resolves an entity handle into a raw pointer. 
+    /// @return Pointer to the entity, or nullptr if the entity was destroyed or the handle is invalid.
     Entity* getEntity(EntityHandle handle) const
     {
         if (!handle.isValid() || handle.index >= entities_.size())
@@ -104,6 +120,7 @@ public:
         return nullptr;
     }
     
+    /// @brief Finds the first active entity that contains all the specified components.
     template <typename... Components>
     Entity* getFirstEntityWith()
     {
@@ -118,6 +135,7 @@ public:
         return nullptr;
     }
 
+    /// @brief Retrieves all active entities possessing the specified components (pre-allocated vector version).
     template <typename... Components>
     void getEntitiesWith(std::vector<Entity*>& outEntities)
     {
@@ -133,6 +151,7 @@ public:
         }
     }
 
+    /// @brief Retrieves all active entities possessing the specified components (allocating version).
     template <typename... Components>
     std::vector<Entity*> getEntitiesWith()
     {
@@ -141,6 +160,8 @@ public:
         return result;
     }
 
+    /// @brief Iterates over all active entities matching the component signature.
+    /// This is the primary method used by Systems to execute game logic.
     template <typename... Components, typename Func>
     void forEachEntityWith(Func action)
     {
@@ -158,6 +179,7 @@ public:
         }
     }
 
+    /// @brief Internal garbage collection. Cleans up entities marked for destruction.
     void cleanup()
     {
         for (uint32_t i = 0; i < entities_.size(); ++i)

@@ -13,9 +13,12 @@ class Renderer;
 class AssetManager;
 class Scene;
 
+/// @brief Renders screen-space user interface elements (sprites and text) over the game world.
+/// Ignores camera/viewport transformations to keep elements pinned to the screen.
 class UIRenderSystem
 {
 public:
+    /// @brief Collects, sorts, and draws all entities flagged with UIRenderTag.
     void render(Renderer& renderer, AssetManager& assets, Scene& scene, float alpha);
 
 private:

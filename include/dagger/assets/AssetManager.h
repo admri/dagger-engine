@@ -19,6 +19,8 @@ namespace dagger
 
 class Renderer;
 
+/// @brief Central registry for loading, storing, and retrieving game assets.
+/// Manages the lifecycle of resources (Textures, Fonts, Sounds, etc.) and issues safe ResourceHandles.
 class AssetManager
 {
 public:
@@ -26,11 +28,17 @@ public:
     AssetManager(const AssetManager&) = delete;
     AssetManager& operator=(const AssetManager&) = delete;
 
+    /// @brief Converts a relative asset path to an absolute path based on the engine's root directory.
     std::string getAbsolutePath(const std::string& relativePath) const
     {
         return basePath_ + relativePath;
     }
 
+    /// @brief Loads an asset from disk into memory and assigns it a unique string ID.
+    /// @tparam T The resource type (e.g., Texture, Sound).
+    /// @param id The unique string identifier for this asset (e.g., "player_tex").
+    /// @param filePath The relative path to the asset file.
+    /// @return A safe generational handle to the loaded resource, or an invalid handle on failure.
     template <typename T, typename... Args>
     auto load(const std::string& id, const std::string& filePath = "", Args&&... args)
     {
@@ -67,6 +75,8 @@ public:
         return manager.add(id, std::move(newRes));
     }
 
+    /// @brief Replaces an existing asset in memory without invalidating existing handles.
+    /// @param id The string identifier of the asset to replace.
     template <typename T, typename... Args>
     void replace(const std::string& id, Args&&... args)
     {
@@ -95,15 +105,22 @@ public:
         manager.replace(id, std::move(newRes));
     }
 
+    /// @brief Retrieves an existing asset handle by its string ID.
+    /// @return The resource handle, or an invalid handle if not found.
     template <typename T>
     auto get(const std::string& id) { return getManager<T>().getHandle(id); }
 
+    /// @brief Resolves a generational handle into a raw pointer for immediate use.
+    /// @param handle The handle to resolve.
+    /// @return Pointer to the asset, or nullptr if the asset was freed or the handle is invalid.
     template <typename T, typename HandleType>
     T* resolve(HandleType handle) { return getManager<T>().resolve(handle); }
 
+    /// @brief Unloads an asset from memory and invalidates its handles.
     template <typename T, typename HandleType>
     void release(HandleType handle) { getManager<T>().release(handle); }
 
+    /// @brief Unloads all currently loaded assets and frees memory.
     void clear()
     {
         textures_.clear();

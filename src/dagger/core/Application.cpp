@@ -101,6 +101,7 @@ bool Application::init(const AppConfig& config)
     }
 
     if (config.vsync) renderer_->toggleVSync();
+    fixed_dt = 1.0 / config.tps;
 
     PrefabFactory::registerCoreComponents();
 
@@ -145,13 +146,13 @@ void Application::run(const AppConfig& config)
         }
 
         // Update
-        while (accumulator >= FIXED_DT)
+        while (accumulator >= fixed_dt)
         {
-            sceneManager_.fixedUpdate(static_cast<float>(FIXED_DT), *this);
-            accumulator -= FIXED_DT;
+            sceneManager_.fixedUpdate(static_cast<float>(fixed_dt), *this);
+            accumulator -= fixed_dt;
         }
         
-        float alpha = static_cast<float>(accumulator / FIXED_DT);
+        float alpha = static_cast<float>(accumulator / fixed_dt);
 
         sceneManager_.update(static_cast<float>(deltaTime_), *this);
         onUpdate(static_cast<float>(deltaTime_));

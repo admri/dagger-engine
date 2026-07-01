@@ -8,6 +8,7 @@
 namespace dagger
 {
 
+/// @brief A standard 32-bit RGBA color structure (0-255 per channel).
 struct Color
 {
     uint8_t r = 255;

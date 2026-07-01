@@ -21,6 +21,8 @@ class Input;
 class AudioManager;
 class AssetManager;
 
+/// @brief The core engine class. Manages the main game loop, hardware subsystems, and global state.
+/// To create a game, inherit from this class and override the lifecycle methods (onInit, onUpdate, etc.).
 class Application
 {
 public:
@@ -30,7 +32,10 @@ public:
     Application(const Application&) = delete;
     Application& operator=(const Application&) = delete;
 
+    /// @brief Starts the engine loop with the specified configuration. Blocks until the game is closed.
     void run(const AppConfig& config = {});
+
+    /// @brief Signals the application to gracefully terminate at the end of the current frame.
     void quit();
 
     inline Window& getWindow()            { assert(window_       != nullptr && "Window accessed before Application::init()!");         return *window_; }
@@ -45,10 +50,19 @@ public:
     int getWindowHeight() const;
 
 protected:
+    /// @brief Called once upon application startup. Register components and initial scenes here.
     virtual bool onInit() { return true; };
+    
+    /// @brief Called every frame. Use for global game logic independent of the active scene.
     virtual void onUpdate(float dt) {}
+    
+    /// @brief Called every frame after scene rendering. Use for global overlays or debug UI.
     virtual void onRender() {}
+    
+    /// @brief Triggered on specific global engine events (e.g., window resized, focus lost).
     virtual void onEvent(const GameEvent& event) {}
+    
+    /// @brief Called right before the application is destroyed. Use for global memory cleanup.
     virtual void onShutdown() {}
 
 private:
@@ -59,6 +73,7 @@ private:
     bool audioInitialized_ = false;
     bool fontInitialized_ = false;
 
+    double fixed_dt = 1.0 / 60.0;
     uint64_t currentTime_ = 0;
     uint64_t lastTime_ = 0;
     double deltaTime_ = 0.0;

@@ -13,6 +13,8 @@ class Application;
 class Renderer;
 class AssetManager;
 
+/// @brief Manages a stack of active game scenes (State Machine).
+/// Handles safe transitions between scenes without crashing iterating systems.
 class SceneManager
 {
 public:
@@ -29,10 +31,16 @@ public:
         std::unique_ptr<Scene> scene;
     };
 
+    /// @brief Pushes a new scene onto the stack, pausing the current one.
     void push(std::unique_ptr<Scene> scene);
+
+    /// @brief Pops the top scene off the stack, resuming the previous one.
     void pop();
+
+    /// @brief Swaps the current scene with a new one (destroys the current scene).
     void replace(std::unique_ptr<Scene> scene);
 
+    /// @brief Processes any queued scene transitions safely outside the update loop.
     void processActions(Application& app);
 
     bool isEmpty() const { return sceneStack_.empty(); }
@@ -41,6 +49,7 @@ public:
     void update(float dt, Application& app);
     void render(Renderer& renderer, AssetManager& assets, float alpha);
 
+    /// @brief Destroys all scenes currently in the stack.
     void clear();
 
 private:

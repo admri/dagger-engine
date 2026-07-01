@@ -4,6 +4,8 @@
 namespace dagger
 {
 
+/// @brief Defines the current camera view and screen boundaries for rendering systems.
+/// Contains 'alpha' used for interpolating rendering positions between fixed physics updates.
 struct Viewport
 {
     float camX = 0.0f;

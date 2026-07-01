@@ -14,10 +14,13 @@ struct TTFFontDeleter
     void operator()(TTF_Font* font) const;
 };
 
+/// @brief Wrapper for a TrueType Font resource used for text rendering.
 class Font
 {
 public:
+    /// @brief Loads a TTF font from disk at a specific point size.
     bool load(const std::string& path, int fontSize);
+
     TTF_Font* get() const { return ttfFont_.get(); }
     void destroy();
 

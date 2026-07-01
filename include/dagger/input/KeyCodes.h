@@ -4,6 +4,7 @@
 namespace dagger
 {
 
+/// @brief Standardized engine key codes abstracting the underlying hardware API.
 enum class Key
 {
     // Letters

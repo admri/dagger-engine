@@ -11,14 +11,21 @@ namespace dagger
 
 class AudioResource;
 
+/// @brief Core service responsible for initializing the audio device and managing playback.
 class AudioManager
 {
 public:
     AudioManager() : mixer_(nullptr) {}
     ~AudioManager();
 
+    /// @brief Initializes the underlying audio subsystem.
     [[nodiscard]] bool init();
 
+    /// @brief Plays an audio resource on the first available channel.
+    /// @param resource The Sound or Music resource to play.
+    /// @param loops Number of times to loop (0 = play once, -1 = infinite).
+    /// @param gain Volume multiplier (0.0 to 1.0).
+    /// @return Pointer to the active track, or nullptr if playback failed.
     MIX_Track* play(const AudioResource& resource, int loops = 0, float gain = 1.0f);
     
     void stop(MIX_Track* track, int fade_out_ms = 0);

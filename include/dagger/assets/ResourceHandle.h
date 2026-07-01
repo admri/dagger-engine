@@ -16,12 +16,16 @@ struct Prefab;
 
 constexpr uint32_t INVALID_INDEX = 0xFFFFFFFF;
 
+/// @brief A safe, generational pointer replacement.
+/// Prevents dangling pointers by ensuring the generation of the handle matches the resource in memory.
 template <typename T>
 struct ResourceHandle
 {
     uint32_t index = INVALID_INDEX;
     uint32_t generation = 0;
 
+    /// @brief Checks if the handle points to a valid memory index. 
+    /// (Note: Does not guarantee the asset hasn't been freed; use AssetManager::resolve for that).
     bool isValid() const { return index != INVALID_INDEX; }
 };
 

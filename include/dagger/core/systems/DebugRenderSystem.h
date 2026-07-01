@@ -10,9 +10,11 @@
 namespace dagger
 {
 
+/// @brief Utility system that renders visual outlines of colliders and invisible boundaries for debugging purposes.
 class DebugRenderSystem
 {
 public:
+    /// @brief Draws green wireframe rectangles over all entities possessing a BoxColliderComponent.
     void render(Renderer& renderer, Scene& scene, const Viewport& viewport)
     {
         scene.forEachEntityWith<TransformComponent, BoxColliderComponent>(

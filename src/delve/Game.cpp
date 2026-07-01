@@ -30,7 +30,7 @@ void Game::registerGameComponents()
     PrefabFactory::registerComponent<PlayerInputComponent>("PlayerInputComponent");
     PrefabFactory::registerComponent<ProjectileComponent>("ProjectileComponent");
 
-    PrefabFactory::registerComponent("WeaponComponent", [](dagger::Entity* e, const auto& json, dagger::AssetManager& assets)
+    PrefabFactory::registerComponent("WeaponComponent", [](dagger::Entity* e, const nlohmann::json& json, dagger::AssetManager& assets)
     {
         auto& weapon = e->addComponent<WeaponComponent>();
 

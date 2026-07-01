@@ -9,9 +9,12 @@ namespace dagger
 class Scene;
 class Application;
 
+/// @brief Utility class responsible for parsing level JSON files and populating Scenes.
 class LevelLoader
 {
 public:
+    /// @brief Parses a level layout and spawns all defined prefabs into the target scene.
+    /// @return True if the level was loaded successfully, false on failure.
     static bool load(const std::string& filepath, Scene& scene, Application& app);
 };
 

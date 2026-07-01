@@ -11,12 +11,14 @@ namespace dagger
 namespace math
 {
 
+/// @brief Generates procedural deterministic noise used for map generation and organic randomness.
 class PerlinNoise
 {
 public:
     explicit PerlinNoise(uint64_t seed) : seed_(seed) {}
 
-    // Generate base 2D noise for a specific point
+    /// @brief Generates base 2D noise for a specific coordinate point.
+    /// @return A smooth pseudo-random value.
     float noise(float x, float y) const
     {
         // Grid cell coordinates (top-left corner)
@@ -45,14 +47,17 @@ public:
         return interpolate(ix0, ix1, sy);
     }
 
-    // Fractal Brownian Motion
-    // Layers multiple grids for natural detail
+    /// @brief Fractal Brownian Motion. Layers multiple noise grids to create natural detail.
+    /// @param octaves Number of noise layers (higher = more detail, slower performance).
+    /// @param persistence How much amplitude decreases per octave (usually 0.5).
+    /// @param scale How much frequency increases per octave (usually 2.0).
+    /// @return A normalized noise value between 0.0 and 1.0.
     float fractal(float x, float y, int octaves, float persistence, float scale) const
     {
         float total = 0.0f;
-        float frequency = scale; // 
-        float amplitude = 1.0f;  //
-        float maxValue = 0.0f;   // 
+        float frequency = scale;
+        float amplitude = 1.0f;
+        float maxValue = 0.0f;
 
         for (int i = 0; i < octaves; ++i)
         {

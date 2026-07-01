@@ -16,11 +16,16 @@ namespace dagger
 
 using EntityHandle = ResourceHandle<Entity>;
 
+/// @brief Represents a unique object in the game world. 
+/// Acts purely as a container for components. Logic should be handled by Systems.
 class Entity
 {
 public:
     virtual ~Entity() = default;
 
+    /// @brief Instantiates and attaches a new component to this entity.
+    /// @tparam T The component type (must inherit from dagger::Component).
+    /// @return A reference to the newly created component.
     template <typename T, typename... Args>
     T& addComponent(Args&&... args) 
     {
@@ -36,6 +41,8 @@ public:
         return *rawPtr;
     }
 
+    /// @brief Retrieves a component of the specified type.
+    /// @return Pointer to the component, or nullptr if the entity doesn't have it.
     template <typename T>
     T* getComponent() 
     {
@@ -48,12 +55,15 @@ public:
         return nullptr;
     }
 
+    /// @brief Checks if the entity currently possesses the specified component.
     template <typename T>
     bool hasComponent() const 
     {
         return components_.count(typeid(T).hash_code()) > 0;
     }
 
+    /// @brief Removes the specified component from the entity.
+    /// @return True if the component was found and removed, false otherwise.
     template <typename T>
     bool removeComponent() 
     {

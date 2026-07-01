@@ -8,6 +8,8 @@
 namespace dagger
 {
 
+/// @brief A strongly-typed wrapper around a 32-bit FNV-1a hash.
+/// Prevents accidental mixing of hashes with standard integers.
 struct StringHash
 {
     using ValueType = uint32_t;
@@ -32,7 +34,7 @@ namespace detail
     constexpr StringHash::ValueType FNV_PRIME = 16777619u;
 }
 
-// FNV-1a hash algorithm for fast string hashing (32-bits)
+/// @brief Core FNV-1a hash algorithm for fast string hashing. Can be evaluated at compile-time.
 constexpr auto hashString(const char* str, std::size_t length) -> StringHash::ValueType
 {
     StringHash::ValueType hash = detail::FNV_OFFSET_BASIS;
@@ -44,6 +46,7 @@ constexpr auto hashString(const char* str, std::size_t length) -> StringHash::Va
     return hash;
 }
 
+/// @brief hashString overload for hashing std::string objects at runtime.
 inline StringHash hashString(const std::string& str)
 {
     return StringHash(hashString(str.c_str(), str.length()));
@@ -51,6 +54,7 @@ inline StringHash hashString(const std::string& str)
 
 inline namespace literals
 {
+    /// @brief Compile-time literal for hashing strings (e.g., "my_sound"_hash).
     constexpr StringHash operator"" _hash(const char* str, std::size_t length)
     {
         return StringHash{hashString(str, length)};

@@ -4,12 +4,14 @@
 namespace dagger
 {
 
+/// @brief Core engine event types for global application state changes.
 enum class GameEventType
 {
     ToggleVSync,
     Quit
 };
 
+/// @brief Represents a global system-level event passed to Application::onEvent.
 struct GameEvent
 {
     GameEventType type;
