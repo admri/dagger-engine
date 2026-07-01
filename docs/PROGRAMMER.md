@@ -128,3 +128,19 @@ The graphics module (`graphics/`) is designed to decouple the ECS rendering syst
 * **Custom Shaders**: The engine supports custom rendering pipelines via programmable shaders. While basic components (like `SpriteComponent`) use standard built-in shaders for texture rendering, the graphics API allows for custom shader binding. This enables advanced visual effects (e.g., lighting, outline highlights, or screen-space distortions) without needing to modify the high-level ECS logic.
 
 * **Render Passes & Z-Indexing**: Rendering systems process entities based on a defined `zIndex` and specific tags (like `UIRenderTag` or `HiddenTag`). This ensures correct draw ordering, allowing UI to always render on top of the game world, and ensuring transparency is handled correctly across different visual layers.
+
+## What's left
+
+* Even more "pure" ECS without `Scene` having to hold all entities (only a global registry of components would exist). This would optimize cache lines and is the standard implementation of ECS.
+
+* Better data-oriented approach options. More options for levels, refining the current options allowing for a potential implementation of a level editor and such. Implementation of asset packing and compression/decompression.
+
+* Smarter Asset Manager with dynamic deallocation of unused assets: Right now, allocation is 100% defined by manifests, other assets however are never deallocated.
+
+* Add easier UI creation system. Right now, all UI elements have an absolute position and there is no way to anchor them anywhere for when the window size changes for example.
+
+* Proper shader compilation: Right now, there is no proper way to compile shaders for all GPU backends on all systems automatically. Shader compilers take up gigabytes and shader cross-compilation libraries such as SDL_shadercross are unstable and experimental without much documentation or even available releases. The best way I recommend is to precompile shaders on one system (Windows) and cross-compile for other systems using pre-compiled shadercross.exe (SDL_shadercross) available in `tools/`. CMake is already configured to do that on Windows and uses the precompiled shaders on all other systems.
+
+* Multi-threading: Essential for any reasonable performance on any game of a much greater scale, however, right now, the engine is not thread-safe whatsoever.
+
+* And much, much more...

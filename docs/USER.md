@@ -72,7 +72,7 @@ public:
 
 ### 3. Defining Components
 
-Components are Plain Old Data (POD) structures that inherit from `dagger::Component`. To make a component loadable from JSON, you must use the provided serialization macro at the bottom of the struct.
+Components are Plain Old Data (POD) structures that inherit from `dagger::Component`. Tags are simply components without any properties used for querying. To make a component loadable from JSON, you must use the provided serialization macro at the bottom of the struct.
 
 ```cpp
 #include <dagger/core/Component.h>
@@ -97,6 +97,9 @@ void MyGame::registerGameComponents()
 {
     // Register basic POD components using built-in macros
     dagger::PrefabFactory::registerComponent<HealthComponent>("HealthComponent");
+
+    // Register basic tag
+    dagger::PrefabFactory::registerTag<VisibleTag>("VisibleTag");
     
     // Register complex components, e.g. those that require Asset resolution (e.g., Audio Handles)
     dagger::PrefabFactory::registerComponent("WeaponComponent", 
@@ -254,6 +257,12 @@ The level file defines the required manifest alongside its entities and their po
   ]
 }
 ```
+
+#### 4. Shaders
+
+These are usually placed in `assets/shaders` with `.vert`, `.frag`, `.geom` (etc.) file extensions denoting shader type (vertex, fragment, geometry...). They can be accessed just like other asset types in the code, only without specifying the original file extension, i.e., `assets/shaders/lighting.frag` will be accessed as `shaders/lighting` (cross-compilation reasons; the engine decides at runtime what graphics backend it will use).
+
+Typically written in GLSL, they can be compiled into other formats for other graphics APIs (Metal, Vulkan, DirectX) and are often shipped precompiled with the assets. To read more on shader compilation, please refer to [PROGRAMMER.md](PROGRAMMER.md) *What's left* section, *Proper shader compilation* paragraph, and take a look at the `tools/shadercross.exe` executable and `cmake/CompileShaders.cmake`.
 
 ## PART 3: Player Guide (Delve)
 
