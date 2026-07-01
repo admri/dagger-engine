@@ -4,27 +4,36 @@
 #include <cstddef>
 #include <cstdint>
 #include <functional>
+#include <string>
 
 namespace dagger
 {
+
+using HashValue = uint32_t;
+
+struct StringHash;
+
+constexpr auto hashString(const char* str, std::size_t length) -> HashValue;
+StringHash hashString(const std::string& str);
 
 /// @brief A strongly-typed wrapper around a 32-bit FNV-1a hash.
 /// Prevents accidental mixing of hashes with standard integers.
 struct StringHash
 {
-    using ValueType = uint32_t;
-
+    using ValueType = HashValue;
     ValueType value;
-
     static constexpr ValueType INVALID_VALUE = 0;
 
     constexpr StringHash() : value(INVALID_VALUE) {}
-
     explicit constexpr StringHash(ValueType v) : value(v) {}
+
+    template <std::size_t N>
+    consteval StringHash(const char (&str)[N]) : value(hashString(str, N - 1)) {}
+
+    StringHash(const std::string& str) : value(hashString(str.c_str(), str.length())) {}
 
     constexpr bool operator==(const StringHash& other) const { return value == other.value; }
     constexpr bool operator!=(const StringHash& other) const { return value != other.value; }
-    
     constexpr bool isValid() const { return value != INVALID_VALUE; }
 };
 
@@ -55,7 +64,7 @@ inline StringHash hashString(const std::string& str)
 inline namespace literals
 {
     /// @brief Compile-time literal for hashing strings (e.g., "my_sound"_hash).
-    constexpr StringHash operator"" _hash(const char* str, std::size_t length)
+    consteval StringHash operator"" _hash(const char* str, std::size_t length)
     {
         return StringHash{hashString(str, length)};
     }

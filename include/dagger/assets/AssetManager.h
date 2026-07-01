@@ -9,6 +9,7 @@
 #include <dagger/audio/AudioManager.h>
 #include <dagger/audio/AudioResource.h>
 #include <dagger/graphics/Texture.h>
+#include <dagger/utils/StringHash.h>
 
 #include <memory>
 #include <string>
@@ -40,7 +41,7 @@ public:
     /// @param filePath The relative path to the asset file.
     /// @return A safe generational handle to the loaded resource, or an invalid handle on failure.
     template <typename T, typename... Args>
-    auto load(const std::string& id, const std::string& filePath = "", Args&&... args)
+    auto load(StringHash id, const std::string& filePath = "", Args&&... args)
     {
         auto& manager = getManager<T>();
         if (manager.has(id)) return manager.getHandle(id);
@@ -78,7 +79,7 @@ public:
     /// @brief Replaces an existing asset in memory without invalidating existing handles.
     /// @param id The string identifier of the asset to replace.
     template <typename T, typename... Args>
-    void replace(const std::string& id, Args&&... args)
+    void replace(StringHash id, Args&&... args)
     {
         auto& manager = getManager<T>();
         if (!manager.has(id)) return;
@@ -108,7 +109,7 @@ public:
     /// @brief Retrieves an existing asset handle by its string ID.
     /// @return The resource handle, or an invalid handle if not found.
     template <typename T>
-    auto get(const std::string& id) { return getManager<T>().getHandle(id); }
+    auto get(StringHash id) { return getManager<T>().getHandle(id); }
 
     /// @brief Resolves a generational handle into a raw pointer for immediate use.
     /// @param handle The handle to resolve.

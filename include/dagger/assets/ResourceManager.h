@@ -1,6 +1,8 @@
 #ifndef DAGGER_ASSETS_RESOURCE_MANAGER_H
 #define DAGGER_ASSETS_RESOURCE_MANAGER_H
 
+#include <dagger/utils/StringHash.h>
+
 #include <concepts>
 #include <cstdint>
 #include <string>
@@ -24,13 +26,13 @@ class ResourceManager
 {
 public:
     /// @brief Checks if a resource with the given string ID is currently loaded.
-    bool has(const std::string& id) const
+    bool has(StringHash id) const
     {
         return nameToHandle_.find(id) != nameToHandle_.end();
     }
 
     /// @brief Retrieves the generational handle associated with a string ID.
-    HandleType getHandle(const std::string& id)
+    HandleType getHandle(StringHash id)
     {
         auto it = nameToHandle_.find(id);
         if (it != nameToHandle_.end())
@@ -41,7 +43,7 @@ public:
     }
 
     /// @brief Takes ownership of a newly loaded resource and issues a handle for it.
-    HandleType add(const std::string& id, T resource)
+    HandleType add(StringHash id, T resource)
     {
         // Check if resource already exists
         auto it = nameToHandle_.find(id);
@@ -63,7 +65,7 @@ public:
     }
 
     /// @brief Replaces the resource data at a specific ID, keeping existing handles valid.
-    void replace(const std::string& id, T newResource)
+    void replace(StringHash id, T newResource)
     {
         auto it = nameToHandle_.find(id);
         if (it != nameToHandle_.end())
@@ -136,7 +138,7 @@ private:
     };
 
     std::vector<Slot> slots_;
-    std::unordered_map<std::string, HandleType> nameToHandle_;
+    std::unordered_map<StringHash, HandleType> nameToHandle_;
 
     uint32_t getFreeSlot()
     {
