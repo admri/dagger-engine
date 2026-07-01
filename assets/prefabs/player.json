@@ -56,7 +56,9 @@
     "FOVComponent": {},
     "VelocityComponent": {},
     "PlayerInputComponent": {},
-    "WeaponComponent": {},
+    "WeaponComponent": {
+      "shootSound": "fireball"
+    },
     "CameraTargetComponent": {},
     "WorldObserverTag": {}
   }

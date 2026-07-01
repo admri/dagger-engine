@@ -26,6 +26,7 @@ set(DELVE_HEADERS
     delve/components/PlayerInputComponent.h
     delve/components/ProjectileComponent.h
     delve/components/WeaponComponent.h
+    delve/events/GamePlayEvents.h
     delve/scenes/GameOverScene.h
     delve/scenes/GameplayScene.h
     delve/scenes/MainMenuScene.h
@@ -39,7 +40,6 @@ set(DELVE_HEADERS
     delve/systems/ShootingSystem.h
     delve/systems/TileMapRenderSystem.h
     delve/systems/UISystem.h
-    delve/types/PlayerAnim.h
     delve/world/ChunkManager.h
     delve/world/TileMap.h
     delve/world/WorldGenerator.h

@@ -3,7 +3,6 @@
 #include <components/PlayerInputComponent.h>
 #include <components/WeaponComponent.h>
 #include <scenes/PauseScene.h>
-#include <types/PlayerAnim.h>
 
 #include <dagger/core/Application.h>
 #include <dagger/core/Entity.h>
