@@ -1,0 +1,30 @@
+{
+  "AnimationSequence": [
+    { "name": "name", "type": "hash" },
+    { "name": "texture", "type": "handle" },
+    { "name": "startFrame", "type": "int32" },
+    { "name": "numFrames", "type": "int32" },
+    { "name": "frameDuration", "type": "float" },
+    { "name": "isLooping", "type": "bool" }
+  ],
+  "AnimationComponent": [
+    { "name": "sequences", "type": "AnimationSequence", "isArray": true, "fixedSize": 8 },
+    { "name": "sequenceCount", "type": "int32" },
+    { "name": "currentSequenceHash", "type": "hash" },
+    { "name": "currentFrameIndex", "type": "int32" },
+    { "name": "timer", "type": "float" },
+    { "name": "isPlaying", "type": "bool" }
+  ],
+  "SpriteComponent": [
+    { "name": "texture", "type": "handle" },
+    { "name": "width", "type": "float" },
+    { "name": "height", "type": "float" },
+    { "name": "zIndex", "type": "int32" },
+    { "name": "srcX", "type": "float" },
+    { "name": "srcY", "type": "float" },
+    { "name": "srcWidth", "type": "float" },
+    { "name": "srcHeight", "type": "float" },
+    { "name": "hasSrcRect", "type": "bool" },
+    { "name": "flipX", "type": "bool" }
+  ]
+}
