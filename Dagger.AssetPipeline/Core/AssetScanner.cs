@@ -1,7 +1,4 @@
-using System;
-using System.IO;
 using System.Threading.Channels;
-using System.Threading.Tasks;
 using Dagger.AssetPipeline.Models;
 
 namespace Dagger.AssetPipeline.Core
@@ -11,29 +8,24 @@ namespace Dagger.AssetPipeline.Core
         public async Task ScanAsync(ChannelWriter<AssetJob> writer)
         {
             Console.WriteLine($"[Scanner] Starting scanning: {sourceDir}");
-
-            var files = Directory.EnumerateFiles(sourceDir, "*.*", SearchOption.AllDirectories);
-
             int count = 0;
-            foreach (var file in files)
+
+            var jsonFiles = Directory.EnumerateFiles(sourceDir, "*.json", SearchOption.AllDirectories);
+            foreach (var file in jsonFiles)
             {
-                var extension = Path.GetExtension(file).ToLower();
-                var type = AssetType.Unknown;
+                // Ignore schema
+                if (Path.GetFileName(file).Equals("schema.json", StringComparison.OrdinalIgnoreCase)) 
+                    continue;
 
-                if (extension == ".png") type = AssetType.Texture;
-                else if (extension == ".json") type = AssetType.Prefab;
-                
-                if (type != AssetType.Unknown)
-                {
-                    var job = new AssetJob
-                    {
-                        SourcePath = file,
-                        Type = type
-                    };
+                await writer.WriteAsync(new AssetJob { SourcePath = file, Type = AssetType.Prefab });
+                count++;
+            }
 
-                    await writer.WriteAsync(job);
-                    count++;
-                }
+            var atlasDirs = Directory.EnumerateDirectories(sourceDir, "*.atlas", SearchOption.AllDirectories);
+            foreach (var dir in atlasDirs)
+            {
+                await writer.WriteAsync(new AssetJob { SourcePath = dir, Type = AssetType.TextureAtlas });
+                count++;
             }
 
             writer.Complete(); 

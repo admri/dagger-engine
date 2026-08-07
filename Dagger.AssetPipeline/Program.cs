@@ -44,7 +44,7 @@ namespace Dagger.AssetPipeline
                 Console.WriteLine($"Loading component definitions from: {schemaPath}");
                 var schemaRegistry = SchemaRegistry.Load(schemaPath);
 
-                var runner = new PipelineRunner(opts.Source, opts.Output, schemaRegistry);
+                var runner = new PipelineRunner(opts.Source, opts.Output, schemaRegistry, opts.MaxAtlasSize);
                 await runner.RunAsync();
 
                 Console.ForegroundColor = ConsoleColor.Green;

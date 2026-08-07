@@ -4,11 +4,12 @@ using Dagger.AssetPipeline.Processors;
 
 namespace Dagger.AssetPipeline.Core
 {
-    public class WorkerPool(string outputDir, SchemaRegistry schemaRegistry)
+    public class WorkerPool(string outputDir, SchemaRegistry schemaRegistry, int maxAtlasSize)
     {
         public async Task StartConsumingAsync(ChannelReader<AssetJob> reader, int workerId)
         {
             var prefabBaker = new PrefabBaker(schemaRegistry);
+            var spritePacker = new SpritePacker();
 
             await foreach (var job in reader.ReadAllAsync())
             {
@@ -18,7 +19,14 @@ namespace Dagger.AssetPipeline.Core
                 {
                     if (job.Type == AssetType.Prefab)
                     {
+                        Console.WriteLine($"[Worker {workerId}] Baking Prefab: {Path.GetFileName(job.SourcePath)}");
                         await prefabBaker.BakeAsync(job, outputDir);
+                    }
+                    else if (job.Type == AssetType.TextureAtlas)
+                    {
+                        string atlasName = Path.GetFileNameWithoutExtension(job.SourcePath);
+                        Console.WriteLine($"[Worker {workerId}] Packing Atlas: {atlasName}");
+                        await spritePacker.PackAsync(job.SourcePath, outputDir, atlasName, maxAtlasSize);
                     }
                 }
                 catch (Exception ex)

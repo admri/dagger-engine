@@ -2,10 +2,9 @@ namespace Dagger.AssetPipeline.Models
 {
     public enum AssetType
     {
-        Texture,
+        Unknown,
         Prefab,
-        Level,
-        Unknown
+        TextureAtlas
     }
 
     public class AssetJob
