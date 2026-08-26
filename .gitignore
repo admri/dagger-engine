@@ -428,3 +428,4 @@ FodyWeavers.xsd
 *.msp
 
 .DS_Store
+test_out/

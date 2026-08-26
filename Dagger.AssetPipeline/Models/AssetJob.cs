@@ -11,5 +11,6 @@ namespace Dagger.AssetPipeline.Models
     {
         public string SourcePath { get; set; } = string.Empty;
         public AssetType Type { get; set; }
+        public string Hash { get; set; } = string.Empty;
     }
 }

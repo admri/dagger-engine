@@ -6,7 +6,7 @@ namespace Dagger.AssetPipeline
 {
     internal class Program
     {
-        static async Task<int> Main(string[] args)
+        public static async Task<int> Main(string[] args)
         {
             return await Parser.Default.ParseArguments<CliOptions>(args)
                 .MapResult(
@@ -15,7 +15,7 @@ namespace Dagger.AssetPipeline
                 );
         }
 
-        static async Task<int> RunPipelineAsync(CliOptions opts)
+        private static async Task<int> RunPipelineAsync(CliOptions opts)
         {
             Console.WriteLine("=== Dagger Asset Pipeline ===");
 
@@ -40,12 +40,21 @@ namespace Dagger.AssetPipeline
                 Console.WriteLine($"Scanner set to: {opts.Source}");
                 Console.WriteLine($"Output set to: {opts.Output}");
 
+                string cachePath = Path.Combine(opts.Output, ".daggercache.json");
+                var cache = new BuildCache(cachePath);
+
+                Console.WriteLine("[System] Loading build cache...");
+                await cache.LoadAsync();
+
                 var schemaPath = Path.Combine(opts.Source, "schema.json");
                 Console.WriteLine($"Loading component definitions from: {schemaPath}");
                 var schemaRegistry = SchemaRegistry.Load(schemaPath);
 
-                var runner = new PipelineRunner(opts.Source, opts.Output, schemaRegistry, opts.MaxAtlasSize);
+                var runner = new PipelineRunner(opts.Source, opts.Output, schemaRegistry, opts.MaxAtlasSize, cache);
                 await runner.RunAsync();
+
+                Console.WriteLine("[System] Saving build cache...");
+                await cache.SaveAsync();
 
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("Pipeline completed successfully.");

@@ -3,18 +3,18 @@ using Dagger.AssetPipeline.Models;
 
 namespace Dagger.AssetPipeline.Core
 {
-    public class PipelineRunner(string sourceDir, string outputDir, SchemaRegistry schemaRegistry, int maxAtlasSize)
+    public class PipelineRunner(string sourceDir, string outputDir, SchemaRegistry schemaRegistry, int maxAtlasSize, BuildCache cache)
     {
         public async Task RunAsync()
         {
             var channel = Channel.CreateUnbounded<AssetJob>();
 
             // Producer
-            var scanner = new AssetScanner(sourceDir);
+            var scanner = new AssetScanner(sourceDir, cache);
             var producerTask = scanner.ScanAsync(channel.Writer);
 
             // Consumer
-            var workerPool = new WorkerPool(outputDir, schemaRegistry, maxAtlasSize);
+            var workerPool = new WorkerPool(outputDir, schemaRegistry, maxAtlasSize, cache);
             int coreCount = Environment.ProcessorCount;
             Console.WriteLine($"[Pipeline] Starting {coreCount} working threads...");
 

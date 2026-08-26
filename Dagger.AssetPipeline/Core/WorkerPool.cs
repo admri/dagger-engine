@@ -4,7 +4,7 @@ using Dagger.AssetPipeline.Processors;
 
 namespace Dagger.AssetPipeline.Core
 {
-    public class WorkerPool(string outputDir, SchemaRegistry schemaRegistry, int maxAtlasSize)
+    public class WorkerPool(string outputDir, SchemaRegistry schemaRegistry, int maxAtlasSize, BuildCache cache)
     {
         public async Task StartConsumingAsync(ChannelReader<AssetJob> reader, int workerId)
         {
@@ -17,17 +17,26 @@ namespace Dagger.AssetPipeline.Core
                 
                 try
                 {
-                    if (job.Type == AssetType.Prefab)
+                    switch (job.Type)
                     {
-                        Console.WriteLine($"[Worker {workerId}] Baking Prefab: {Path.GetFileName(job.SourcePath)}");
-                        await prefabBaker.BakeAsync(job, outputDir);
+                        case AssetType.Prefab:
+                            Console.WriteLine($"[Worker {workerId}] Baking Prefab: {Path.GetFileName(job.SourcePath)}");
+                            await prefabBaker.BakeAsync(job, outputDir);
+                            break;
+                        
+                        case AssetType.TextureAtlas:
+                        {
+                            string atlasName = Path.GetFileNameWithoutExtension(job.SourcePath);
+                            Console.WriteLine($"[Worker {workerId}] Packing Atlas: {atlasName}");
+                            await spritePacker.PackAsync(job.SourcePath, outputDir, atlasName, maxAtlasSize);
+                            break;
+                        }
+
+                        case AssetType.Unknown:
+                            break;
                     }
-                    else if (job.Type == AssetType.TextureAtlas)
-                    {
-                        string atlasName = Path.GetFileNameWithoutExtension(job.SourcePath);
-                        Console.WriteLine($"[Worker {workerId}] Packing Atlas: {atlasName}");
-                        await spritePacker.PackAsync(job.SourcePath, outputDir, atlasName, maxAtlasSize);
-                    }
+
+                    cache.UpdateHash(job.SourcePath, job.Hash);
                 }
                 catch (Exception ex)
                 {
