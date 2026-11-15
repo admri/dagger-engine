@@ -1,0 +1,19 @@
+# Shell scripts: LF line endings
+*.sh text eol=lf
+
+# Batch scripts: CRLF line endings
+*.bat text eol=crlf
+
+# Source files: normalize line endings
+*.cpp text=auto
+*.h text=auto
+
+# Other text files: normalize line endings
+*.xaml text=auto
+*.md text=auto
+*.json text=auto
+
+# Binary files: ignore line endings
+*.png binary
+*.jpg binary
+*.ico binary

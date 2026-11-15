@@ -53,6 +53,7 @@ else()
     FetchContent_MakeAvailable(SDL3)
 
     # SDL_image
+    message(STATUS "Downloading and configuring SDL3_image...")
     FetchContent_Declare(
         SDL3_image
         GIT_REPOSITORY https://github.com/libsdl-org/SDL_image.git

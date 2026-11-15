@@ -1,0 +1,46 @@
+﻿################################################################################
+# Never commit compilation (by-)products and machine-specific settings
+################################################################################
+
+.vscode
+.vs
+build/
+build-release/
+out/
+CMakeFiles/
+CMakeCache.txt
+CMakeSettings.json
+Makefile
+cmake_install.cmake
+compile_commands.json
+Debug/
+Release/
+x64/
+*.user
+
+# Executables and libraries
+*.exe
+*.dll
+*.lib
+*.so
+*.dylib
+*.out
+*.app
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
+*.DS_Store
+Thumbs.db
+
+# Compiled shaders
+*.spv
+*.dxil
+*.msl
+
+# Precompiled shaders exception
+!assets/shaders/precompiled/*.spv
+!assets/shaders/precompiled/*.dxil
+!assets/shaders/precompiled/*.msl
