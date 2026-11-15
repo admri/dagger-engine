@@ -16,34 +16,34 @@ struct Color
     uint8_t b = 255;
     uint8_t a = 255;
 
-    Color() = default;
+    constexpr Color() = default;
 
-    Color(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255)
+    constexpr Color(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255)
         : r(r), g(g), b(b), a(a)
     {
     }
 
-    bool operator==(Color other) const
+    constexpr explicit Color(uint32_t hex)
+        : r((hex >> 24) & 0xFF),
+          g((hex >> 16) & 0xFF),
+          b((hex >> 8)  & 0xFF),
+          a( hex        & 0xFF)
     {
-        return this->r == other.r
-            && this->g == other.g
-            && this->b == other.b
-            && this->a == other.a;
     }
 
-    bool operator!=(Color other) const
-    {
-        return !(*this == other);
-    }
+    constexpr bool operator==(const Color&) const = default;
 };
+
+static_assert(sizeof(Color) == 4, "dagger::Color must be exactly 4 bytes to map to SDL_Color");
 
 namespace Colors
 {
-    inline Color Black{  0,   0,   0};
-    inline Color White{255, 255, 255};
-    inline Color Red  {255,   0,   0};
-    inline Color Green{  0, 255,   0};
-    inline Color Blue {  0,   0, 255};
+    inline constexpr Color Black{  0,   0,   0};
+    inline constexpr Color White{255, 255, 255};
+    inline constexpr Color Red  {255,   0,   0};
+    inline constexpr Color Green{  0, 255,   0};
+    inline constexpr Color Blue {  0,   0, 255};
+    inline constexpr Color Transparent{0, 0, 0, 0};
 }
 
 DAGGER_SERIALIZE_COMPONENT(Color, r, g, b, a)

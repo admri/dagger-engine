@@ -6,6 +6,7 @@
 #include <dagger/core/Application.h>
 #include <dagger/core/Scene.h>
 #include <dagger/core/components/TransformComponent.h>
+#include <dagger/utils/StringHash.h>
 
 #include <nlohmann/json.hpp>
 
@@ -37,7 +38,7 @@ bool LevelLoader::load(const std::string& filepath, Scene& scene, Application& a
     {
         for (const auto& entityData : data["entities"])
         {
-            std::string prefabId = entityData["prefab"].get<std::string>();
+            auto prefabId = StringHash(entityData["prefab"].get<std::string>());
             
             auto prefabHandle = assets.get<Prefab>(prefabId);
             

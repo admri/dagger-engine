@@ -16,6 +16,7 @@
 #include <dagger/graphics/Renderer.h>
 #include <dagger/input/KeyCodes.h>
 #include <dagger/input/Input.h>
+#include <dagger/utils/StringHash.h>
 
 namespace delve
 {
@@ -38,7 +39,7 @@ void Game::registerGameComponents()
 
         if (json.contains("shootSound"))
         {
-            std::string soundName = json["shootSound"].get<std::string>();
+            auto soundName = StringHash(json["shootSound"].get<std::string>());
             weapon.shootSound = assets.get<dagger::Sound>(soundName); 
         }
     });

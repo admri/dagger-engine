@@ -5,6 +5,7 @@
 #include <dagger/assets/Prefab.h>
 #include <dagger/audio/AudioResource.h>
 #include <dagger/graphics/Texture.h>
+#include <dagger/utils/StringHash.h>
 
 #include <nlohmann/json.hpp>
 
@@ -31,7 +32,7 @@ void AssetPreloader::loadFromManifest(const std::string& manifestPath, AssetMana
         for (const auto& texture : manifest["textures"])
         {
             assets.load<Texture>(
-                texture["id"].get<std::string>(),
+                StringHash(texture["id"].get<std::string>()),
                 texture["path"].get<std::string>()
             );
         }
@@ -42,7 +43,7 @@ void AssetPreloader::loadFromManifest(const std::string& manifestPath, AssetMana
         for (const auto& font : manifest["fonts"])
         {
             assets.load<Font>(
-                font["id"].get<std::string>(),
+                StringHash(font["id"].get<std::string>()),
                 font["path"].get<std::string>(),
                 font["size"].get<int>()
             );
@@ -54,7 +55,7 @@ void AssetPreloader::loadFromManifest(const std::string& manifestPath, AssetMana
         for (const auto& sound : manifest["sounds"])
         {
             assets.load<Sound>(
-                sound["id"].get<std::string>(),
+                StringHash(sound["id"].get<std::string>()),
                 sound["path"].get<std::string>()
             );
         }
@@ -65,7 +66,7 @@ void AssetPreloader::loadFromManifest(const std::string& manifestPath, AssetMana
         for (const auto& m : manifest["music"])
         {
             assets.load<Music>(
-                m["id"].get<std::string>(),
+                StringHash(m["id"].get<std::string>()),
                 m["path"].get<std::string>()
             );
         }
@@ -76,7 +77,7 @@ void AssetPreloader::loadFromManifest(const std::string& manifestPath, AssetMana
         for (const auto& prefab : manifest["prefabs"])
         {
             assets.load<Prefab>(
-                prefab["id"].get<std::string>(),
+                StringHash(prefab["id"].get<std::string>()),
                 prefab["path"].get<std::string>()
             );
         }

@@ -1,13 +1,15 @@
 #ifndef DAGGER_CORE_APP_CONFIG_H
 #define DAGGER_CORE_APP_CONFIG_H
 
+#include <dagger/utils/EnumBitmask.h>
+
 #include <cstdint>
 #include <string>
 
 namespace dagger
 {
 
-enum class WindowFlags : uint64_t
+enum class WindowFlags : uint32_t
 {
     None             = 0,
     Fullscreen       = 1 << 0,
@@ -17,15 +19,7 @@ enum class WindowFlags : uint64_t
     HighPixelDensity = 1 << 4
 };
 
-inline WindowFlags operator|(WindowFlags a, WindowFlags b) 
-{
-    return static_cast<WindowFlags>(static_cast<uint64_t>(a) | static_cast<uint64_t>(b));
-}
-
-inline bool hasFlag(WindowFlags mask, WindowFlags flag)
-{
-    return static_cast<uint64_t>(mask) & static_cast<uint64_t>(flag);
-}
+template <> constexpr bool enable_bitmask_operators<WindowFlags> = true;
 
 struct AppConfig
 {

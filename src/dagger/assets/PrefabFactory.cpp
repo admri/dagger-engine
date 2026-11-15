@@ -95,7 +95,7 @@ void PrefabFactory::registerCoreComponents()
         if (j.contains("defaultSequence"))
         {
             std::string defName = j["defaultSequence"];
-            comp.currentSequenceHash = hashString(defName);
+            comp.currentSequenceHash = StringHash(defName);
         }
 
         if (j.contains("sequences") && j["sequences"].is_array()) 
@@ -105,7 +105,7 @@ void PrefabFactory::registerCoreComponents()
                 AnimationComponent::Sequence seq;
 
                 std::string name = seqJson["name"];
-                seq.nameHash = hashString(name);
+                seq.nameHash = StringHash(name);
                 
                 if (comp.currentSequenceHash.value == StringHash::INVALID_VALUE && comp.sequences.empty())
                 {
@@ -119,7 +119,8 @@ void PrefabFactory::registerCoreComponents()
 
                 if (seqJson.contains("texture")) 
                 {
-                    seq.texture = a.get<Texture>(seqJson["texture"].get<std::string>());
+                    auto texture = StringHash(seqJson["texture"].get<std::string>());
+                    seq.texture = a.get<Texture>(texture);
                 }
 
                 comp.sequences.push_back(seq);
@@ -134,7 +135,8 @@ void PrefabFactory::registerCoreComponents()
 
         if (j.contains("texture")) 
         {
-            comp.texture = a.get<Texture>(j["texture"].get<std::string>());
+            auto texture = StringHash(j["texture"].get<std::string>());
+            comp.texture = a.get<Texture>(texture);
         }
     });
     
@@ -145,7 +147,8 @@ void PrefabFactory::registerCoreComponents()
 
         if (j.contains("font")) 
         {
-            comp.font = a.get<Font>(j["font"].get<std::string>());
+            auto font = StringHash(j["font"].get<std::string>());
+            comp.font = a.get<Font>(font);
         }
 
         if (j.contains("color"))
