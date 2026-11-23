@@ -19,7 +19,8 @@ enum class WindowFlags : uint32_t
     HighPixelDensity = 1 << 4
 };
 
-template <> constexpr bool enable_bitmask_operators<WindowFlags> = true;
+template <>
+inline constexpr bool enable_bitmask_operators<WindowFlags> = true;
 
 struct AppConfig
 {

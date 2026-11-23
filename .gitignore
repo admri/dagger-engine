@@ -4,6 +4,7 @@
 
 .vscode
 .vs
+.cache
 build/
 build-release/
 out/

@@ -7,7 +7,7 @@ namespace dagger
 {
 
 template <typename T>
-constexpr bool enable_bitmask_operators = false;
+inline constexpr bool enable_bitmask_operators = false;
 
 template <typename T>
 concept BitmaskEnum = std::is_enum_v<T> && enable_bitmask_operators<T>;
